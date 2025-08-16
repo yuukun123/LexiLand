@@ -74,16 +74,18 @@ def prompt_definition_from_gemini(word_to_define):
     """
 
     prompt = f"""
-    Hãy đóng vai một giáo viên tiếng Anh thân thiện.
-    Giải thích từ "{word_to_define}" bằng tiếng Anh một cách thật đơn giản cho người mới học.
+    Chỉ cần giair thích từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
+    Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
+    Thêm phần dịch nghĩa tiếng việt cho ví dụ
     Sau đó, cung cấp 3 câu ví dụ rất phổ biến và tự nhiên trong giao tiếp hàng ngày.
 
     Định dạng đầu ra phải như sau:
-    Simple Definition: [định nghĩa của bạn ở đây]
-    Common Examples:
-    1. [câu ví dụ 1]
-    2. [câu ví dụ 2]
-    3. [câu ví dụ 3]
+    Simple Definition English : [định nghĩa tiếng anh của bạn ở đây]
+    Simple Definition Vietnamese : [định nghĩa tiếng việt của bạn ở đây]
+    Common Examples :
+    1. [câu ví dụ 1] ([câu việt dụ 1])
+    2. [câu ví dụ 2] ([câu việt dụ 2])
+    3. [câu ví dụ 3] ([câu việt dụ 3])
     """
     # --- Gửi yêu cầu đến Gemini và nhận kết quả ---
     try:
@@ -121,7 +123,7 @@ def get_word_data_with_fallback(word):
 
 def get_best_definition(word_data):
     if not word_data:
-        return None, None, None
+        return None, None
 
     pos_priority = ['noun', 'verb', 'adjective', 'adverb', 'interjection']
 
@@ -129,33 +131,32 @@ def get_best_definition(word_data):
         for pos in pos_priority:
             for meaning in entry.get('meanings', []):
                 if meaning.get('partOfSpeech') == pos:
-                    for definition_info in meaning.get('definitions', []):
-                        if 'example' in definition_info and definition_info['example']:
+                    # for definition_info in meaning.get('definitions', []):
+                    #     if 'example' in definition_info and definition_info['example']:
                             # definition = translate_word(definition_info.get('definition')) or definition_info.get('definition')
-                            definition = prompt_definition_from_gemini(word_data)
-                            example = definition_info.get('example')
-                            return definition, example, pos
+                    definition = prompt_definition_from_gemini(word_data)
+                            # example = definition_info.get('example')
+                    return definition, pos
 
     for entry in word_data:
         for meaning in entry.get('meanings', []):
-            for definition_info in meaning.get('definitions', []):
-                if 'example' in definition_info and definition_info['example']:
+            # for definition_info in meaning.get('definitions', []):
+                # if 'example' in definition_info and definition_info['example']:
                     # definition = translate_word(definition_info.get('definition')) or definition_info.get('definition')
-                    definition = prompt_definition_from_gemini(word_data)
-                    example = definition_info.get('example')
-                    return definition, example, meaning.get('partOfSpeech')
+                definition = prompt_definition_from_gemini(word_data)
+                    # example = definition_info.get('example')
+                return definition, meaning.get('partOfSpeech')
 
     try:
         first_meaning = word_data[0]['meanings'][0]
-        first_definition = first_meaning['definitions'][0]['definition']
+        # first_definition = first_meaning['definitions'][0]['definition']
         return {
             # first_definition.get('definition'),
             prompt_definition_from_gemini(word_data),
-            first_definition.get('example', 'N/A'),
             first_meaning.get('partOfSpeech')
         }
     except (KeyError, IndexError):
-        return None, None, None
+        return None, None
 
 def translate_word(text_to_translate, source_lang = 'en', target_lang = 'vi'):
     """
@@ -202,14 +203,13 @@ def test_api(word):
        # call API
        data = get_word_data_with_fallback(word)
 
-       definition, example, pos = get_best_definition(data)
+       definition, pos = get_best_definition(data)
 
        # print result
        if definition:
            print(f"Best definition for '{word}':")
            print(f"Part of Speech: {pos}")
            print(f"{definition}")
-           print(f"Example: {example}")
        else:
            print(f"No definition found for '{word}'")
 
