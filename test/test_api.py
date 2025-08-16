@@ -1,18 +1,80 @@
 import requests
 import urllib.parse # thư viện xử lý url
+import re
+
+def call_dictionaryapi_dev(word):
+    """
+    Gọi API DictionaryAPI.dev và trả về dữ liệu JSON nếu thành công.
+    Ném ra Exception nếu có lỗi mạng hoặc không tìm thấy từ (404).
+    """
+    url = f'https://api.dictionaryapi.dev/api/v2/entries/en/{word}'
+    response = requests.get(url)
+    # Dòng này sẽ tự động ném ra Exception nếu status code là 4xx hoặc 5xx
+    response.raise_for_status()
+    return response.json()
+
+def call_wiktionary_api(word):
+    """
+    Gọi API của Wiktionary và chuyển đổi kết quả về định dạng giống
+    như DictionaryAPI.dev để xử lý nhất quán.
+    """
+    url = f'https://en.wiktionary.org/api/rest_v1/page/definition/{word}'
+    response = requests.get(url)
+    response.raise_for_status()
+    wiktionary_data = response.json()
+
+    # --- Bắt đầu sơ chế (transform) ---
+    if 'en' not in wiktionary_data or not wiktionary_data['en']:
+        return None
+
+    # Tạo ra một "khay nguyên liệu" mới theo đúng tiêu chuẩn
+    formatted_entry = {"word": word, "phonetic": "", "meanings": []}
+
+    for pos_data in wiktionary_data['en']:
+        meaning = {"partOfSpeech": pos_data.get('partOfSpeech', 'N/A'), "definitions": []}
+        for def_item in pos_data.get('definitions', []):
+            clean_definition = re.sub('<[^<]+?>', '', def_item.get('definition', ''))
+            definition_info = {"definition": clean_definition}
+            if 'examples' in def_item and def_item['examples']:
+                clean_example = re.sub('<[^<]+?>', '', def_item['examples'][0])
+                definition_info['example'] = clean_example
+            meaning['definitions'].append(definition_info)
+        formatted_entry['meanings'].append(meaning)
+
+    # Trả về khay nguyên liệu đã được sơ chế hoàn hảo
+    return [formatted_entry]
+
+
+
+def get_word_data_with_fallback(word):
+    """
+    Thử lấy dữ liệu từ DictionaryAPI.dev trước.
+    Nếu thất bại, tự động chuyển sang dùng Wiktionary API.
+    """
+    # try:
+    #     # Ưu tiên gọi API #1 (DictionaryAPI.dev)
+    #     print(">>> Trying DictionaryAPI.dev...")
+    #     data = call_dictionaryapi_dev(word)
+    #     print(">>> DictionaryAPI.dev successful!")
+    #     if data:
+    #         return data
+    # except Exception as e:
+    #     print(f"--- DictionaryAPI.dev failed: {e}")
+
+    # Nếu API #1 thất bại, tự động chuyển sang API #2 (Wiktionary)
+    try:
+        print("\n>>> Falling back to Wiktionary API...")
+        data = call_wiktionary_api(word)
+        print(">>> Wiktionary API successful!")
+        return data
+    except Exception as e:
+        print(f"--- Wiktionary API also failed: {e}")
+        return None  # Cả hai đều thất bại
 
 def test_api(word):
    try:
-       url = f'https://api.dictionaryapi.dev/api/v2/entries/en/{word}'
-       response = requests.get(url)
-
-       # check connect status
-       if response.status_code == 400:
-           print(f"API request failed with status code {response.status_code}")
-           return
-       # check response
-       response.raise_for_status()
-       data = response.json()
+       # call API
+       data = get_word_data_with_fallback(word)
 
        definition, example, pos = get_best_definition(data)
 
@@ -78,7 +140,7 @@ def translate_word(text_to_translate, source_lang = 'en', target_lang = 'vi'):
     """
 
     if not text_to_translate:
-        return
+        return None
 
     encoded_text = urllib.parse.quote(text_to_translate)
 
@@ -90,7 +152,7 @@ def translate_word(text_to_translate, source_lang = 'en', target_lang = 'vi'):
         # check connect status
         if response.status_code == 400:
             print(f"API request failed with status code {response.status_code}")
-            return
+            return None
         # check response
         response.raise_for_status()
         data = response.json()
@@ -105,4 +167,4 @@ def translate_word(text_to_translate, source_lang = 'en', target_lang = 'vi'):
         return None
 
 if __name__ == "__main__":
-    test_api("hi")
+    test_api("food")
