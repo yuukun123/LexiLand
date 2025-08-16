@@ -1,6 +1,23 @@
 import requests
 import urllib.parse # thư viện xử lý url
 import re
+import google.generativeai as genai
+import os
+
+# CÁCH ĐÚNG ĐỂ LẤY VÀ CẤU HÌNH API KEY
+try:
+    # Cách tốt nhất: Lấy key từ biến môi trường
+    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+    if not GOOGLE_API_KEY:
+        # Nếu không có biến môi trường, dùng key bạn hardcode (chỉ để test)
+        print("Khoông tìm thấy biến môi trường. Dùng key hardcode.")
+        GOOGLE_API_KEY = "AIzaSyCwRytRMxm222OaWu4NXO7J6bEnN9S8_Zs" # <--- THAY BẰNG KEY THẬT CỦA BẠN
+    genai.configure(api_key=GOOGLE_API_KEY)
+    gemini_model = genai.GenerativeModel('gemini-2.0-flash')
+    print(">>> Cáu hình Gemini API Key thanh cong!")
+except Exception as e:
+    print(f"Lỗi cấu hình Gemini API Key: {e}. Hãy chắc chắn bạn đã đặt biến môi trường hoặc điền key vào code.")
+    exit()
 
 def call_dictionaryapi_dev(word):
     """
@@ -9,6 +26,9 @@ def call_dictionaryapi_dev(word):
     """
     url = f'https://api.dictionaryapi.dev/api/v2/entries/en/{word}'
     response = requests.get(url)
+
+    if response.status_code != 200:
+        return None
     # Dòng này sẽ tự động ném ra Exception nếu status code là 4xx hoặc 5xx
     response.raise_for_status()
     return response.json()
@@ -20,6 +40,9 @@ def call_wiktionary_api(word):
     """
     url = f'https://en.wiktionary.org/api/rest_v1/page/definition/{word}'
     response = requests.get(url)
+
+    if response.status_code != 200:
+        return None
     response.raise_for_status()
     wiktionary_data = response.json()
 
@@ -44,6 +67,31 @@ def call_wiktionary_api(word):
     # Trả về khay nguyên liệu đã được sơ chế hoàn hảo
     return [formatted_entry]
 
+def prompt_definition_from_gemini(word_to_define):
+    """
+    Gọi API của Gemini và chuyển đổi kết quả về định dạng giống
+    như DictionaryAPI.dev để xử lý nhất quán.
+    """
+
+    prompt = f"""
+    Hãy đóng vai một giáo viên tiếng Anh thân thiện.
+    Giải thích từ "{word_to_define}" bằng tiếng Anh một cách thật đơn giản cho người mới học.
+    Sau đó, cung cấp 3 câu ví dụ rất phổ biến và tự nhiên trong giao tiếp hàng ngày.
+
+    Định dạng đầu ra phải như sau:
+    Simple Definition: [định nghĩa của bạn ở đây]
+    Common Examples:
+    1. [câu ví dụ 1]
+    2. [câu ví dụ 2]
+    3. [câu ví dụ 3]
+    """
+    # --- Gửi yêu cầu đến Gemini và nhận kết quả ---
+    try:
+        response = gemini_model.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        print(f"Đã xảy ra lỗi khi gọi API: {e}")
+        return "Sorry, an error occurred while generating the explanation."
 
 
 def get_word_data_with_fallback(word):
@@ -51,45 +99,25 @@ def get_word_data_with_fallback(word):
     Thử lấy dữ liệu từ DictionaryAPI.dev trước.
     Nếu thất bại, tự động chuyển sang dùng Wiktionary API.
     """
-    # try:
-    #     # Ưu tiên gọi API #1 (DictionaryAPI.dev)
-    #     print(">>> Trying DictionaryAPI.dev...")
-    #     data = call_dictionaryapi_dev(word)
-    #     print(">>> DictionaryAPI.dev successful!")
-    #     if data:
-    #         return data
-    # except Exception as e:
-    #     print(f"--- DictionaryAPI.dev failed: {e}")
+    try:
+        # Ưu tiên gọi API #1 (DictionaryAPI.dev)
+        print(">>> Trying DictionaryAPI.dev...")
+        data = call_dictionaryapi_dev(word)
+        print(">>> DictionaryAPI.dev successful!\n")
+        if data:
+            return data
+    except Exception as e:
+        print(f"--- DictionaryAPI.dev failed: {e}")
 
     # Nếu API #1 thất bại, tự động chuyển sang API #2 (Wiktionary)
     try:
-        print("\n>>> Falling back to Wiktionary API...")
+        print(">>> Falling back to Wiktionary API...")
         data = call_wiktionary_api(word)
-        print(">>> Wiktionary API successful!")
+        print(">>> Wiktionary API successful!\n")
         return data
     except Exception as e:
         print(f"--- Wiktionary API also failed: {e}")
-        return None  # Cả hai đều thất bại
-
-def test_api(word):
-   try:
-       # call API
-       data = get_word_data_with_fallback(word)
-
-       definition, example, pos = get_best_definition(data)
-
-       # print result
-       if definition:
-           print(f"Best definition for '{word}':")
-           print(f"Definition: {definition}")
-           print(f"Example: {example}")
-           print(f"Part of Speech: {pos}")
-       else:
-           print(f"No definition found for '{word}'")
-
-   except requests.exceptions.RequestException as e:
-       print(f"API request failed: {e}")
-       return
+        return None
 
 def get_best_definition(word_data):
     if not word_data:
@@ -103,7 +131,8 @@ def get_best_definition(word_data):
                 if meaning.get('partOfSpeech') == pos:
                     for definition_info in meaning.get('definitions', []):
                         if 'example' in definition_info and definition_info['example']:
-                            definition = translate_word(definition_info.get('definition')) or definition_info.get('definition')
+                            # definition = translate_word(definition_info.get('definition')) or definition_info.get('definition')
+                            definition = prompt_definition_from_gemini(word_data)
                             example = definition_info.get('example')
                             return definition, example, pos
 
@@ -111,7 +140,8 @@ def get_best_definition(word_data):
         for meaning in entry.get('meanings', []):
             for definition_info in meaning.get('definitions', []):
                 if 'example' in definition_info and definition_info['example']:
-                    definition = translate_word(definition_info.get('definition')) or definition_info.get('definition')
+                    # definition = translate_word(definition_info.get('definition')) or definition_info.get('definition')
+                    definition = prompt_definition_from_gemini(word_data)
                     example = definition_info.get('example')
                     return definition, example, meaning.get('partOfSpeech')
 
@@ -119,7 +149,8 @@ def get_best_definition(word_data):
         first_meaning = word_data[0]['meanings'][0]
         first_definition = first_meaning['definitions'][0]['definition']
         return {
-            first_definition.get('definition'),
+            # first_definition.get('definition'),
+            prompt_definition_from_gemini(word_data),
             first_definition.get('example', 'N/A'),
             first_meaning.get('partOfSpeech')
         }
@@ -165,6 +196,26 @@ def translate_word(text_to_translate, source_lang = 'en', target_lang = 'vi'):
     except requests.exceptions.RequestException as e:
         print(f"API request failed: {e}")
         return None
+
+def test_api(word):
+   try:
+       # call API
+       data = get_word_data_with_fallback(word)
+
+       definition, example, pos = get_best_definition(data)
+
+       # print result
+       if definition:
+           print(f"Best definition for '{word}':")
+           print(f"Part of Speech: {pos}")
+           print(f"{definition}")
+           print(f"Example: {example}")
+       else:
+           print(f"No definition found for '{word}'")
+
+   except requests.exceptions.RequestException as e:
+       print(f"API request failed: {e}")
+       return
 
 if __name__ == "__main__":
     test_api("food")
