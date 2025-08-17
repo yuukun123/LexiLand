@@ -1,7 +1,7 @@
 <RCC>
   <qresource prefix="icon">
-    <file>icons/email-3-64.ico</file>
-    <file>icons/key-3-64.ico</file>
-    <file>icons/user-64.ico</file>
+    <file>../UI/icons/email-3-64.ico</file>
+    <file>../UI/icons/key-3-64.ico</file>
+    <file>../UI/icons/user-64.ico</file>
   </qresource>
 </RCC>
