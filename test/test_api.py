@@ -1,11 +1,9 @@
 import asyncio
-
 import requests
 import urllib.parse # thư viện xử lý url
 import re
 import google.generativeai as genai
 import os
-import asyncio
 import aiohttp
 
 from requests import session
