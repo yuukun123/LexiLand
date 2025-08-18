@@ -2,9 +2,29 @@ import sqlite3
 import os
 
 def create_table():
-    db_path = "../../database/database.db"
+    # lấy đường dẫn đến thư mục chứ file hiện tại
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # lùi 1 bước về thư muc models
+    models_dir = os.path.dirname(script_dir)
+    # chốt lại thư mục gốc để chứa folder database
+    project_root = os.path.dirname(models_dir)
+    # đường dẫn đầy đủ đến thư mục database
+    db_folder = os.path.join(project_root, "database")
+    # Và cuối cùng, đường dẫn đầy đủ đến file CSDL
+    db_path = os.path.join(db_folder, "database.db")
+
+    print(f"Thư mục script hiện tại: {script_dir}")
+    print(f"Thư mục gốc của dự án: {project_root}")
+    print(f"Đường dẫn CSDL sẽ được tạo tại: {db_path}")
+
+    # Tạo thư mục 'database' trong thư mục gốc nếu nó chưa tồn tại
+    os.makedirs(db_folder, exist_ok=True)
+    print(f"Thư mục '{db_folder}' đã sẵn sàng.")
+
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
+    print(f"connect database '{db_path}' successful")
+    cursor.execute("PRAGMA foreign_keys = ON;")
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
@@ -31,12 +51,37 @@ def create_table():
         CREATE TABLE IF NOT EXISTS words (
             word_id INTEGER PRIMARY KEY AUTOINCREMENT,
             word_name TEXT NOT NULL UNIQUE,
-            word_meaning TEXT NOT NULL,
-            part_of_speech TEXT NOT NULL,
-            phonetic TEXT NOT NULL,
-            definition TEXT NOT NULL,
-            example TEXT NOT NULL
+            phonetic TEXT NOT NULL
         )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS meanings (
+            meaning_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            word_id INTEGER NOT NULL,
+            part_of_speech TEXT NOT NULL,
+            FOREIGN KEY(word_id) REFERENCES words(word_id) on DELETE CASCADE
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS definition (
+            definition_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            meaning_id INTEGER NOT NULL,
+            language TEXT NOT NULL, -- 'en', 'vi'
+            definition_text TEXT NOT NULL,
+            FOREIGN KEY(meaning_id) REFERENCES meanings(meaning_id) ON DELETE CASCADE
+        )
+    """)
+
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS examples (
+                example_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                meaning_id INTEGER NOT NULL,
+                example_en TEXT NOT NULL,
+                example_vi TEXT,
+                FOREIGN KEY(meaning_id) REFERENCES meanings(meaning_id) ON DELETE CASCADE
+            )
     """)
 
     cursor.execute("""
