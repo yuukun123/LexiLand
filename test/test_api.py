@@ -17,13 +17,16 @@ try:
     if not GOOGLE_API_KEY:
         # Nếu không có biến môi trường, dùng key bạn hardcode (chỉ để test)
         print("Khoông tìm thấy biến môi trường. Dùng key hardcode.")
-        # GOOGLE_API_KEY = "AIzaSyCwRytRMxm222OaWu4NXO7J6bEnN9S8_Zs" # <--- THAY BẰNG KEY THẬT CỦA BẠN
+        GOOGLE_API_KEY = "AIzaSyCwRytRMxm222OaWu4NXO7J6bEnN9S8_Zs" # <--- THAY BẰNG KEY THẬT CỦA BẠN
     genai.configure(api_key=GOOGLE_API_KEY)
     gemini_model = genai.GenerativeModel('gemini-2.0-flash')
     print(">>> Cáu hình Gemini API Key thanh cong!")
 except Exception as e:
     print(f"Lỗi cấu hình Gemini API Key: {e}. Hãy chắc chắn bạn đã đặt biến môi trường hoặc điền key vào code.")
     exit()
+
+def check_multi_word_phrase(text):
+    return ' ' in text.strip()
 
 async def get_dictionary_data_async(session, word):
     """
@@ -77,31 +80,45 @@ async def prompt_definition_from_gemini(word_to_define):
     Gọi API của Gemini và chuyển đổi kết quả về định dạng giống
     như DictionaryAPI.dev để xử lý nhất quán.
     """
-    prompt = f"""
-    Chỉ cần giair thích từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
-    Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
-    Thêm phần dịch nghĩa tiếng việt cho ví dụ
-    Sau đó, cung cấp 3 câu ví dụ rất phổ biến và tự nhiên trong giao tiếp hàng ngày.
+    if check_multi_word_phrase(word_to_define):
+        prompt_header = f"""
+        Chỉ cần giải thích cụm từ hoặc thành ngữ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
+        Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
+        Thêm loại từ cho cụm từ hoặc thành ngữ không cần tiếng việt
+        Thêm phần dịch nghĩa tiếng việt cho ví dụ
+        Sau đó, cung cấp 1 câu ví dụ rất phổ biến và tự nhiên trong giao tiếp hàng ngày.
+        """
 
-    Định dạng đầu ra phải như sau:
-    Simple Definition English : [định nghĩa tiếng anh của bạn ở đây]
-    Simple Definition Vietnamese : [định nghĩa tiếng việt của bạn ở đây]
-    Common Examples :
-    1. [câu ví dụ 1] ([câu việt dụ 1])
-    2. [câu ví dụ 2] ([câu việt dụ 2])
-    3. [câu ví dụ 3] ([câu việt dụ 3])
+    else:
+        prompt_header = f"""
+        Chỉ cần giải thích từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
+        Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
+        Thêm phần dịch nghĩa tiếng việt cho ví dụ
+        Sau đó, cung cấp 1 câu ví dụ rất phổ biến và tự nhiên trong giao tiếp hàng ngày.
+        """
+
+    prompt_footer = f"""
+        Định dạng đầu ra phải như sau:
+        Part of speech: [loại từ]
+        Simple Definition English : [định nghĩa tiếng anh của bạn ở đây]
+        Simple Definition Vietnamese : [định nghĩa tiếng việt của bạn ở đây]
+        Common Examples :
+        -[câu ví dụ] ([câu việt dụ])
     """
+
+    full_prompt = prompt_header + prompt_footer
+
     # --- Gửi yêu cầu đến Gemini và nhận kết quả ---
     try:
-        response = await gemini_model.generate_content_async(prompt)
+        response = await gemini_model.generate_content_async(full_prompt)
         return response.text.strip()
     except Exception as e:
         print(f"Đã xảy ra lỗi khi gọi API: {e}")
         return None
 
-def extract_pos_from_data(dict_data):
+async def extract_pos_from_data(session, dict_data):
     if not dict_data or 'meanings' not in dict_data[0]:
-        return "N/A"
+        return "N/A", "(Can't find this phrase in dictionary"
     try:
         # Tìm định nghĩa đầu tiên CÓ CẢ VÍ DỤ
         for meaning in dict_data[0].get('meanings', []):
@@ -163,6 +180,15 @@ def translate_word(text_to_translate, source_lang = 'en', target_lang = 'vi'):
         print(f"API request failed: {e}")
         return None
 
+def parse_gemini_response(text):
+    if not text: return "N/A", None
+    match = re.search(r"^Part of speech:\s*(.*)", text, re.IGNORECASE | re.MULTILINE)
+    if match:
+        pos = match.group(1).strip()
+        explanation = re.sub(r"^Part of speech:.*(\r\n?|\n)", "", text, count=1, flags=re.IGNORECASE | re.MULTILINE).strip()
+        return pos, explanation
+    return "N/A", text
+
 def display_result(word, pos, explanation, fallback_info):
     print(f"Best definition for '{word}':")
     print(f"Part of Speech: {pos}")
@@ -179,23 +205,32 @@ async def run_lookup(word):
         return
 
     async with aiohttp.ClientSession() as session:
-        dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
         gemini_task = asyncio.create_task(prompt_definition_from_gemini(word))
 
-        dict_data, gemini_explanation = await asyncio.gather(dict_task, gemini_task)
+        dict_data = None
+        if not check_multi_word_phrase(word):
+            print("input is a single word")
+            dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
+            dict_data, gemini_response_text = await asyncio.gather(dict_task, gemini_task)
+        else:
+            print("input is multi word")
+            gemini_response_text = await gemini_task
 
-    part_of_speech, fallback_info = extract_pos_from_data(dict_data)
+
+    gemini_pos, gemini_explanation = parse_gemini_response(gemini_response_text)
+    dict_pos, dict_fallback = await extract_pos_from_data(session, dict_data)
+    final_pos = dict_pos if dict_pos != "N/A" else gemini_pos
 
     api_cache[word] = {
-        "pos": part_of_speech,
+        "pos": final_pos,
         "explanation": gemini_explanation,
-        "fallback_info": fallback_info
+        "fallback_info": dict_fallback
     }
 
-    display_result(word, part_of_speech, gemini_explanation, fallback_info)
+    display_result(word, final_pos, gemini_explanation, dict_fallback)
 
 async def main():
-    await run_lookup("food")
+    await run_lookup("so far so good")
 
 if __name__ == "__main__":
     asyncio.run(main())
