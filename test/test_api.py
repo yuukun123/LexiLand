@@ -232,7 +232,7 @@ async def run_lookup(word):
 async def main():
     word_input = input()
 
-    await run_lookup("so far so good")
+    await run_lookup("brush up on")
 
 if __name__ == "__main__":
     asyncio.run(main())
