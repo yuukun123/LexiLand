@@ -47,7 +47,7 @@ async def get_dictionary_data_async(session, word):
     url_wiktionary = f'https://en.wiktionary.org/api/rest_v1/page/definition/{word}'
     try:
         async with session.get(url_wiktionary, timeout = 5) as response:
-            if response.status_code == 200:
+            if response.status == 200:
                 wiktionary_data = await response.json()
 
                 # --- Bắt đầu sơ chế (transform) ---
