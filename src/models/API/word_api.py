@@ -84,6 +84,7 @@ async def prompt_definition_from_gemini(word_to_define):
         prompt_header = f"""
         Chỉ cần giải thích cụm từ hoặc thành ngữ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
         Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
+        Thêm Phiên âm cho cụm từ hoặc thành ngữu
         Thêm loại từ cho cụm từ hoặc thành ngữ không cần tiếng việt
         Thêm phần dịch nghĩa tiếng việt cho ví dụ
         Sau đó, cung cấp 1 câu ví dụ rất phổ biến và tự nhiên trong giao tiếp hàng ngày.
@@ -93,12 +94,14 @@ async def prompt_definition_from_gemini(word_to_define):
         prompt_header = f"""
         Chỉ cần giải thích từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
         Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
+        thêm phien âm
         Thêm phần dịch nghĩa tiếng việt cho ví dụ
         Sau đó, cung cấp 1 câu ví dụ rất phổ biến và tự nhiên trong giao tiếp hàng ngày.
         """
 
     prompt_footer = f"""
         Định dạng đầu ra phải như sau:
+        Phonetic: [phiên âm]
         Part of speech: [loại từ]
         Simple Definition English : [định nghĩa tiếng anh của bạn ở đây]
         Simple Definition Vietnamese : [định nghĩa tiếng việt của bạn ở đây]

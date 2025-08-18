@@ -153,7 +153,7 @@ border-radius:10px;
                <property name="font">
                 <font>
                  <family>Luckiest Guy</family>
-                 <pointsize>11</pointsize>
+                 <pointsize>10</pointsize>
                  <weight>50</weight>
                  <italic>false</italic>
                  <bold>false</bold>
@@ -161,7 +161,7 @@ border-radius:10px;
                </property>
                <property name="styleSheet">
                 <string notr="true">color: rgb(0, 0, 0);
-font: 11pt &quot;Luckiest Guy&quot;;</string>
+font: 10pt &quot;Luckiest Guy&quot;;</string>
                </property>
                <property name="text">
                 <string>Lexi Land</string>

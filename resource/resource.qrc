@@ -7,6 +7,7 @@
     <file>../UI/icons/email-3-64.ico</file>
     <file>../UI/icons/key-3-64.ico</file>
     <file>../UI/icons/user-64.ico</file>
-    <file>../UI/iocns/arrow-left</file>
+    <file>../UI/icons/arrow-left</file>
+    <file>../UI/fonts/LuckiestGuy-Regular.ttf</file>
   </qresource>
 </RCC>
