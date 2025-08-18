@@ -465,7 +465,8 @@ padding:10px 5px;</string>
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
+             <string notr="true">background-color: rgb(255, 255, 255);
+border-radius:10px;</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -475,19 +476,19 @@ padding:10px 5px;</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <property name="spacing">
-              <number>19</number>
+              <number>0</number>
              </property>
              <property name="leftMargin">
               <number>35</number>
              </property>
              <property name="topMargin">
-              <number>10</number>
+              <number>0</number>
              </property>
              <property name="rightMargin">
               <number>35</number>
              </property>
              <property name="bottomMargin">
-              <number>144</number>
+              <number>269</number>
              </property>
              <item>
               <widget class="QFrame" name="frame_7">
@@ -507,7 +508,7 @@ padding:10px 5px;</string>
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(248, 187, 208);</string>
+                <string notr="true">background-color: rgb(221, 177, 226);</string>
                </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
@@ -515,7 +516,7 @@ padding:10px 5px;</string>
                <property name="frameShadow">
                 <enum>QFrame::Raised</enum>
                </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <layout class="QVBoxLayout" name="verticalLayout_5">
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -530,9 +531,26 @@ padding:10px 5px;</string>
                 </property>
                 <item>
                  <widget class="QPushButton" name="vocab">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Montserrat ExtraBold</family>
+                    <pointsize>17</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">#vocab{
-	color: rgb(0, 0, 0);
+	color: rgb(255, 255, 255);
 }</string>
                   </property>
                   <property name="text">
@@ -571,7 +589,7 @@ padding:10px 5px;</string>
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(178, 235, 242);</string>
+                <string notr="true">background-color: rgb(114, 211, 255);</string>
                </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
@@ -580,69 +598,55 @@ padding:10px 5px;</string>
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_5">
-                <item alignment="Qt::AlignLeft">
-                 <widget class="QFrame" name="frame_12">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_8">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_2">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="../../resource/resource.qrc">
-                       <normaloff>:/icon/UI/icons/edit-2-64.ico</normaloff>:/icon/UI/icons/edit-2-64.ico</iconset>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>35</width>
-                       <height>35</height>
-                      </size>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
                 <item>
-                 <widget class="QFrame" name="frame_13">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QPushButton" name="Practice">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>100</height>
+                   </size>
                   </property>
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                  <property name="font">
+                   <font>
+                    <family>Montserrat ExtraBold</family>
+                    <pointsize>17</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
                   </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
                   </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_9">
-                   <item>
-                    <widget class="QLabel" name="label_2">
-                     <property name="font">
-                      <font>
-                       <family>Montserrat ExtraBold</family>
-                       <pointsize>17</pointsize>
-                       <weight>75</weight>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color: rgb(255, 255, 255);</string>
-                     </property>
-                     <property name="text">
-                      <string>Luyện tập</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                  <property name="styleSheet">
+                   <string notr="true">#Practice{
+	color: rgb(255, 255, 255);
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Luyện tập</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../resource/resource.qrc">
+                    <normaloff>:/icon/UI/icons/edit-2-64.ico</normaloff>:/icon/UI/icons/edit-2-64.ico</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>35</width>
+                    <height>35</height>
+                   </size>
+                  </property>
                  </widget>
                 </item>
                </layout>
