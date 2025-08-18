@@ -293,7 +293,7 @@ QPushButton::hover{
         <widget class="QFrame" name="mainSet">
          <property name="styleSheet">
           <string notr="true">#mainSet{
-background-color: #4ac9ff;
+background-color: #88ccf1;
 border-radius:10px;
 }</string>
          </property>

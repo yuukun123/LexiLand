@@ -53,7 +53,7 @@
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(223, 223, 223);
-border-radius:10px;</string>
+border-radius:12px;</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -316,8 +316,8 @@ QPushButton::hover{
            <item>
             <widget class="QFrame" name="mainSet_1">
              <property name="styleSheet">
-              <string notr="true">background-color: #4ac9ff;
-border-radius:10px;</string>
+              <string notr="true">background-color: #88ccf1;
+border-radius:12px;</string>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -575,7 +575,19 @@ font-size: 15px</string>
                  </item>
                  <item>
                   <widget class="QWidget" name="widget_6" native="true">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
                     <item alignment="Qt::AlignRight">
                      <widget class="QLabel" name="ForgotPassword">
                       <property name="font">
@@ -743,7 +755,7 @@ QPushButton::hover{
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(223, 223, 223);
-border-radius:10px;</string>
+border-radius:12px;</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -1000,8 +1012,8 @@ QPushButton::hover{
            <item>
             <widget class="QFrame" name="mainSet_2">
              <property name="styleSheet">
-              <string notr="true">background-color: #4ac9ff;
-border-radius:10px;</string>
+              <string notr="true">background-color: #88ccf1;
+border-radius:12px;</string>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
