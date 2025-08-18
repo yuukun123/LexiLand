@@ -530,6 +530,9 @@ padding:10px 5px;</string>
                 </property>
                 <item>
                  <widget class="QPushButton" name="vocab">
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">#vocab{
 	color: rgb(0, 0, 0);

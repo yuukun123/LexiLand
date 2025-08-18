@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="Login_page">
        <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -38,14 +38,14 @@
          <widget class="QFrame" name="Container_1">
           <property name="minimumSize">
            <size>
-            <width>390</width>
+            <width>400</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>370</width>
-            <height>530</height>
+            <height>560</height>
            </size>
           </property>
           <property name="cursor">
@@ -330,13 +330,13 @@ border-radius:12px;</string>
                <number>20</number>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>10</number>
               </property>
               <property name="topMargin">
                <number>5</number>
               </property>
               <property name="rightMargin">
-               <number>0</number>
+               <number>10</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
@@ -354,7 +354,7 @@ border-radius:12px;</string>
                   <number>0</number>
                  </property>
                  <property name="topMargin">
-                  <number>11</number>
+                  <number>15</number>
                  </property>
                  <property name="rightMargin">
                   <number>0</number>
@@ -374,7 +374,7 @@ border-radius:12px;</string>
                     </font>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">color: rgb(255, 255, 255);
+                    <string notr="true">color: #1A5276;
 font: 37pt &quot;Luckiest Guy&quot;;</string>
                    </property>
                    <property name="text">
@@ -461,6 +461,9 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                      <layout class="QHBoxLayout" name="horizontalLayout_2">
                       <item>
                        <widget class="QPushButton" name="pushButton">
+                        <property name="layoutDirection">
+                         <enum>Qt::LeftToRight</enum>
+                        </property>
                         <property name="text">
                          <string/>
                         </property>
@@ -743,14 +746,14 @@ QPushButton::hover{
          <widget class="QFrame" name="Container_2">
           <property name="minimumSize">
            <size>
-            <width>390</width>
+            <width>400</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>390</width>
-            <height>630</height>
+            <height>640</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -1026,13 +1029,13 @@ border-radius:12px;</string>
                <number>20</number>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>10</number>
               </property>
               <property name="topMargin">
                <number>5</number>
               </property>
               <property name="rightMargin">
-               <number>0</number>
+               <number>10</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
@@ -1050,7 +1053,7 @@ border-radius:12px;</string>
                   <number>0</number>
                  </property>
                  <property name="topMargin">
-                  <number>0</number>
+                  <number>15</number>
                  </property>
                  <property name="rightMargin">
                   <number>0</number>
@@ -1070,7 +1073,7 @@ border-radius:12px;</string>
                     </font>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">color: rgb(255, 255, 255);
+                    <string notr="true">color: #1A5276;
 font: 37pt &quot;Luckiest Guy&quot;;</string>
                    </property>
                    <property name="text">
@@ -1139,10 +1142,16 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                <widget class="QWidget" name="widget_11" native="true">
                 <layout class="QVBoxLayout" name="verticalLayout_4">
                  <property name="spacing">
-                  <number>15</number>
+                  <number>20</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>10</number>
                  </property>
                  <property name="topMargin">
                   <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
                  </property>
                  <property name="bottomMargin">
                   <number>7</number>
@@ -1237,7 +1246,7 @@ padding-left:10px;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="UserName_signup_2">
+                       <widget class="QLineEdit" name="email_signup">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
