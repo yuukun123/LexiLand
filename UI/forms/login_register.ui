@@ -468,7 +468,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="UserName_login">
+                       <widget class="QLineEdit" name="userName_login">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
@@ -546,7 +546,7 @@ font-size: 15px</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="Password_login">
+                       <widget class="QLineEdit" name="password_login">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
@@ -821,8 +821,8 @@ QPushButton::hover{
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset resource="../../resource/resource.qrc">
-                          <normaloff>:/icon/UI/icons/user-64.ico</normaloff>:/icon/UI/icons/user-64.ico</iconset>
+                         <iconset>
+                          <normaloff>../icons/user-64.ico</normaloff>../icons/user-64.ico</iconset>
                         </property>
                         <property name="iconSize">
                          <size>
@@ -833,7 +833,7 @@ QPushButton::hover{
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="UserName_signup">
+                       <widget class="QLineEdit" name="userName_register">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
@@ -881,8 +881,8 @@ font-size: 15px;</string>
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset resource="../../resource/resource.qrc">
-                          <normaloff>:/icon/UI/icons/email-3-64.ico</normaloff>:/icon/UI/icons/email-3-64.ico</iconset>
+                         <iconset>
+                          <normaloff>../icons/email-3-64.ico</normaloff>../icons/email-3-64.ico</iconset>
                         </property>
                         <property name="iconSize">
                          <size>
@@ -893,7 +893,7 @@ font-size: 15px;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="email_signup">
+                       <widget class="QLineEdit" name="email_register">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
@@ -936,8 +936,8 @@ padding-left:10px;</string>
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset resource="../../resource/resource.qrc">
-                          <normaloff>:/icon/UI/icons/key-3-64.ico</normaloff>:/icon/UI/icons/key-3-64.ico</iconset>
+                         <iconset>
+                          <normaloff>../icons/key-3-64.ico</normaloff>../icons/key-3-64.ico</iconset>
                         </property>
                         <property name="iconSize">
                          <size>
@@ -948,7 +948,7 @@ padding-left:10px;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="Password_signup">
+                       <widget class="QLineEdit" name="password_register">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
@@ -996,8 +996,8 @@ font-size: 15px;</string>
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset resource="../../resource/resource.qrc">
-                          <normaloff>:/icon/UI/icons/key-3-64.ico</normaloff>:/icon/UI/icons/key-3-64.ico</iconset>
+                         <iconset>
+                          <normaloff>../icons/key-3-64.ico</normaloff>../icons/key-3-64.ico</iconset>
                         </property>
                         <property name="iconSize">
                          <size>
@@ -1008,7 +1008,7 @@ font-size: 15px;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="Cf_Password_signup">
+                       <widget class="QLineEdit" name="cf_password_register">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
@@ -1117,7 +1117,7 @@ QPushButton::hover{
                        <widget class="QLabel" name="label_12">
                         <property name="font">
                          <font>
-                          <pointsize>10</pointsize>
+                          <pointsize>11</pointsize>
                          </font>
                         </property>
                         <property name="styleSheet">
@@ -1132,8 +1132,11 @@ QPushButton::hover{
                        <widget class="QPushButton" name="login_link">
                         <property name="font">
                          <font>
-                          <pointsize>10</pointsize>
+                          <pointsize>11</pointsize>
                          </font>
+                        </property>
+                        <property name="cursor">
+                         <cursorShape>PointingHandCursor</cursorShape>
                         </property>
                         <property name="styleSheet">
                          <string notr="true">color: rgb(48, 73, 120);</string>

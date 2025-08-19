@@ -35,10 +35,23 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
 
         buttons = [
-            self.sign_up_link, self.login_link
+            self.login_link, self.sign_up_link
         ]
-        index_map = {btn: i for i, btn in enumerate(buttons)}
-        self.menu_nav = MenuNavigator(self.stackedWidget, buttons, index_map, default_button=self.sign_up_link)
+        index_map = {
+            self.login_link: self.stackedWidget.indexOf(self.login_page),
+            self.sign_up_link: self.stackedWidget.indexOf(self.sign_up_page)
+        }
+        self.menu_nav = MenuNavigator(self.stackedWidget, buttons, index_map, default_button=self.login_link)
+
+        # self.sign_up_link.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
+        # self.login_link.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
+
+        self.sign_up_link.clicked.connect(lambda: print("Sign up clicked"))
+        self.login_link.clicked.connect(lambda: print("Login clicked"))
+        #
+        # print("login_page index:", self.stackedWidget.indexOf(self.login_page))
+        # print("signup_page index:", self.stackedWidget.indexOf(self.sign_up_page))
+
 
         self.stackedWidget.currentChanged.connect(self.on_tab_changed)
 
@@ -51,9 +64,9 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
 
         if current_widget == self.login_page:
             self.login_controller.handle_login(
-                self.UserName_login.text(), self.Password_login.text()
+                self.userName_login.text(), self.password_login.text()
             )
         elif current_widget == self.sign_up_page:
             self.register_controller.handle_register(
-                self.UserName_register.text(), self.Password_register.text()
+                self.userName_register.text(), self.password_register.text()
             )

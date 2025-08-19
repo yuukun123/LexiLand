@@ -24,7 +24,7 @@ class LoginController:
     #     open_main_window(username)
 
         # Đóng cửa sổ login
-        self.view.close()
+        # self.view.close()
 
     def on_login_failed(self):
         QMessageBox.warning(self.view, "Login", "❌ Tài khoản hoặc mật khẩu sai!")
