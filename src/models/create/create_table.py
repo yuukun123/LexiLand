@@ -96,12 +96,24 @@ def create_table():
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS user_word_progress (
-            user_id INTEGER,
-            topic_id INTEGER,
-            word_id INTEGER,
+            user_id INTEGER NOT NULL,
+            word_id INTEGER NOT NULL,
+            
+            -- Cột chính cho SRS
+            srs_level INTEGER NOT NULL DEFAULT 0,            -- Cấp độ SRS hiện tại (0, 1, 2, ...)
+            next_review_at TEXT NOT NULL,                    -- Thời điểm cần ôn tập lại (dạng 'YYYY-MM-DD HH:MM:SS')
+            
+            -- Cột thống kê
+            correct_streak INTEGER NOT NULL DEFAULT 0,       -- Số lần trả lời đúng liên tiếp
+            total_incorrect_count INTEGER NOT NULL DEFAULT 0, -- Tổng số lần trả lời sai
+            
+            -- Cột trạng thái
+            is_mastered INTEGER NOT NULL DEFAULT 0,          -- Đã thành thạo chưa? (0 = chưa, 1 = rồi)
+            last_reviewed_at TEXT,                           -- Lần cuối cùng ôn tập
+            
             PRIMARY KEY(user_id, word_id),
-            FOREIGN KEY(user_id) REFERENCES users(user_id),
-            FOREIGN KEY(word_id) REFERENCES words(word_id)
+            FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+            FOREIGN KEY(word_id) REFERENCES words(word_id) ON DELETE CASCADE
         )
     """)
 
