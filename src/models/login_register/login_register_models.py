@@ -46,7 +46,7 @@ class Login_Register_Model:
 
         if not user_data:
             print(f"❌ Login failed: User '{username_login}' not found.")
-            return None
+            return {"success": False, "error": "invalid_credentials"}
 
         # Bước 2: Dùng check_password_hash để so sánh mật khẩu người dùng nhập
         # với chuỗi hash đã lưu trong DB.
@@ -56,9 +56,12 @@ class Login_Register_Model:
             print(f"✅ Login success for user '{username_login}'")
             # Trả về một dictionary chứa thông tin người dùng, rất hữu ích cho ứng dụng
             return dict(user_data)
-        else:
+        elif not check_password_hash(stored_password_hash, password_login):
             print(f"❌ Login failed for user '{username_login}': Incorrect password.")
-            return None
+            return {"success": False, "error": "incorrect_password"}
+        else:
+            print(f"❌ Login failed for user '{username_login}': Unknown error.")
+            return {"success": False, "error": "unknown_error"}
 
     def add_users(self, username_register, password_register, email_register):
         try:

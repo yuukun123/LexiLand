@@ -1,4 +1,3 @@
-import check_password
 from PyQt5.QtWidgets import QMessageBox, QApplication
 from src.models.login_register.login_register_models import Login_Register_Model
 from src.utils.check_correct_email_password import check_password, check_email
@@ -40,7 +39,8 @@ class RegisterController:
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.login_page))
 
     def on_register_null(self):
-        QMessageBox.warning(self.view, "Register", "❌ please enter username and password!")
+        self.errors = "❌ please enter username and password!"
+        # QMessageBox.warning(self.view, "Register", ")
 
     def on_register_username_exists(self):
         QMessageBox.warning(self.view, "Register", "❌ username exists!")

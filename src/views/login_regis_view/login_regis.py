@@ -14,6 +14,16 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
         uic.loadUi("../UI/forms/login_register.ui", self)
         MoveableWindow.__init__(self)
 
+        # bên register
+        self.errors_1.hide()
+        self.errors_2.hide()
+        self.errors_3.hide()
+        self.errors_4.hide()
+
+        # bên login
+        self.errors_5.hide()
+        self.errors_6.hide()
+
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)

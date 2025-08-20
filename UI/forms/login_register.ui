@@ -26,7 +26,7 @@
       <property name="maximumSize">
        <size>
         <width>370</width>
-        <height>620</height>
+        <height>640</height>
        </size>
       </property>
       <property name="cursor">
@@ -419,17 +419,20 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                   <number>11</number>
                  </property>
                  <property name="bottomMargin">
-                  <number>11</number>
+                  <number>15</number>
                  </property>
                  <item>
                   <widget class="QWidget" name="widget_32" native="true">
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
-                     <height>65</height>
+                     <height>70</height>
                     </size>
                    </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_54">
+                   <layout class="QVBoxLayout" name="verticalLayout_10">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -493,6 +496,16 @@ font-size: 15px</string>
                       </item>
                      </layout>
                     </item>
+                    <item>
+                     <widget class="QLabel" name="errors_5">
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 0, 4);</string>
+                      </property>
+                      <property name="text">
+                       <string>TextLabel</string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </widget>
                  </item>
@@ -507,10 +520,13 @@ font-size: 15px</string>
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
-                     <height>65</height>
+                     <height>70</height>
                     </size>
                    </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_56">
+                   <layout class="QVBoxLayout" name="verticalLayout_13">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -568,6 +584,16 @@ font-size: 15px</string>
                        </widget>
                       </item>
                      </layout>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="errors_6">
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 0, 4);</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
@@ -787,7 +813,7 @@ QPushButton::hover{
                <widget class="QWidget" name="widget_20" native="true">
                 <layout class="QVBoxLayout" name="verticalLayout_9">
                  <property name="spacing">
-                  <number>16</number>
+                  <number>17</number>
                  </property>
                  <property name="leftMargin">
                   <number>10</number>
@@ -803,7 +829,10 @@ QPushButton::hover{
                  </property>
                  <item>
                   <widget class="QWidget" name="widget_21" native="true">
-                   <layout class="QHBoxLayout" name="horizontalLayout_38">
+                   <layout class="QVBoxLayout" name="verticalLayout">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -811,6 +840,9 @@ QPushButton::hover{
                      <number>0</number>
                     </property>
                     <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
                      <number>0</number>
                     </property>
                     <item>
@@ -858,12 +890,25 @@ font-size: 15px;</string>
                       </item>
                      </layout>
                     </item>
+                    <item>
+                     <widget class="QLabel" name="errors_1">
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 0, 4);</string>
+                      </property>
+                      <property name="text">
+                       <string>label</string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </widget>
                  </item>
                  <item>
                   <widget class="QWidget" name="widget_22" native="true">
-                   <layout class="QHBoxLayout" name="horizontalLayout_40">
+                   <layout class="QVBoxLayout" name="verticalLayout_3">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -871,6 +916,9 @@ font-size: 15px;</string>
                      <number>0</number>
                     </property>
                     <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
                      <number>0</number>
                     </property>
                     <item>
@@ -918,16 +966,35 @@ font-size: 15px;</string>
                       </item>
                      </layout>
                     </item>
+                    <item>
+                     <widget class="QLabel" name="errors_2">
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 0, 4);</string>
+                      </property>
+                      <property name="text">
+                       <string>TextLabel</string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </widget>
                  </item>
                  <item>
                   <widget class="QWidget" name="widget_23" native="true">
-                   <layout class="QHBoxLayout" name="horizontalLayout_42">
+                   <layout class="QVBoxLayout" name="verticalLayout_4">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
                     <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
                      <number>0</number>
                     </property>
                     <item>
@@ -978,16 +1045,35 @@ font-size: 15px;</string>
                       </item>
                      </layout>
                     </item>
+                    <item>
+                     <widget class="QLabel" name="errors_3">
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 0, 4);</string>
+                      </property>
+                      <property name="text">
+                       <string>TextLabel</string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </widget>
                  </item>
                  <item>
                   <widget class="QWidget" name="widget_24" native="true">
-                   <layout class="QHBoxLayout" name="horizontalLayout_44">
+                   <layout class="QVBoxLayout" name="verticalLayout_6">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
                     <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
                      <number>0</number>
                     </property>
                     <item>
@@ -1037,6 +1123,16 @@ font-size: 15px;</string>
                        </widget>
                       </item>
                      </layout>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="errors_4">
+                      <property name="styleSheet">
+                       <string notr="true">color: rgb(255, 0, 4);</string>
+                      </property>
+                      <property name="text">
+                       <string>TextLabel</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
