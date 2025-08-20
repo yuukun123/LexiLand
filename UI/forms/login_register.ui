@@ -468,7 +468,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="userName_login">
+                       <widget class="QLineEdit" name="username_login">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
@@ -833,7 +833,7 @@ QPushButton::hover{
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="userName_register">
+                       <widget class="QLineEdit" name="username_register">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>

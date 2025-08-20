@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
 from src.controllers.login_regis_controllers.login_controller import LoginController
 from src.controllers.login_regis_controllers.register_controller import RegisterController
@@ -22,17 +22,26 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
 
         # Tạo controller, truyền self vào
         self.buttonController = buttonController(self)
-
-        # Tạo controller, truyền self vào
         self.login_controller = LoginController(self)
-        self.register_controller = RegisterController(self)
+        self.register_controller = RegisterController(self, self.stackedWidget, self.login_page)
 
         # Gắn nút
-        # self.LoginBtn.clicked.connect(lambda: self.controller.handle_login(
-        #     self.UserName_login.text(), self.Password_login.text()
-        # ))
+        self.LoginBtn.clicked.connect(
+            lambda: self.login_controller.handle_login(
+                self.username_login.text(), self.password_login.text()
+            )
+        )
+        self.SignUp_Btn.clicked.connect(
+            lambda: self.register_controller.handle_register(
+                self.username_register.text(), self.email_register.text(), self.password_register.text(), self.cf_password_register.text()
+            )
+        )
         self.closeBtn.clicked.connect(self.buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
+
+        #debug
+        self.sign_up_link.clicked.connect(lambda: print("Sign up clicked"))
+        self.login_link.clicked.connect(lambda: print("Login clicked"))
 
         buttons = [
             self.login_link, self.sign_up_link
@@ -43,16 +52,6 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
         }
         self.menu_nav = MenuNavigator(self.stackedWidget, buttons, index_map, default_button=self.login_link)
 
-        # self.sign_up_link.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
-        # self.login_link.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
-
-        self.sign_up_link.clicked.connect(lambda: print("Sign up clicked"))
-        self.login_link.clicked.connect(lambda: print("Login clicked"))
-        #
-        # print("login_page index:", self.stackedWidget.indexOf(self.login_page))
-        # print("signup_page index:", self.stackedWidget.indexOf(self.sign_up_page))
-
-
         self.stackedWidget.currentChanged.connect(self.on_tab_changed)
 
         # Chủ động tải Dashboard lần đầu tiên nếu nó là tab mặc định
@@ -60,13 +59,18 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
             self.on_tab_changed(self.stackedWidget.currentIndex())
 
     def on_tab_changed(self, index):
-        current_widget = self.stackedWidget.widget(index)
+        # clear toàn bộ input ở page trước đó
+        prev_index = self.stackedWidget.previousIndex if hasattr(self.stackedWidget, "previousIndex") else None
+        if prev_index is not None:
+            old_widget = self.stackedWidget.widget(prev_index)
+            for child in old_widget.findChildren(QLineEdit):
+                child.clear()
 
+        # lưu lại index hiện tại
+        self.stackedWidget.previousIndex = index
+
+        current_widget = self.stackedWidget.widget(index)
         if current_widget == self.login_page:
-            self.login_controller.handle_login(
-                self.userName_login.text(), self.password_login.text()
-            )
+            print()
         elif current_widget == self.sign_up_page:
-            self.register_controller.handle_register(
-                self.userName_register.text(), self.password_register.text()
-            )
+            print()

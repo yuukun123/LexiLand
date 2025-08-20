@@ -9,7 +9,7 @@ def open_login_window():
     window.show()
     return window
 
-def open_main_window():
-    window = MainWindow()
+def open_main_window(username_login):
+    window = MainWindow(username_login)
     window.show()
     return window
