@@ -51,6 +51,43 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QFrame" name="frame_2">
+        <property name="font">
+         <font>
+          <pointsize>13</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: #88ccf1;
+color:#ffffff;
+border-top-right-radius:10px;
+border-top-left-radius:10px;</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>THÊM TỪ VỰNG MỚI</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
        <widget class="QFrame" name="frame_3">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -59,7 +96,7 @@
          </sizepolicy>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-radius:10px;
+         <string notr="true">
 background-color: rgb(255, 255, 255);</string>
         </property>
         <property name="frameShape">
@@ -153,7 +190,7 @@ background-color: rgb(255, 255, 255);</string>
                 <number>0</number>
                </property>
                <item>
-                <widget class="QLineEdit" name="lineEdit">
+                <widget class="QLineEdit" name="vocab">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -314,7 +351,7 @@ QLineEdit:focus {
                 <number>0</number>
                </property>
                <item>
-                <widget class="QTextEdit" name="textEdit">
+                <widget class="QTextEdit" name="Define">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -433,7 +470,7 @@ QTextEdit:focus {
                 <number>0</number>
                </property>
                <item>
-                <widget class="QTextEdit" name="textEdit_2">
+                <widget class="QTextEdit" name="Example">
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
@@ -546,7 +583,7 @@ QTextEdit:focus {
                 <number>0</number>
                </property>
                <item>
-                <widget class="QComboBox" name="comboBox">
+                <widget class="QComboBox" name="Topic_opt">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -687,7 +724,7 @@ QComboBox::down-arrow:on {
                 <number>0</number>
                </property>
                <item>
-                <widget class="QLineEdit" name="lineEdit_4">
+                <widget class="QLineEdit" name="topic_input">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
