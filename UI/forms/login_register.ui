@@ -902,12 +902,14 @@ font-size: 15px;</string>
                         </property>
                         <property name="font">
                          <font>
-                          <pointsize>11</pointsize>
+                          <pointsize>-1</pointsize>
                          </font>
                         </property>
                         <property name="styleSheet">
                          <string notr="true">background-color: rgb(255, 255, 255);
-padding-left:10px;</string>
+padding-left:10px;
+padding-right:10px;
+font-size: 15px;</string>
                         </property>
                         <property name="placeholderText">
                          <string>Email</string>
