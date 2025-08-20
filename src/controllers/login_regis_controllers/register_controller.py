@@ -1,4 +1,3 @@
-import check_password
 from PyQt5.QtWidgets import QMessageBox, QApplication
 from src.models.login_register.login_register_models import Login_Register_Model
 from src.utils.check_correct_email_password import check_password, check_email

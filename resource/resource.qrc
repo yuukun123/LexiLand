@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icon">
+    <file>../UI/icons/chevron-down.svg</file>
+    <file>../UI/icons/chevron-up.svg</file>
     <file>../UI/icons/plus.svg</file>
     <file>../UI/icons/edit-2-64.ico</file>
     <file>../UI/icons/book-2-64.ico</file>
