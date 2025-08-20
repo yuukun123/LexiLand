@@ -6,8 +6,8 @@ from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
 
 class MainWindow(QMainWindow, MoveableWindow):
-    def __init__(self):
-        # self.username = username
+    def __init__(self, username):
+        self.username = username
         super().__init__()
         uic.loadUi("../UI/forms/vocab.ui", self)
 
