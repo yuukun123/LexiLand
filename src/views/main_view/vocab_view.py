@@ -5,14 +5,16 @@ from PyQt5.QtWidgets import QMainWindow
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
 
-class MainWindow(QMainWindow, MoveableWindow):
+class VocabWindow(QMainWindow, MoveableWindow):
     def __init__(self, username):
         self.username = username
         super().__init__()
-        uic.loadUi("../UI/forms/main_screen.ui", self)
+        uic.loadUi("../UI/forms/vocab.ui", self)
         MoveableWindow.__init__(self)
 
-        self.go_back.hide()
+        # self.go_back.hide()
+
+        self.buttonController = buttonController(self)
 
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -26,13 +28,3 @@ class MainWindow(QMainWindow, MoveableWindow):
         self.closeBtn.clicked.connect(self.buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
-
-        print("DEBUG: vocab button connected")
-        self.vocab.clicked.connect(lambda: self.open_vocab_window_click(username))
-
-    def open_vocab_window_click(self, username):
-        from src.windows.window_manage import open_vocab_window
-        self.hide()  # ẩn main thay vì close
-        print("open vocab window")
-        self.vocab_window = open_vocab_window(username)
-        self.vocab_window.show()
