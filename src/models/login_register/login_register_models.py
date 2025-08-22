@@ -55,7 +55,7 @@ class Login_Register_Model:
         if check_password_hash(stored_password_hash, password_login):
             print(f"✅ Login success for user '{username_login}'")
             # Trả về một dictionary chứa thông tin người dùng, rất hữu ích cho ứng dụng
-            return dict(user_data)
+            return {"success": True, "user": dict(user_data)}  # luôn có success
         elif not check_password_hash(stored_password_hash, password_login):
             print(f"❌ Login failed for user '{username_login}': Incorrect password.")
             return {"success": False, "error": "incorrect_password"}

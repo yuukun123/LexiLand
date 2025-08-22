@@ -14,10 +14,13 @@ class RegisterController:
             self.on_register_null()
         elif confirm_password_register != password_register:
             self.on_register_conform_password()
+            self.clear_register_fields()
         elif check_password(password_register) == False: # check password_register
             self.on_register_password_incorrect()
+            self.clear_register_fields()
         elif check_email(email_register) == False: # check email_register
             self.on_register_email_incorrect()
+            self.clear_register_fields()
         else:
             model = Login_Register_Model()
             result = model.add_users(username_register, password_register, email_register)
@@ -27,6 +30,7 @@ class RegisterController:
             elif result.get("error") == "username_exists":
                 print("DEBUG: Register failed - username exists")
                 self.on_register_username_exists()
+                self.clear_register_fields()
             else:
                 print("DEBUG: Register failed")
                 self.on_register_failed()
@@ -41,18 +45,32 @@ class RegisterController:
     def on_register_null(self):
         self.errors = "❌ please enter username and password!"
         # QMessageBox.warning(self.view, "Register", ")
+        self.view.errors_1.setText("please fill all fields!")
+        self.view.errors_2.setText("please fill all fields!")
+        self.view.errors_3.setText("please fill all fields!")
+        self.view.errors_4.setText("please fill all fields!")
+        self.view.errors_1.show()
+        self.view.errors_2.show()
+        self.view.errors_3.show()
+        self.view.errors_4.show()
 
     def on_register_username_exists(self):
-        QMessageBox.warning(self.view, "Register", "❌ username exists!")
+        self.view.errors_1.setText("username exists!")
+        self.view.errors_1.show()
 
     def on_register_conform_password(self):
-        QMessageBox.warning(self.view, "Register", "❌ password doesn't match!")
+        self.view.errors_2.setText("password doesn't match!")
+        self.view.errors_2.show()
 
     def on_register_password_incorrect(self):
-        QMessageBox.warning(self.view, "Register", "❌ password must be at least 8 characters and use special characters and numbers and letters!")
+        self.view.errors_3.setText("password must be at least 8 characters and use special characters and numbers and letters!")
 
     def on_register_email_incorrect(self):
-        QMessageBox.warning(self.view, "Register", "❌ email incorrect!")
+        self.view.errors_4.setText("email incorrect!")
+        self.view.errors_4.show()
+
+    def on_register_failed(self):
+        QMessageBox.warning(self.view, "Register", "❌ Register failed!")
 
     def clear_register_fields(self):
         self.view.username_register.clear()

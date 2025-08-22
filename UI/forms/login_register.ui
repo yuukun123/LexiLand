@@ -26,7 +26,7 @@
       <property name="maximumSize">
        <size>
         <width>370</width>
-        <height>640</height>
+        <height>650</height>
        </size>
       </property>
       <property name="cursor">
@@ -541,6 +541,9 @@ font-size: 15px</string>
                     </property>
                     <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_57">
+                      <property name="spacing">
+                       <number>7</number>
+                      </property>
                       <property name="leftMargin">
                        <number>0</number>
                       </property>
@@ -813,7 +816,7 @@ QPushButton::hover{
                <widget class="QWidget" name="widget_20" native="true">
                 <layout class="QVBoxLayout" name="verticalLayout_9">
                  <property name="spacing">
-                  <number>17</number>
+                  <number>22</number>
                  </property>
                  <property name="leftMargin">
                   <number>10</number>
@@ -829,6 +832,12 @@ QPushButton::hover{
                  </property>
                  <item>
                   <widget class="QWidget" name="widget_21" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>70</height>
+                    </size>
+                   </property>
                    <layout class="QVBoxLayout" name="verticalLayout">
                     <property name="spacing">
                      <number>0</number>
@@ -847,6 +856,9 @@ QPushButton::hover{
                     </property>
                     <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_39">
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
                       <item>
                        <widget class="QPushButton" name="pushButton_10">
                         <property name="text">
@@ -905,6 +917,12 @@ font-size: 15px;</string>
                  </item>
                  <item>
                   <widget class="QWidget" name="widget_22" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>70</height>
+                    </size>
+                   </property>
                    <layout class="QVBoxLayout" name="verticalLayout_3">
                     <property name="spacing">
                      <number>0</number>
@@ -981,6 +999,12 @@ font-size: 15px;</string>
                  </item>
                  <item>
                   <widget class="QWidget" name="widget_23" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>70</height>
+                    </size>
+                   </property>
                    <layout class="QVBoxLayout" name="verticalLayout_4">
                     <property name="spacing">
                      <number>0</number>
@@ -1060,6 +1084,12 @@ font-size: 15px;</string>
                  </item>
                  <item>
                   <widget class="QWidget" name="widget_24" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>70</height>
+                    </size>
+                   </property>
                    <layout class="QVBoxLayout" name="verticalLayout_6">
                     <property name="spacing">
                      <number>0</number>
@@ -1144,7 +1174,7 @@ font-size: 15px;</string>
                      <number>0</number>
                     </property>
                     <property name="topMargin">
-                     <number>0</number>
+                     <number>12</number>
                     </property>
                     <property name="rightMargin">
                      <number>0</number>

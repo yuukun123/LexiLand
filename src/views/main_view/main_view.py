@@ -9,16 +9,19 @@ class MainWindow(QMainWindow, MoveableWindow):
     def __init__(self, username):
         self.username = username
         super().__init__()
-        uic.loadUi("../UI/forms/vocab.ui", self)
+        uic.loadUi("../UI/forms/main_screen.ui", self)
+        MoveableWindow.__init__(self)
 
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
-
         self.setWindowOpacity(1.0)
+
+        self.username_label.setText(f"👤 {self.username}")
 
         self.buttonController = buttonController(self)
 
         self.closeBtn.clicked.connect(self.buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
+        self.logout.clicked.connect(self.buttonController.handle_logout)
 

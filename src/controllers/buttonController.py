@@ -49,4 +49,8 @@ class buttonController:
             self.view.maximizeBtn.hide()
             self.view.restoreBtn.show()
 
+    def handle_logout(self):
+        from src.windows.window_manage import open_login_window
+        open_login_window()
+        self.view.close()
 

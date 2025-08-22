@@ -208,7 +208,7 @@ font: 10pt &quot;Luckiest Guy&quot;;</string>
               <number>0</number>
              </property>
              <item>
-              <widget class="QPushButton" name="HideBtn">
+              <widget class="QPushButton" name="hideBtn">
                <property name="minimumSize">
                 <size>
                  <width>30</width>
@@ -235,8 +235,8 @@ QPushButton::hover{
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="../../resource/resource.qrc">
-                 <normaloff>:/icon/UI/icons/minus.svg</normaloff>:/icon/UI/icons/minus.svg</iconset>
+                <iconset>
+                 <normaloff>../icons/minus.svg</normaloff>../icons/minus.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -272,8 +272,8 @@ QPushButton::hover{
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="../../resource/resource.qrc">
-                 <normaloff>:/icon/UI/icons/x.svg</normaloff>:/icon/UI/icons/x.svg</iconset>
+                <iconset>
+                 <normaloff>../icons/x.svg</normaloff>../icons/x.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -325,6 +325,9 @@ border-radius:10px;
              <property name="topMargin">
               <number>0</number>
              </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
              <property name="bottomMargin">
               <number>0</number>
              </property>
@@ -338,7 +341,7 @@ border-radius:10px;
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
+                 <width>65</width>
                  <height>0</height>
                 </size>
                </property>
@@ -397,15 +400,15 @@ border-radius:10px;
                </layout>
               </widget>
              </item>
-             <item alignment="Qt::AlignRight">
-              <widget class="QFrame" name="frame">
+             <item>
+              <widget class="QFrame" name="frame_9">
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
                <property name="frameShadow">
                 <enum>QFrame::Raised</enum>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_4">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -418,36 +421,141 @@ border-radius:10px;
                 <property name="bottomMargin">
                  <number>0</number>
                 </property>
-                <item>
-                 <widget class="QLabel" name="username_label">
+                <item alignment="Qt::AlignRight">
+                 <widget class="QFrame" name="frame_6">
                   <property name="minimumSize">
                    <size>
-                    <width>145</width>
+                    <width>100</width>
                     <height>0</height>
                    </size>
                   </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>9</pointsize>
-                   </font>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
                   </property>
-                  <property name="styleSheet">
-                   <string notr="true">/*background-color: rgb(184, 184, 184); */
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_6">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QPushButton" name="logout">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>11</pointsize>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#logout{
+background-color: #dd2d4a;
+border: none;
+border-radius: 15px;
+color: rgb(255, 255, 255)
+}
+
+#logout:hover{
+	
+	background-color: rgb(161, 161, 161);
+}</string>
+                     </property>
+                     <property name="text">
+                      <string>logout</string>
+                     </property>
+                     <property name="autoRepeat">
+                      <bool>true</bool>
+                     </property>
+                     <property name="autoDefault">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame">
+                  <property name="maximumSize">
+                   <size>
+                    <width>220</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_4">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item alignment="Qt::AlignHCenter">
+                    <widget class="QLabel" name="username_label">
+                     <property name="minimumSize">
+                      <size>
+                       <width>215</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>11</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">/*background-color: rgb(184, 184, 184); */
 color: rgb(255, 255, 255);
 padding:10px 5px;</string>
-                  </property>
-                  <property name="text">
-                   <string>👤 UserName</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                  <property name="margin">
-                   <number>0</number>
-                  </property>
+                     </property>
+                     <property name="text">
+                      <string>👤 UserName</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                     <property name="margin">
+                      <number>0</number>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                </layout>

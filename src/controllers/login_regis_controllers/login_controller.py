@@ -14,21 +14,27 @@ class LoginController:
         if user["success"]:
             print("DEBUG: Login success")
             self.on_login_success(username_login)
-        elif user["error"] == "invalid_credentials":
-            print("DEBUG: Login failed - incorrect password and user not found")
-            self.on_login_wrong_name_and_password()
         else:
-            print("DEBUG: Login failed")
-            self.on_login_failed()
+            if user == "username_not_found":
+                self.on_login_wrong_name_and_password()  # hoặc riêng username
+                print("DEBUG: Login failed - user not found")
+            elif user == "invalid_credentials":
+                self.on_login_wrong_name_and_password()  # hoặc riêng password
+                print("DEBUG: Login failed - invalid credentials")
+            else:
+                self.on_login_failed()
+                print("DEBUG: Login failed - unknown error:", err)
 
         model.close()
 
     def on_login_success(self, username_login):
         from src.windows.window_manage import open_main_window
         QMessageBox.information(self.view, "Login", "✅ login success!")
-        # TODO: Chuyển sang màn hình chính
+
+        # mở main window
         open_main_window(username_login)
-        # Đóng cửa sổ login
+
+        # đóng login
         self.view.close()
 
     def on_login_wrong_name_and_password(self):
