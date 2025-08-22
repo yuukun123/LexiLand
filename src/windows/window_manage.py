@@ -15,7 +15,7 @@ def open_main_window(username_login):
     window.show()
     return window
 
-def open_vocab_window(username_login):
-    window = VocabWindow(username_login)
+def open_vocab_window(username_login, parent=None):
+    window = VocabWindow(username_login, parent=parent)
     window.show()
-    # return window
+    return window

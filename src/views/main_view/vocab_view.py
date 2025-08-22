@@ -4,17 +4,16 @@ from PyQt5.QtWidgets import QMainWindow
 
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
+from src.utils.go_back import BaseWindow
 
-class VocabWindow(QMainWindow, MoveableWindow):
-    def __init__(self, username):
-        self.username = username
-        super().__init__()
+class VocabWindow(BaseWindow, MoveableWindow):
+    def __init__(self, username, parent=None):
+        super().__init__(parent)
         uic.loadUi("../UI/forms/vocab.ui", self)
         MoveableWindow.__init__(self)
+        self.username = username
 
-        # self.go_back.hide()
-
-        self.buttonController = buttonController(self)
+        self.go_back.clicked.connect(self.go_back_page)
 
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)

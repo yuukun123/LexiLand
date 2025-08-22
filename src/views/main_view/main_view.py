@@ -32,7 +32,13 @@ class MainWindow(QMainWindow, MoveableWindow):
 
     def open_vocab_window_click(self, username):
         from src.windows.window_manage import open_vocab_window
-        self.hide()  # ẩn main thay vì close
-        print("open vocab window")
-        self.vocab_window = open_vocab_window(username)
-        self.vocab_window.show()
+        print("DEBUG: start open_vocab_window")
+        try:
+            self.hide()  # ẩn ngay lập tức
+            self.vocab_window = open_vocab_window(username, parent=self)
+            print("DEBUG: vocab_window created", self.vocab_window)
+            self.vocab_window.show()
+            print("DEBUG: vocab_window show called")
+        except Exception as e:
+            print("ERROR while opening vocab window:", e)
+
