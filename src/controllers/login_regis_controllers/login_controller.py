@@ -23,7 +23,7 @@ class LoginController:
                 print("DEBUG: Login failed - invalid credentials")
             else:
                 self.on_login_failed()
-                print("DEBUG: Login failed - unknown error:", err)
+                print("DEBUG: Login failed - unknown error:", user)
 
         model.close()
 
