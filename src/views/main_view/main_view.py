@@ -1,7 +1,9 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 
+from src.models.query_data.query_data import QueryData
+from src.views.main_view.vocab_view import VocabWindow
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
 
@@ -19,26 +21,47 @@ class MainWindow(QMainWindow, MoveableWindow):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(1.0)
 
-        self.username_label.setText(f"👤 {self.username}")
+        self.query_data = QueryData()
+        self._user_context = None
+        self.load_user_context(username)
+
+        if not self._user_context:
+            QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{username}'.")
+            return
+
+        self.username_label.setText(f"👤 {self._user_context.get('user_name', '')}")
 
         self.buttonController = buttonController(self)
-
         self.closeBtn.clicked.connect(self.buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
 
+        self.vocab.clicked.connect(self.open_vocab_window_click)
         print("DEBUG: vocab button connected")
-        self.vocab.clicked.connect(lambda: self.open_vocab_window_click(username))
+
+    def load_user_context(self, username):
+        print(f"DEBUG: Đang tải user context cho username: {username}")
+        self._user_context = self.query_data.get_user_by_username(username)
+        print(f"DEBUG: User context đã tải: {self._user_context}")
 
     def open_vocab_window_click(self, username):
         from src.windows.window_manage import open_vocab_window
         print("DEBUG: start open_vocab_window")
+
+        if not self._user_context:
+            # Sử dụng self._user_context để lấy username cho thông báo lỗi
+            user_name_for_msg = self.username # Hoặc một giá trị mặc định
+            QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{user_name_for_msg}'.")
+            return
         try:
             self.hide()  # ẩn ngay lập tức
-            self.vocab_window = open_vocab_window(username, parent=self)
+            current_username = self._user_context.get('user_name')
+            self.vocab_window = VocabWindow(username=current_username, parent=self)
+            self.vocab_window.vocab_controller.setup_for_user(self._user_context)
             print("DEBUG: vocab_window created", self.vocab_window)
             self.vocab_window.show()
             print("DEBUG: vocab_window show called")
         except Exception as e:
             print("ERROR while opening vocab window:", e)
+            self.show()
 

@@ -360,7 +360,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -856,6 +856,9 @@ QPushButton::hover{
                     </property>
                     <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_39">
+                      <property name="spacing">
+                       <number>8</number>
+                      </property>
                       <property name="bottomMargin">
                        <number>0</number>
                       </property>
@@ -941,6 +944,9 @@ font-size: 15px;</string>
                     </property>
                     <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_41">
+                      <property name="spacing">
+                       <number>8</number>
+                      </property>
                       <item>
                        <widget class="QPushButton" name="pushButton_11">
                         <property name="text">
@@ -1023,6 +1029,9 @@ font-size: 15px;</string>
                     </property>
                     <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_43">
+                      <property name="spacing">
+                       <number>8</number>
+                      </property>
                       <item>
                        <widget class="QPushButton" name="pushButton_12">
                         <property name="text">
@@ -1108,6 +1117,9 @@ font-size: 15px;</string>
                     </property>
                     <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_45">
+                      <property name="spacing">
+                       <number>8</number>
+                      </property>
                       <item>
                        <widget class="QPushButton" name="pushButton_13">
                         <property name="text">
