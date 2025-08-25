@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1125</width>
-    <height>700</height>
+    <width>1147</width>
+    <height>722</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,16 @@
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QFrame" name="MainFrame">
-      <property name="maximumSize">
+      <property name="minimumSize">
        <size>
         <width>1125</width>
         <height>700</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
        </size>
       </property>
       <property name="styleSheet">
