@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1100</width>
+    <width>1125</width>
     <height>700</height>
    </rect>
   </property>
@@ -19,8 +19,8 @@
      <widget class="QFrame" name="MainFrame">
       <property name="maximumSize">
        <size>
-        <width>1100</width>
-        <height>650</height>
+        <width>1125</width>
+        <height>700</height>
        </size>
       </property>
       <property name="styleSheet">
