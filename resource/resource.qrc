@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="icon">
+    <file>../UI/icons/delete-64.ico</file>
+    <file>../UI/icons/speaker-64.ico</file>
+    <file>../UI/icons/edit-11-64.ico</file>
     <file>../UI/icons/chevron-down.svg</file>
     <file>../UI/icons/chevron-up.svg</file>
     <file>../UI/icons/plus.svg</file>
