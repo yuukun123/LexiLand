@@ -388,7 +388,16 @@ async def main():
     async with aiohttp.ClientSession() as session:
         tasks = [
             run_lookup(session, "hello", 1, 1),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "take a rain check", 1, 1)
+            run_lookup(session, "take a rain check", 1, 1),
+            run_lookup(session, "hello", 1, 2),  # Ví dụ: topic_id=1, user_id=1
+            run_lookup(session, "take a rain check", 1, 2),
+            run_lookup(session, "food", 1, 2),  # Ví dụ: topic_id=1, user_id=1
+            run_lookup(session, "so far so good", 1, 2),
+            run_lookup(session, "hi", 1, 2),  # Ví dụ: topic_id=1, user_id=1
+            run_lookup(session, "rain", 1, 2),
+            run_lookup(session, "tomato", 1, 2),  # Ví dụ: topic_id=1, user_id=1
+            run_lookup(session, "potato", 1, 2),
+
         ]
         await asyncio.gather(*tasks)
 
