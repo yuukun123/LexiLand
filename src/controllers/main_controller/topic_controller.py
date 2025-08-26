@@ -81,12 +81,9 @@ class VocabController:
             return
 
         num_columns = 4
-        last_row = 0
         for index, topic_data in enumerate(topics):
             print(f"DEBUG: Đang tạo card cho topic: {topic_data['topic_name']}")
             topic_card = TopicCardWidget(topic_data, parent=self.topic_container)
             row = index // num_columns
             col = index % num_columns
             self.topic_layout.addWidget(topic_card, row, col)
-            last_row = row
-        self.topic_layout.setRowStretch(last_row + 1, 1)
