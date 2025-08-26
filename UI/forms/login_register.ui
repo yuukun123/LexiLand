@@ -26,7 +26,7 @@
       <property name="maximumSize">
        <size>
         <width>370</width>
-        <height>650</height>
+        <height>655</height>
        </size>
       </property>
       <property name="cursor">
@@ -360,7 +360,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QVBoxLayout" name="verticalLayout_12">

@@ -27,7 +27,7 @@ class TopicCardWidget(QWidget):
         # (Nâng cao) Bạn có thể phát ra một tín hiệu tùy chỉnh ở đây
         # self.details_requested.emit(self.topic_id)
 
-class VocabController:
+class TopicController:
     def __init__(self, parent_view):
         print("DEBUG: VocabController.__init__ Bắt đầu.")
         self.parent = parent_view
@@ -71,6 +71,9 @@ class VocabController:
         self.clear_layout(self.topic_layout)
 
         user_id = self._user_context['user_id']
+
+        self.query_data.debug_user_data(user_id)
+
         print(f"DEBUG: Đang tải topics cho user_id: {user_id}")
 
         topics = self.query_data.get_all_topics_with_word_count(user_id)

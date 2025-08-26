@@ -240,29 +240,21 @@ def display_result(word, pos, explanation, fallback_info):
 # async def main():
 #     await run_lookup("food")
 
-def generate_audio_from_text(text, save_dir="audio"):
-    """
-    Sử dụng gTTS để tạo file MP3 từ văn bản và lưu lại.
-    Trả về đường dẫn đến file đã lưu.
-    """
+def generate_audio_from_text(text, save_dir_name="audio"):
     try:
-        # Tạo thư mục audio nếu chưa có
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        audio_folder = os.path.join(project_root, save_dir)
+        # Giả định thư mục gốc là thư mục cha của 'src'
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        audio_folder = os.path.join(project_root, save_dir_name)
         os.makedirs(audio_folder, exist_ok=True)
 
-        # Tạo tên file an toàn từ text
         safe_filename = re.sub(r'[\\/*?:"<>|]', "", text).replace(" ", "_") + ".mp3"
         file_path = os.path.join(audio_folder, safe_filename)
 
-        # Nếu file đã tồn tại, không cần tạo lại
         if os.path.exists(file_path):
             print(f"DEBUG: File âm thanh '{file_path}' đã tồn tại.")
             return file_path
 
-        # Tạo đối tượng gTTS
         tts = gTTS(text=text, lang='en', slow=False)
-        # Lưu file
         tts.save(file_path)
         print(f"DEBUG: Đã tạo file âm thanh tại '{file_path}'")
         return file_path
@@ -270,26 +262,24 @@ def generate_audio_from_text(text, save_dir="audio"):
         print(f"Lỗi khi tạo file âm thanh cho '{text}': {e}")
         return None
 
-def convert_cache_to_db_format(word, cached_data, dict_data):
-    """
-    Chuyển đổi dữ liệu từ cache và dữ liệu từ điển
-    thành định dạng dictionary chuẩn để lưu vào CSDL (với bảng pronunciations).
-    """
+
+def convert_cache_to_db_format(word, cached_data, dict_data_raw):
     word_data = {
         'word_name': word,
         'pronunciations': [],
         'meanings': []
     }
 
-    # 1. Trích xuất thông tin từ Gemini (ưu tiên)
     explanation = cached_data.get('explanation')
+    phonetic_text_from_gemini = ""
+
     if explanation:
         phonetic_match = re.search(r"Phonetic:\s*(.*)", explanation, re.I)
+        phonetic_text_from_gemini = phonetic_match.group(1).strip() if phonetic_match else ""
+
         def_en_match = re.search(r"Simple Definition English\s*:\s*(.*)", explanation, re.I)
         def_vi_match = re.search(r"Simple Definition Vietnamese\s*:\s*(.*)", explanation, re.I)
         example_match = re.search(r"-\s*\[?(.*?)\]?\s*\(\[?(.*?)\]?\)", explanation, re.I)
-
-        phonetic_text_from_gemini = phonetic_match.group(1).strip() if phonetic_match else ""
 
         meaning_info = {
             'part_of_speech': cached_data.get('pos', 'N/A'),
@@ -300,30 +290,27 @@ def convert_cache_to_db_format(word, cached_data, dict_data):
         }
         word_data['meanings'].append(meaning_info)
 
-    # 2. Xử lý phần phát âm (pronunciations)
+    # Xử lý phần phát âm (pronunciations)
     pronunciations_list = []
-    # Lấy URL âm thanh từ dữ liệu từ điển
-    if dict_data and 'phonetics' in dict_data[0]:
-        for phonetic_item in dict_data[0].get('phonetics', []):
-            if 'audio' in phonetic_item and phonetic_item['audio']:
+    has_audio_from_dict = False
+
+    # Ưu tiên lấy URL âm thanh từ dữ liệu từ điển
+    if dict_data_raw and isinstance(dict_data_raw, list) and dict_data_raw[0].get('phonetics'):
+        for phonetic_item in dict_data_raw[0].get('phonetics', []):
+            if phonetic_item.get('audio'):
+                has_audio_from_dict = True
                 pronunciations_list.append({
                     "phonetic_text": phonetic_item.get('text', ''),
                     "audio_url": phonetic_item['audio'],
-                    # Cố gắng đoán vùng miền từ URL (ví dụ: 'us', 'uk')
                     "region": "US" if "us.mp3" in phonetic_item['audio'] else "UK" if "uk.mp3" in phonetic_item['audio'] else "Dict"
                 })
 
-    # Nếu không có audio từ từ điển, hãy TẠO RA nó bằng gTTS
-    if not pronunciations_list:
-        audio_path = generate_audio_from_text(word)  # Gọi hàm TTS
-        phonetic_text = ""
-        if cached_data.get('explanation'):
-            phonetic_match = re.search(r"Phonetic:\s*(.*)", cached_data['explanation'], re.I)
-            phonetic_text = phonetic_match.group(1).strip() if phonetic_match else ""
-
+    # Nếu KHÔNG có audio từ từ điển, hãy TẠO RA nó bằng gTTS
+    if not has_audio_from_dict:
+        audio_path = generate_audio_from_text(word)
         pronunciations_list.append({
-            "phonetic_text": phonetic_text,
-            "audio_url": audio_path,  # Đây là đường dẫn file cục bộ
+            "phonetic_text": phonetic_text_from_gemini,
+            "audio_url": audio_path,
             "region": "TTS"
         })
 
@@ -331,42 +318,41 @@ def convert_cache_to_db_format(word, cached_data, dict_data):
     return word_data
 
 
-# ==========================================================
-# SỬA LẠI HÀM run_lookup
-# ==========================================================
 async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
     word = word.strip().lower()
-    if word in api_cache:
-        # Xử lý cache (nếu muốn, có thể gọi lại API để đảm bảo dữ liệu mới nhất)
-        return
 
-    print(f"\n--- Bắt đầu tra cứu cho '{word}' ---")
+    # --- BƯỚC 1: KIỂM TRA CACHE VÀ LẤY DỮ LIỆU TỪ API NẾU CẦN ---
+    if word not in api_cache:
+        print(f"\n--- Cache miss. Bắt đầu tra cứu API cho '{word}' ---")
 
-    gemini_task = asyncio.create_task(prompt_definition_from_gemini(word))
-    dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
+        gemini_task = asyncio.create_task(prompt_definition_from_gemini(word))
+        dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
+        gemini_response_text, dict_data = await asyncio.gather(gemini_task, dict_task)
 
-    gemini_response_text, dict_data = await asyncio.gather(gemini_task, dict_task)
+        gemini_pos, gemini_explanation = parse_gemini_response(gemini_response_text)
+        # SỬA LỖI 3: Dùng phiên bản async của hàm dịch
+        dict_pos, dict_fallback = await extract_pos_from_data(session, dict_data)
+        final_pos = dict_pos if dict_pos != "N/A" else gemini_pos
 
-    gemini_pos, gemini_explanation = parse_gemini_response(gemini_response_text)
-    dict_pos, dict_fallback = await extract_pos_from_data(session, dict_data)
-    final_pos = dict_pos if dict_pos != "N/A" else gemini_pos
+        api_cache[word] = {
+            "pos": final_pos,
+            "explanation": gemini_explanation,
+            "fallback_info": dict_fallback,
+            "dict_data_raw": dict_data
+        }
+    else:
+        print(f"\n--- Cache hit for '{word}' ---")
 
-    api_cache[word] = {
-        "pos": final_pos,
-        "explanation": gemini_explanation,
-        "fallback_info": dict_fallback,
-        "dict_data_raw": dict_data  # Lưu dữ liệu thô từ từ điển để dùng sau
-    }
+    # --- BƯỚC 2: LUÔN LUÔN THỰC HIỆN XỬ LÝ VÀ LƯU VÀO CSDL ---
+    cached_data = api_cache[word]
+    dict_data_raw = cached_data['dict_data_raw']  # Lấy dữ liệu thô từ cache
 
-    # --- THAY ĐỔI CHÍNH ---
-    # Truyền cả dict_data vào hàm chuyển đổi
-    word_data_for_db = convert_cache_to_db_format(word, api_cache[word], dict_data)
-    print(f"\nDEBUG: Dữ liệu đã chuẩn hóa để lưu vào CSDL:\n{word_data_for_db}\n")
+    word_data_for_db = convert_cache_to_db_format(word, cached_data, dict_data_raw)
+    print(f"\nDEBUG: Dữ liệu đã chuẩn hóa để lưu vào CSDL cho user {user_id_to_save}:\n{word_data_for_db}\n")
 
-    print("Bắt đầu lưu vào CSDL...")
+    print(f"Bắt đầu lưu vào CSDL cho user_id={user_id_to_save}...")
     query_data = QueryData()
     try:
-        # Chạy hàm CSDL trong thread riêng
         result = await asyncio.to_thread(
             query_data.add_word_to_topic,
             target_topic_id=topic_id_to_save,
@@ -374,29 +360,27 @@ async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
             user_id=user_id_to_save
         )
         if result["success"]:
-            print(f"Đã lưu '{word}' vào CSDL thành công!")
+            print(f"Đã lưu '{word}' vào CSDL thành công cho user_id={user_id_to_save}!")
         else:
-            print(f"Lưu '{word}' vào CSDL thất bại: {result['error']}")
+            print(f"Lưu '{word}' vào CSDL thất bại cho user_id={user_id_to_save}: {result['error']}")
     except Exception as e:
         print(f"Lỗi không mong muốn khi lưu CSDL: {e}")
 
-    display_result(word, final_pos, gemini_explanation, dict_fallback)
+    display_result(word, cached_data['pos'], cached_data['explanation'], cached_data['fallback_info'])
 
-
-# --- Sửa lại hàm main để có thể chạy được ---
 async def main():
     async with aiohttp.ClientSession() as session:
         tasks = [
             run_lookup(session, "hello", 1, 1),  # Ví dụ: topic_id=1, user_id=1
             run_lookup(session, "take a rain check", 1, 1),
-            run_lookup(session, "hello", 1, 2),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "take a rain check", 1, 2),
-            run_lookup(session, "food", 1, 2),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "so far so good", 1, 2),
-            run_lookup(session, "hi", 1, 2),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "rain", 1, 2),
-            run_lookup(session, "tomato", 1, 2),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "potato", 1, 2),
+            run_lookup(session, "hello", 2, 2),  # Ví dụ: topic_id=1, user_id=1
+            run_lookup(session, "take a rain check", 2, 2),
+            run_lookup(session, "food", 2, 2),  # Ví dụ: topic_id=1, user_id=1
+            run_lookup(session, "so far so good", 2, 2),
+            run_lookup(session, "hi", 2, 2),  # Ví dụ: topic_id=1, user_id=1
+            run_lookup(session, "rain", 2, 2),
+            run_lookup(session, "tomato", 2, 2),  # Ví dụ: topic_id=1, user_id=1
+            run_lookup(session, "potato", 2, 2),
 
         ]
         await asyncio.gather(*tasks)

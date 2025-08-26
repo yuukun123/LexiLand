@@ -133,19 +133,19 @@ class QueryData:
                 conn.close()
                 print(f"DEBUG: Kết nối CSDL đã được đóng.")
 
-    def get_all_topics_with_word_count(self, user_id):  # Đổi tên hàm cho rõ nghĩa
-        """
-        Lấy tất cả các chủ đề của một người dùng, kèm theo số lượng từ trong mỗi chủ đề.
-        """
+    def get_all_topics_with_word_count(self, user_id):
         conn = self._get_connection()
-        cursor = conn.cursor()
         try:
-            # Sửa lỗi: Dùng """...""" cho chuỗi nhiều dòng
-            # Tối ưu: Thêm t.topic_name vào GROUP BY
+            cursor = conn.cursor()
+
+            # ==========================================================
+            # === CÂU LỆNH SQL ĐÚNG CHUẨN ===
+            # ==========================================================
             sql_query = """
                 SELECT 
                     t.topic_id, 
-                    t.topic_name, 
+                    t.topic_name,
+                    t.created_at,
                     COUNT(tw.word_id) as word_count
                 FROM 
                     topics t
@@ -154,15 +154,82 @@ class QueryData:
                 WHERE 
                     t.user_id = ?
                 GROUP BY 
-                    t.topic_id, t.topic_name
+                    t.topic_id, t.topic_name, t.created_at
                 ORDER BY 
+                    CASE WHEN t.topic_name = 'Other' THEN 0 ELSE 1 END, 
                     t.created_at DESC
             """
-            cursor.execute(sql_query, (user_id,))
 
+            cursor.execute(sql_query, (user_id,))
             rows = [dict(row) for row in cursor.fetchall()]
+
+            print(f"DEBUG (NEW QUERY): Kết quả đếm từ cho user_id={user_id}: {rows}")
+
             return rows
 
         except sqlite3.Error as e:
             print(f"Database error in get_all_topics_with_word_count: {e}")
             return []
+        finally:
+            if conn:
+                conn.close()
+
+    def debug_user_data(self, user_id):
+        """
+        In ra một báo cáo chi tiết về dữ liệu của một người dùng để gỡ lỗi.
+        """
+        conn = self._get_connection()
+        print("\n" + "=" * 20 + f" BÁO CÁO DEBUG CHO USER ID: {user_id} " + "=" * 20)
+        try:
+            cursor = conn.cursor()
+
+            # 1. Thông tin người dùng
+            cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
+            user_info = cursor.fetchone()
+            print(f"\n[1] THÔNG TIN USER:")
+            print(dict(user_info) if user_info else "==> KHÔNG TÌM THẤY USER NÀY!")
+
+            # 2. Các chủ đề của người dùng này
+            cursor.execute("SELECT * FROM topics WHERE user_id = ?", (user_id,))
+            topics = [dict(row) for row in cursor.fetchall()]
+            print(f"\n[2] CÁC CHỦ ĐỀ CỦA USER NÀY ({len(topics)} chủ đề):")
+            if topics:
+                for topic in topics:
+                    print(f"  - Topic ID: {topic['topic_id']}, Tên: '{topic['topic_name']}'")
+            else:
+                print("==> USER NÀY KHÔNG CÓ CHỦ ĐỀ NÀO.")
+
+            # 3. Các từ được liên kết với các chủ đề của người dùng này
+            print(f"\n[3] CÁC TỪ TRONG CÁC CHỦ ĐỀ TRÊN:")
+            topic_ids = [t['topic_id'] for t in topics]
+            if topic_ids:
+                # Dùng IN (...) để truy vấn tất cả các topic ID cùng lúc
+                placeholders = ','.join(['?'] * len(topic_ids))
+                sql = f"""
+                    SELECT tw.topic_id, tw.word_id, w.word_name
+                    FROM topic_word tw
+                    JOIN words w ON tw.word_id = w.word_id
+                    WHERE tw.topic_id IN ({placeholders})
+                """
+                cursor.execute(sql, topic_ids)
+                topic_words = [dict(row) for row in cursor.fetchall()]
+
+                if topic_words:
+                    for tw in topic_words:
+                        print(f"  - Topic ID {tw['topic_id']} chứa Word ID {tw['word_id']} ('{tw['word_name']}')")
+                else:
+                    print("==> CÁC CHỦ ĐỀ TRÊN CHƯA CÓ TỪ NÀO.")
+            else:
+                print("==> BỎ QUA VÌ KHÔNG CÓ CHỦ ĐỀ.")
+
+            # 4. In lại kết quả của hàm đếm từ (để so sánh)
+            print(f"\n[4] KẾT QUẢ TỪ HÀM get_all_topics_with_word_count:")
+            counted_topics = self.get_all_topics_with_word_count(user_id)  # Gọi lại hàm gốc
+            print(counted_topics)
+
+        except Exception as e:
+            print(f"\n!!! ĐÃ XẢY RA LỖI KHI DEBUG: {e}")
+        finally:
+            if conn:
+                conn.close()
+        print("=" * 20 + " KẾT THÚC BÁO CÁO " + "=" * 20 + "\n")
