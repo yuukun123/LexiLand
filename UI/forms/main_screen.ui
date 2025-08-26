@@ -680,7 +680,7 @@ border-radius:10px;</string>
 }</string>
                   </property>
                   <property name="text">
-                   <string>Sổ từ vựng</string>
+                   <string>Vocab Notebook</string>
                   </property>
                   <property name="icon">
                    <iconset resource="../../resource/resource.qrc">
@@ -761,7 +761,7 @@ border-radius:10px;</string>
 }</string>
                   </property>
                   <property name="text">
-                   <string>Luyện tập</string>
+                   <string>Practice</string>
                   </property>
                   <property name="icon">
                    <iconset resource="../../resource/resource.qrc">

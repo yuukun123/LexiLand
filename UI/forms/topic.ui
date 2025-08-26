@@ -713,7 +713,7 @@ color:#ffffff;</string>
                          </font>
                         </property>
                         <property name="text">
-                         <string>Đã học</string>
+                         <string>Learned</string>
                         </property>
                        </widget>
                       </item>
@@ -802,7 +802,7 @@ color:#ffffff;</string>
                          </font>
                         </property>
                         <property name="text">
-                         <string>Đã nhớ</string>
+                         <string>Memorized</string>
                         </property>
                        </widget>
                       </item>
@@ -910,7 +910,7 @@ color:#ffffff;</string>
                          </font>
                         </property>
                         <property name="text">
-                         <string>Cần ôn tập</string>
+                         <string>Review needed</string>
                         </property>
                        </widget>
                       </item>
@@ -975,7 +975,7 @@ color:#ffffff;</string>
 }</string>
                      </property>
                      <property name="text">
-                      <string>Thêm từ vựng</string>
+                      <string>Add vocabulary</string>
                      </property>
                      <property name="icon">
                       <iconset resource="../../resource/resource.qrc">
@@ -996,8 +996,8 @@ color:#ffffff;</string>
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>1063</width>
-                     <height>379</height>
+                     <width>1071</width>
+                     <height>402</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_15">
