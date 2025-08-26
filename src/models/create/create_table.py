@@ -50,8 +50,18 @@ def create_table():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS words (
             word_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            word_name TEXT NOT NULL UNIQUE,
-            phonetic TEXT NOT NULL
+            word_name TEXT NOT NULL UNIQUE
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS pronunciations (
+            pronunciation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            word_id INTEGER NOT NULL,
+            region TEXT,          -- Vùng miền, ví dụ: 'UK', 'US'
+            phonetic_text TEXT,   -- Phiên âm dạng text, ví dụ: '/həˈləʊ/'
+            audio_url TEXT NOT NULL,      -- Đường dẫn URL đến file MP3
+            FOREIGN KEY(word_id) REFERENCES words(word_id) ON DELETE CASCADE
         )
     """)
 

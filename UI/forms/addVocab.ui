@@ -80,7 +80,7 @@ border-top-left-radius:10px;</string>
             </font>
            </property>
            <property name="text">
-            <string>THÊM TỪ VỰNG MỚI</string>
+            <string>Add New Word</string>
            </property>
           </widget>
          </item>
@@ -161,7 +161,7 @@ background-color: rgb(255, 255, 255);</string>
                   <string notr="true">color: rgb(98, 98, 98);</string>
                  </property>
                  <property name="text">
-                  <string>Từ tiếng anh</string>
+                  <string>English word</string>
                  </property>
                 </widget>
                </item>
@@ -263,7 +263,7 @@ QLineEdit:focus {
 }</string>
               </property>
               <property name="text">
-               <string>Tạo định nghĩa và ví dụ</string>
+               <string>Create Definiton And Example</string>
               </property>
              </widget>
             </item>
@@ -319,7 +319,7 @@ QLineEdit:focus {
                   <string notr="true">color: rgb(98, 98, 98);</string>
                  </property>
                  <property name="text">
-                  <string>Định nghĩa tiếng việt</string>
+                  <string>Definition</string>
                  </property>
                 </widget>
                </item>
@@ -438,7 +438,7 @@ QTextEdit:focus {
                   <string notr="true">color: rgb(98, 98, 98);</string>
                  </property>
                  <property name="text">
-                  <string>Câu ví dụ</string>
+                  <string>Example</string>
                  </property>
                 </widget>
                </item>
@@ -551,7 +551,7 @@ QTextEdit:focus {
                   <string notr="true">color: rgb(98, 98, 98);</string>
                  </property>
                  <property name="text">
-                  <string>Danh mục (tùy chọn)</string>
+                  <string>Topic ( choose your word topic ) *</string>
                  </property>
                 </widget>
                </item>
@@ -618,10 +618,10 @@ QComboBox::down-arrow {
 	image: url(:/icon/UI/icons/chevron-down.svg);
     width: 12px;
     height: 12px;
+	color: rgb(0, 0, 0)
 }
 
 QComboBox::down-arrow:on { 
-   
 	image: url(:/icon/UI/icons/chevron-up.svg);
 }</string>
                  </property>
@@ -692,7 +692,7 @@ QComboBox::down-arrow:on {
                   <string notr="true">color: rgb(98, 98, 98);</string>
                  </property>
                  <property name="text">
-                  <string>Danh mục (tùy chọn)</string>
+                  <string>Add topic</string>
                  </property>
                 </widget>
                </item>
@@ -797,7 +797,7 @@ QLineEdit:focus {
 }</string>
               </property>
               <property name="text">
-               <string>Lưu từ vựng</string>
+               <string>Save Word</string>
               </property>
              </widget>
             </item>
