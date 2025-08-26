@@ -6,27 +6,51 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1118</width>
-    <height>709</height>
+    <width>1147</width>
+    <height>760</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1125</width>
+    <height>700</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QFrame" name="MainFrame">
       <property name="minimumSize">
        <size>
-        <width>1100</width>
-        <height>650</height>
+        <width>1125</width>
+        <height>700</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>1100</width>
-        <height>650</height>
+        <width>16777215</width>
+        <height>16777215</height>
        </size>
       </property>
       <property name="styleSheet">
@@ -920,6 +944,9 @@ color:#ffffff;</string>
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
+                <property name="spacing">
+                 <number>20</number>
+                </property>
                 <item>
                  <widget class="QFrame" name="frame_8">
                   <property name="frameShape">
@@ -976,6 +1003,43 @@ color:#ffffff;</string>
                 </item>
                 <item>
                  <widget class="QScrollArea" name="scrollArea">
+                  <property name="styleSheet">
+                   <string notr="true">QScrollArea{
+	border-radius: 10px;
+}
+
+QScrollBar:vertical {
+    border: none;
+    background: #f0f0f0;
+    width: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #a9a9a9;
+    min-height: 50px;
+    border-radius: 4px;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background: #f0f0f0;
+    height: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #a9a9a9;
+    min-width: 20px;
+    border-radius: 4px;
+}</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Plain</enum>
+                  </property>
                   <property name="widgetResizable">
                    <bool>true</bool>
                   </property>
@@ -984,22 +1048,26 @@ color:#ffffff;</string>
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>1029</width>
-                     <height>406</height>
+                     <width>1085</width>
+                     <height>426</height>
                     </rect>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">border-radius: 10px;
+</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_15">
                     <property name="spacing">
                      <number>0</number>
                     </property>
                     <property name="leftMargin">
-                     <number>0</number>
+                     <number>5</number>
                     </property>
                     <property name="topMargin">
                      <number>0</number>
                     </property>
                     <property name="rightMargin">
-                     <number>0</number>
+                     <number>5</number>
                     </property>
                     <property name="bottomMargin">
                      <number>0</number>
@@ -1011,6 +1079,9 @@ color:#ffffff;</string>
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">border-radius: 10px;</string>
                       </property>
                       <property name="frameShape">
                        <enum>QFrame::StyledPanel</enum>
@@ -1026,13 +1097,13 @@ color:#ffffff;</string>
                         <number>0</number>
                        </property>
                        <property name="topMargin">
-                        <number>20</number>
+                        <number>0</number>
                        </property>
                        <property name="rightMargin">
                         <number>0</number>
                        </property>
                        <property name="bottomMargin">
-                        <number>20</number>
+                        <number>0</number>
                        </property>
                        <item>
                         <widget class="QFrame" name="frame_29">
@@ -1358,7 +1429,7 @@ color:#ffffff;</string>
                             </layout>
                            </widget>
                           </item>
-                          <item>
+                          <item alignment="Qt::AlignRight">
                            <widget class="QFrame" name="frame_23">
                             <property name="frameShape">
                              <enum>QFrame::StyledPanel</enum>
@@ -1367,6 +1438,18 @@ color:#ffffff;</string>
                              <enum>QFrame::Raised</enum>
                             </property>
                             <layout class="QHBoxLayout" name="horizontalLayout_14">
+                             <property name="leftMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="rightMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>0</number>
+                             </property>
                              <item alignment="Qt::AlignRight">
                               <widget class="QPushButton" name="pushButton_3">
                                <property name="cursor">
@@ -1723,6 +1806,18 @@ color:#ffffff;</string>
                              <enum>QFrame::Raised</enum>
                             </property>
                             <layout class="QHBoxLayout" name="horizontalLayout_31">
+                             <property name="leftMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="rightMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>0</number>
+                             </property>
                              <item alignment="Qt::AlignRight">
                               <widget class="QPushButton" name="pushButton_7">
                                <property name="cursor">
@@ -1770,17 +1865,6 @@ color:#ffffff;</string>
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1118</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
   <include location="../../resource/resource.qrc"/>
