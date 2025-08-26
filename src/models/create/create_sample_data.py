@@ -35,7 +35,8 @@ class CreateSampleData:
     def create_sample_data(self):
         self.cursor.execute("""
                 INSERT INTO topics (topic_name, created_at, user_id)
-                VALUES ('Topic 1', datetime('now'), 1),
+                VALUES 
+                        ('Topic 1', datetime('now'), 1),
                         ('Topic 1', datetime('now'), 2),
                         ('Topic 2', datetime('now'), 1),
                         ('Topic 2', datetime('now'), 2),
