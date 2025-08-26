@@ -701,7 +701,7 @@ color:#ffffff;</string>
                          </font>
                         </property>
                         <property name="text">
-                         <string>Đã học</string>
+                         <string>Learned</string>
                         </property>
                        </widget>
                       </item>
@@ -790,7 +790,7 @@ color:#ffffff;</string>
                          </font>
                         </property>
                         <property name="text">
-                         <string>Đã nhớ</string>
+                         <string>Memorized</string>
                         </property>
                        </widget>
                       </item>
@@ -898,7 +898,7 @@ color:#ffffff;</string>
                          </font>
                         </property>
                         <property name="text">
-                         <string>Cần ôn tập</string>
+                         <string>Review needed</string>
                         </property>
                        </widget>
                       </item>
@@ -963,7 +963,7 @@ color:#ffffff;</string>
 }</string>
                      </property>
                      <property name="text">
-                      <string>Luyện tập</string>
+                      <string>Practice</string>
                      </property>
                      <property name="icon">
                       <iconset resource="../../resource/resource.qrc">

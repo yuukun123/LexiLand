@@ -80,7 +80,7 @@ border-top-left-radius:10px;</string>
             </font>
            </property>
            <property name="text">
-            <string>THÊM TỪ VỰNG MỚI</string>
+            <string>ADD VOCABULARY</string>
            </property>
           </widget>
          </item>
@@ -263,7 +263,7 @@ QLineEdit:focus {
 }</string>
               </property>
               <property name="text">
-               <string>Tạo định nghĩa và ví dụ</string>
+               <string>Create definition and example</string>
               </property>
              </widget>
             </item>
@@ -319,7 +319,7 @@ QLineEdit:focus {
                   <string notr="true">color: rgb(98, 98, 98);</string>
                  </property>
                  <property name="text">
-                  <string>Định nghĩa tiếng việt</string>
+                  <string>Vietnamese Definition</string>
                  </property>
                 </widget>
                </item>
@@ -438,7 +438,7 @@ QTextEdit:focus {
                   <string notr="true">color: rgb(98, 98, 98);</string>
                  </property>
                  <property name="text">
-                  <string>Câu ví dụ</string>
+                  <string>Example Sentence</string>
                  </property>
                 </widget>
                </item>
@@ -551,7 +551,7 @@ QTextEdit:focus {
                   <string notr="true">color: rgb(98, 98, 98);</string>
                  </property>
                  <property name="text">
-                  <string>Danh mục (tùy chọn)</string>
+                  <string>Category (optional)</string>
                  </property>
                 </widget>
                </item>
@@ -627,12 +627,12 @@ QComboBox::down-arrow:on {
                  </property>
                  <item>
                   <property name="text">
-                   <string>Không có danh mục nào</string>
+                   <string>No category</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>+ Thêm danh mục mới</string>
+                   <string>+ Add new category</string>
                   </property>
                  </item>
                 </widget>
@@ -692,7 +692,7 @@ QComboBox::down-arrow:on {
                   <string notr="true">color: rgb(98, 98, 98);</string>
                  </property>
                  <property name="text">
-                  <string>Danh mục (tùy chọn)</string>
+                  <string>Category (optional)</string>
                  </property>
                 </widget>
                </item>
@@ -815,7 +815,7 @@ QLineEdit:focus {
 }</string>
                  </property>
                  <property name="text">
-                  <string>Lưu từ vựng</string>
+                  <string>Save</string>
                  </property>
                 </widget>
                </item>
@@ -860,7 +860,7 @@ QLineEdit:focus {
 }</string>
                  </property>
                  <property name="text">
-                  <string>Trở về</string>
+                  <string>Cancel</string>
                  </property>
                 </widget>
                </item>
