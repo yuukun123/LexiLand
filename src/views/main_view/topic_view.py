@@ -2,7 +2,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QSizePolicy
 
-from src.controllers.main_controller.vocab_controller import VocabController
+from src.controllers.main_controller.topic_controller import VocabController
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
 from src.utils.go_back import BaseWindow
@@ -10,7 +10,7 @@ from src.utils.go_back import BaseWindow
 class VocabWindow(BaseWindow, MoveableWindow):
     def __init__(self, username, parent=None):
         super().__init__(parent)
-        uic.loadUi("../UI/forms/vocab.ui", self)
+        uic.loadUi("../UI/forms/topic.ui", self)
         MoveableWindow.__init__(self)
         self.username = username
 

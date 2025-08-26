@@ -5,7 +5,6 @@ import re
 import google.generativeai as genai
 import os
 import aiohttp
-
 from requests import session
 
 api_cache = {}

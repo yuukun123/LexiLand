@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 
 from src.models.query_data.query_data import QueryData
-from src.views.main_view.vocab_view import VocabWindow
+from src.views.main_view.topic_view import VocabWindow
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
 

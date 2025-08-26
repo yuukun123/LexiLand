@@ -1,6 +1,6 @@
 from src.views.login_regis_view.login_regis import Login_and_Register_Window
 from src.views.main_view.main_view import MainWindow
-from src.views.main_view.vocab_view import VocabWindow
+from src.views.main_view.topic_view import VocabWindow
 from src.controllers.login_regis_controllers.login_controller import LoginController
 
 def open_login_window():
