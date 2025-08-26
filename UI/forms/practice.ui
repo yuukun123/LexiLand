@@ -701,7 +701,7 @@ color:#ffffff;</string>
                          </font>
                         </property>
                         <property name="text">
-                         <string>Đã học</string>
+                         <string>Learned</string>
                         </property>
                        </widget>
                       </item>
@@ -790,7 +790,7 @@ color:#ffffff;</string>
                          </font>
                         </property>
                         <property name="text">
-                         <string>Đã nhớ</string>
+                         <string>Memorized</string>
                         </property>
                        </widget>
                       </item>
@@ -898,7 +898,7 @@ color:#ffffff;</string>
                          </font>
                         </property>
                         <property name="text">
-                         <string>Cần ôn tập</string>
+                         <string>Review needed</string>
                         </property>
                        </widget>
                       </item>
@@ -963,7 +963,7 @@ color:#ffffff;</string>
 }</string>
                      </property>
                      <property name="text">
-                      <string>Luyện tập</string>
+                      <string>Practice</string>
                      </property>
                      <property name="icon">
                       <iconset resource="../../resource/resource.qrc">
@@ -985,7 +985,7 @@ color:#ffffff;</string>
                      <x>0</x>
                      <y>0</y>
                      <width>1029</width>
-                     <height>420</height>
+                     <height>406</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -1079,17 +1079,26 @@ color:#ffffff;</string>
                                 <enum>QFrame::Raised</enum>
                                </property>
                                <layout class="QHBoxLayout" name="horizontalLayout_7">
+                                <property name="topMargin">
+                                 <number>0</number>
+                                </property>
                                 <property name="rightMargin">
                                  <number>0</number>
                                 </property>
+                                <property name="bottomMargin">
+                                 <number>0</number>
+                                </property>
                                 <item>
-                                 <widget class="QLabel" name="label_8">
+                                 <widget class="QLabel" name="vocab">
                                   <property name="font">
                                    <font>
                                     <pointsize>16</pointsize>
                                     <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
+                                  </property>
+                                  <property name="styleSheet">
+                                   <string notr="true">color: rgb(88, 88, 88);</string>
                                   </property>
                                   <property name="text">
                                    <string>Vocabulary</string>
@@ -1100,7 +1109,7 @@ color:#ffffff;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QFrame" name="frame_28">
+                              <widget class="QFrame" name="soundBtn">
                                <property name="cursor">
                                 <cursorShape>PointingHandCursor</cursorShape>
                                </property>
@@ -1125,8 +1134,8 @@ color:#ffffff;</string>
                                   </property>
                                   <property name="iconSize">
                                    <size>
-                                    <width>20</width>
-                                    <height>20</height>
+                                    <width>17</width>
+                                    <height>17</height>
                                    </size>
                                   </property>
                                  </widget>
@@ -1135,7 +1144,7 @@ color:#ffffff;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QFrame" name="frame_30">
+                              <widget class="QFrame" name="editBtn">
                                <property name="cursor">
                                 <cursorShape>PointingHandCursor</cursorShape>
                                </property>
@@ -1160,8 +1169,8 @@ color:#ffffff;</string>
                                   </property>
                                   <property name="iconSize">
                                    <size>
-                                    <width>20</width>
-                                    <height>20</height>
+                                    <width>18</width>
+                                    <height>18</height>
                                    </size>
                                   </property>
                                  </widget>
@@ -1207,6 +1216,9 @@ color:#ffffff;</string>
                                 <enum>QFrame::Raised</enum>
                                </property>
                                <layout class="QHBoxLayout" name="horizontalLayout_15">
+                                <property name="rightMargin">
+                                 <number>3</number>
+                                </property>
                                 <property name="bottomMargin">
                                  <number>3</number>
                                 </property>
@@ -1218,6 +1230,9 @@ color:#ffffff;</string>
                                     <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
+                                  </property>
+                                  <property name="styleSheet">
+                                   <string notr="true">color: rgb(88, 88, 88);</string>
                                   </property>
                                   <property name="text">
                                    <string>Định nghĩa:</string>
@@ -1243,7 +1258,7 @@ color:#ffffff;</string>
                                  <number>3</number>
                                 </property>
                                 <item>
-                                 <widget class="QLabel" name="label_9">
+                                 <widget class="QLabel" name="define">
                                   <property name="font">
                                    <font>
                                     <pointsize>10</pointsize>
@@ -1290,6 +1305,9 @@ color:#ffffff;</string>
                                 <enum>QFrame::Raised</enum>
                                </property>
                                <layout class="QHBoxLayout" name="horizontalLayout_17">
+                                <property name="rightMargin">
+                                 <number>3</number>
+                                </property>
                                 <item>
                                  <widget class="QLabel" name="label_12">
                                   <property name="font">
@@ -1298,6 +1316,9 @@ color:#ffffff;</string>
                                     <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
+                                  </property>
+                                  <property name="styleSheet">
+                                   <string notr="true">color: rgb(88, 88, 88);</string>
                                   </property>
                                   <property name="text">
                                    <string>Ví dụ:</string>
@@ -1320,7 +1341,7 @@ color:#ffffff;</string>
                                  <number>0</number>
                                 </property>
                                 <item>
-                                 <widget class="QLabel" name="label_10">
+                                 <widget class="QLabel" name="example">
                                   <property name="font">
                                    <font>
                                     <pointsize>10</pointsize>
@@ -1414,7 +1435,13 @@ color:#ffffff;</string>
                                 <enum>QFrame::Raised</enum>
                                </property>
                                <layout class="QHBoxLayout" name="horizontalLayout_20">
+                                <property name="topMargin">
+                                 <number>0</number>
+                                </property>
                                 <property name="rightMargin">
+                                 <number>0</number>
+                                </property>
+                                <property name="bottomMargin">
                                  <number>0</number>
                                 </property>
                                 <item>
@@ -1425,6 +1452,9 @@ color:#ffffff;</string>
                                     <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
+                                  </property>
+                                  <property name="styleSheet">
+                                   <string notr="true">color: rgb(88, 88, 88);</string>
                                   </property>
                                   <property name="text">
                                    <string>Vocabulary</string>
@@ -1460,8 +1490,8 @@ color:#ffffff;</string>
                                   </property>
                                   <property name="iconSize">
                                    <size>
-                                    <width>20</width>
-                                    <height>20</height>
+                                    <width>17</width>
+                                    <height>17</height>
                                    </size>
                                   </property>
                                  </widget>
@@ -1495,8 +1525,8 @@ color:#ffffff;</string>
                                   </property>
                                   <property name="iconSize">
                                    <size>
-                                    <width>20</width>
-                                    <height>20</height>
+                                    <width>18</width>
+                                    <height>18</height>
                                    </size>
                                   </property>
                                  </widget>
@@ -1542,6 +1572,9 @@ color:#ffffff;</string>
                                 <enum>QFrame::Raised</enum>
                                </property>
                                <layout class="QHBoxLayout" name="horizontalLayout_27">
+                                <property name="rightMargin">
+                                 <number>3</number>
+                                </property>
                                 <property name="bottomMargin">
                                  <number>3</number>
                                 </property>
@@ -1553,6 +1586,9 @@ color:#ffffff;</string>
                                     <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
+                                  </property>
+                                  <property name="styleSheet">
+                                   <string notr="true">color: rgb(88, 88, 88);</string>
                                   </property>
                                   <property name="text">
                                    <string>Định nghĩa:</string>
@@ -1625,6 +1661,9 @@ color:#ffffff;</string>
                                 <enum>QFrame::Raised</enum>
                                </property>
                                <layout class="QHBoxLayout" name="horizontalLayout_24">
+                                <property name="rightMargin">
+                                 <number>3</number>
+                                </property>
                                 <item>
                                  <widget class="QLabel" name="label_14">
                                   <property name="font">
@@ -1633,6 +1672,9 @@ color:#ffffff;</string>
                                     <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
+                                  </property>
+                                  <property name="styleSheet">
+                                   <string notr="true">color: rgb(88, 88, 88);</string>
                                   </property>
                                   <property name="text">
                                    <string>Ví dụ:</string>
