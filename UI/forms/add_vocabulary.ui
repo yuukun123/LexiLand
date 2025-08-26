@@ -327,18 +327,19 @@ QLineEdit:focus {
               </layout>
              </widget>
             </item>
-            <item alignment="Qt::AlignTop">
+            <item>
              <widget class="QFrame" name="frame_13">
+              <property name="styleSheet">
+               <string notr="true">border: solid 1px rgb(162, 162, 162);
+border-radius: 5px;</string>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
               <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
+               <enum>QFrame::Plain</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_6">
-               <property name="spacing">
-                <number>0</number>
-               </property>
                <property name="leftMargin">
                 <number>0</number>
                </property>
@@ -352,35 +353,17 @@ QLineEdit:focus {
                 <number>0</number>
                </property>
                <item>
-                <widget class="QTextEdit" name="Define">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>78</height>
-                  </size>
-                 </property>
+                <widget class="QLabel" name="label_7">
                  <property name="styleSheet">
-                  <string notr="true">QTextEdit {
-    border: 1px solid #ccc;      
-    border-radius: 6px;           
-    padding: 6px 10px;             
-    background: #fdfdfd;           
-    font-size: 14px;
-}
-
-QTextEdit:focus {
-    border: 1px solid #888;        
-    background: #ffffff;           
-}</string>
+                  <string notr="true">    border: 1px solid rgb(162, 162, 162);
+    border-radius: 5px;
+	padding-left:2px;</string>
                  </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="text">
+                  <string>TextLabel</string>
                  </property>
                 </widget>
                </item>
@@ -446,7 +429,7 @@ QTextEdit:focus {
               </layout>
              </widget>
             </item>
-            <item alignment="Qt::AlignTop">
+            <item>
              <widget class="QFrame" name="frame_16">
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
@@ -455,9 +438,6 @@ QTextEdit:focus {
                <enum>QFrame::Raised</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <property name="spacing">
-                <number>0</number>
-               </property>
                <property name="leftMargin">
                 <number>0</number>
                </property>
@@ -471,29 +451,17 @@ QTextEdit:focus {
                 <number>0</number>
                </property>
                <item>
-                <widget class="QTextEdit" name="Example">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>50</height>
-                  </size>
-                 </property>
+                <widget class="QLabel" name="label_8">
                  <property name="styleSheet">
-                  <string notr="true">QTextEdit {
-    border: 1px solid #ccc;      
-    border-radius: 6px;           
-    padding: 6px 10px;             
-    background: #fdfdfd;           
-    font-size: 14px;
-}
-
-QTextEdit:focus {
-    border: 1px solid #888;        
-    background: #ffffff;           
-}</string>
+                  <string notr="true">    border: 1px solid rgb(162, 162, 162);
+    border-radius: 5px;
+	padding-left:2px;</string>
                  </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="text">
+                  <string>TextLabel</string>
                  </property>
                 </widget>
                </item>
@@ -628,12 +596,12 @@ QComboBox::down-arrow:on {
                  </property>
                  <item>
                   <property name="text">
-                   <string>Không có danh mục nào</string>
+                   <string>No topic</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>+ Thêm danh mục mới</string>
+                   <string>+ Add new topic</string>
                   </property>
                  </item>
                 </widget>
@@ -763,32 +731,35 @@ QLineEdit:focus {
             <enum>QFrame::Raised</enum>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_14">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
             <item>
-             <widget class="QPushButton" name="SaveVocabBtn">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>35</height>
-               </size>
+             <widget class="QFrame" name="frame">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
               </property>
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
               </property>
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">#SaveVocabBtn{
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <item>
+                <widget class="QPushButton" name="SaveVocabBtn">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">#SaveVocabBtn{
 	color: rgb(255, 255, 255);
 	background-color: rgb(40, 109, 213);
 	border-radius:5px;
@@ -796,10 +767,58 @@ QLineEdit:focus {
 #SaveVocabBtn::hover{
 		background-color: rgb(11, 75, 135);
 }</string>
+                 </property>
+                 <property name="text">
+                  <string>Save Word</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame_21">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
               </property>
-              <property name="text">
-               <string>Save Word</string>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
               </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_16">
+               <item>
+                <widget class="QPushButton" name="Cancel_Btn">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">#Cancel_Btn{
+	color: rgb(255, 255, 255);
+	background-color: rgb(255, 0, 0);
+	border-radius:5px;
+}
+#Cancel_Btn::hover{
+	background-color: rgb(171, 0, 0);
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>Cancel</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </item>
            </layout>
