@@ -19,10 +19,10 @@ class LoginController:
             print("DEBUG: Login success")
             self.on_login_success(username_login)
         else:
-            if user["error"] == "username_not_found":
+            if user["error"] == "invalid_credentials":
                 self.on_login_wrong_name_and_password()  # hoặc riêng username
                 print("DEBUG: Login failed - user not found")
-            elif user["error"] == "invalid_credentials":
+            elif user["error"] == "incorrect_password":
                 self.on_login_wrong_name_and_password()  # hoặc riêng password
                 print("DEBUG: Login failed - invalid credentials")
             else:

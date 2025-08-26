@@ -1,5 +1,7 @@
 import sqlite3
 import os
+from datetime import datetime
+
 
 class QueryData:
     def __init__(self):
@@ -118,8 +120,27 @@ class QueryData:
             )
             print(f"DEBUG: Đảm bảo liên kết giữa topic_id={target_topic_id} và word_id={word_id} tồn tại.")
 
+            # Tính thời gian ôn tập đầu tiên (ví dụ: 10 phút sau)
+            first_review_time = datetime.now() + timedelta(minutes=10)
+            first_review_str = first_review_time.strftime('%Y-%m-%d %H:%M:%S')
+
+            # Dùng INSERT OR IGNORE: Chỉ chèn nếu cặp (user_id, word_id) chưa tồn tại.
+            # Điều này ngăn việc reset tiến độ của một từ đã học.
+            cursor.execute("""
+                INSERT OR IGNORE INTO user_word_progress (
+                    user_id, 
+                    word_id, 
+                    srs_level, 
+                    next_review_at,
+                    last_reviewed_at
+                ) VALUES (?, ?, 0, ?, ?)
+                """,
+                           (user_id, word_id, first_review_str, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                           )
+            print(f"DEBUG: Đảm bảo bản ghi tiến độ cho user_id={user_id} và word_id={word_id} tồn tại.")
+
             conn.commit()
-            print("INFO: Giao dịch thành công.")
+            print("INFO: Giao dịch thành công. Từ và tiến độ ban đầu đã được lưu.")
             return {"success": True, "word_id": word_id}
 
         except sqlite3.Error as e:
@@ -137,10 +158,6 @@ class QueryData:
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
-
-            # ==========================================================
-            # === CÂU LỆNH SQL ĐÚNG CHUẨN ===
-            # ==========================================================
             sql_query = """
                 SELECT 
                     t.topic_id, 
@@ -170,6 +187,50 @@ class QueryData:
         except sqlite3.Error as e:
             print(f"Database error in get_all_topics_with_word_count: {e}")
             return []
+        finally:
+            if conn:
+                conn.close()
+
+    def get_user_stats(self, user_id):
+        """
+        Lấy tất cả các chỉ số thống kê (Đã học, Đã nhớ, Cần ôn tập)
+        cho một người dùng trong một lần truy vấn duy nhất.
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+
+            # Lấy thời gian hiện tại để so sánh
+            now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            sql_query = """
+                SELECT
+                    COUNT(word_id) as total_learned,
+                    SUM(CASE WHEN is_mastered = 1 THEN 1 ELSE 0 END) as memorized,
+                    SUM(CASE WHEN next_review_at <= ? AND is_mastered = 0 THEN 1 ELSE 0 END) as review_needed
+                FROM
+                    user_word_progress
+                WHERE
+                    user_id = ?
+            """
+            cursor.execute(sql_query, (now_str, user_id))
+
+            stats = cursor.fetchone()
+
+            if stats:
+                # Trả về một dictionary, với giá trị mặc định là 0 nếu NULL
+                return {
+                    "learned": stats["total_learned"] or 0,
+                    "memorized": stats["memorized"] or 0,
+                    "review_needed": stats["review_needed"] or 0
+                }
+            else:
+                # Nếu người dùng chưa học từ nào
+                return {"learned": 0, "memorized": 0, "review_needed": 0}
+
+        except sqlite3.Error as e:
+            print(f"Database error in get_user_stats: {e}")
+            return {"learned": -1, "memorized": -1, "review_needed": -1}  # Trả về -1 để báo lỗi
         finally:
             if conn:
                 conn.close()

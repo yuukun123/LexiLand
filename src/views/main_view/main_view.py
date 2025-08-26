@@ -44,7 +44,7 @@ class MainWindow(QMainWindow, MoveableWindow):
         self._user_context = self.query_data.get_user_by_username(username)
         print(f"DEBUG: User context đã tải: {self._user_context}")
 
-    def open_vocab_window_click(self, username):
+    def open_vocab_window_click(self):
         from src.windows.window_manage import open_vocab_window
         print("DEBUG: start open_vocab_window")
 

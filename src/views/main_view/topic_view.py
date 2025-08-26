@@ -1,6 +1,5 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QSizePolicy
 
 from src.controllers.main_controller.topic_controller import TopicController
 from src.views.moveable_window import MoveableWindow
@@ -29,3 +28,6 @@ class VocabWindow(BaseWindow, MoveableWindow):
         self.closeBtn.clicked.connect(self.buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
+
+        self.add_vocab_btn.clicked.connect(self.vocab_controller.handle_add_vocabulary_click)
+        print("DEBUG: vocab button connected")
