@@ -6,27 +6,48 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
-    <height>689</height>
+    <width>460</width>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QFrame" name="MainFrame">
      <property name="minimumSize">
       <size>
-       <width>450</width>
-       <height>350</height>
+       <width>455</width>
+       <height>655</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>450</width>
-       <height>670</height>
+       <height>655</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#MainFrame{
+border: 1px solid rgb(132, 132, 132);
+border-radius: 10px;
+}</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -139,6 +160,12 @@ border-bottom-left-radius:10px;</string>
             </property>
             <item>
              <widget class="QFrame" name="frame_11">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>30</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -147,6 +174,15 @@ border-bottom-left-radius:10px;</string>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_3">
                <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
                 <number>0</number>
                </property>
                <item>
@@ -222,6 +258,12 @@ QLineEdit:focus {
          </item>
          <item>
           <widget class="QFrame" name="frame_7">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>42</height>
+            </size>
+           </property>
            <property name="frameShape">
             <enum>QFrame::StyledPanel</enum>
            </property>
@@ -232,7 +274,13 @@ QLineEdit:focus {
             <property name="leftMargin">
              <number>0</number>
             </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
             <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -297,6 +345,12 @@ QLineEdit:focus {
             </property>
             <item>
              <widget class="QFrame" name="frame_14">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>50</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -307,8 +361,23 @@ QLineEdit:focus {
                <property name="leftMargin">
                 <number>0</number>
                </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_3">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>20</height>
+                  </size>
+                 </property>
                  <property name="font">
                   <font>
                    <pointsize>8</pointsize>
@@ -354,6 +423,17 @@ border-radius: 5px;</string>
                </property>
                <item>
                 <widget class="QLabel" name="label_7">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>7</pointsize>
+                  </font>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true">    border: 1px solid rgb(162, 162, 162);
     border-radius: 5px;
@@ -364,6 +444,9 @@ border-radius: 5px;</string>
                  </property>
                  <property name="text">
                   <string>TextLabel</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -399,6 +482,18 @@ border-radius: 5px;</string>
             </property>
             <item>
              <widget class="QFrame" name="frame_15">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>34</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>50</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -411,6 +506,12 @@ border-radius: 5px;</string>
                </property>
                <item>
                 <widget class="QLabel" name="label_4">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>20</height>
+                  </size>
+                 </property>
                  <property name="font">
                   <font>
                    <pointsize>8</pointsize>
@@ -452,6 +553,17 @@ border-radius: 5px;</string>
                </property>
                <item>
                 <widget class="QLabel" name="label_8">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>7</pointsize>
+                  </font>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true">    border: 1px solid rgb(162, 162, 162);
     border-radius: 5px;
@@ -462,6 +574,9 @@ border-radius: 5px;</string>
                  </property>
                  <property name="text">
                   <string>TextLabel</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -497,6 +612,12 @@ border-radius: 5px;</string>
             </property>
             <item>
              <widget class="QFrame" name="frame_18">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>50</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -507,8 +628,23 @@ border-radius: 5px;</string>
                <property name="leftMargin">
                 <number>0</number>
                </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_5">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>50</height>
+                  </size>
+                 </property>
                  <property name="font">
                   <font>
                    <pointsize>8</pointsize>
@@ -638,6 +774,12 @@ QComboBox::down-arrow:on {
             </property>
             <item>
              <widget class="QFrame" name="frame_20">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>30</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -648,8 +790,29 @@ QComboBox::down-arrow:on {
                <property name="leftMargin">
                 <number>0</number>
                </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_6">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>21</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>60</height>
+                  </size>
+                 </property>
                  <property name="font">
                   <font>
                    <pointsize>8</pointsize>
@@ -670,6 +833,18 @@ QComboBox::down-arrow:on {
             </item>
             <item>
              <widget class="QFrame" name="frame_19">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>43</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>50</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -724,6 +899,12 @@ QLineEdit:focus {
          </item>
          <item>
           <widget class="QFrame" name="frame_8">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>50</height>
+            </size>
+           </property>
            <property name="frameShape">
             <enum>QFrame::StyledPanel</enum>
            </property>
@@ -731,35 +912,38 @@ QLineEdit:focus {
             <enum>QFrame::Raised</enum>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item>
-             <widget class="QFrame" name="frame">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
+             <widget class="QPushButton" name="SaveVocabBtn">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
               </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
               </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_15">
-               <item>
-                <widget class="QPushButton" name="SaveVocabBtn">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>35</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>9</pointsize>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="cursor">
-                  <cursorShape>PointingHandCursor</cursorShape>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">#SaveVocabBtn{
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">#SaveVocabBtn{
 	color: rgb(255, 255, 255);
 	background-color: rgb(40, 109, 213);
 	border-radius:5px;
@@ -767,44 +951,32 @@ QLineEdit:focus {
 #SaveVocabBtn::hover{
 		background-color: rgb(11, 75, 135);
 }</string>
-                 </property>
-                 <property name="text">
-                  <string>Save Word</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              </property>
+              <property name="text">
+               <string>Save Word</string>
+              </property>
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_21">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
+             <widget class="QPushButton" name="Cancel_Btn">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
               </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
               </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_16">
-               <item>
-                <widget class="QPushButton" name="Cancel_Btn">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>35</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>9</pointsize>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="cursor">
-                  <cursorShape>PointingHandCursor</cursorShape>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">#Cancel_Btn{
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">#Cancel_Btn{
 	color: rgb(255, 255, 255);
 	background-color: rgb(255, 0, 0);
 	border-radius:5px;
@@ -812,13 +984,10 @@ QLineEdit:focus {
 #Cancel_Btn::hover{
 	background-color: rgb(171, 0, 0);
 }</string>
-                 </property>
-                 <property name="text">
-                  <string>Cancel</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              </property>
+              <property name="text">
+               <string>Cancel</string>
+              </property>
              </widget>
             </item>
            </layout>

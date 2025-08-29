@@ -17,3 +17,17 @@ class AddWordDialog(QDialog, MoveableWindow):
 
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
         self.setAttribute(Qt.WA_TranslucentBackground)
+
+        if parent:
+            # Lấy hình chữ nhật (vị trí và kích thước) của cửa sổ cha
+            parent_rect = parent.geometry()
+            # Lấy hình chữ nhật của chính dialog này
+            dialog_rect = self.geometry()
+
+            # Tính toán vị trí x, y để dialog nằm ở giữa
+            move_x = parent_rect.x() + (parent_rect.width() - dialog_rect.width()) // 2
+            move_y = parent_rect.y() + (parent_rect.height() - dialog_rect.height()) // 2
+
+            # Di chuyển dialog đến vị trí đã tính toán
+            self.move(move_x, move_y)
+            print(f"DEBUG: Di chuyển dialog đến vị trí ({move_x}, {move_y})")
