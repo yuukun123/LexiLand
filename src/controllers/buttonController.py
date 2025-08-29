@@ -5,6 +5,7 @@ class buttonController:
         self.view = view
 
     def handle_cancel(self):
+        print(f"DEBUG: Bắt đầu hủy dialog.")
         self.view.reject()
 
     def handle_ok(self):
@@ -53,4 +54,3 @@ class buttonController:
         from src.windows.window_manage import open_login_window
         open_login_window()
         self.view.close()
-

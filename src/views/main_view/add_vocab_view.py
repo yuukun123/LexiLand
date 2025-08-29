@@ -31,3 +31,5 @@ class AddWordDialog(QDialog, MoveableWindow):
             # Di chuyển dialog đến vị trí đã tính toán
             self.move(move_x, move_y)
             print(f"DEBUG: Di chuyển dialog đến vị trí ({move_x}, {move_y})")
+
+        self.Cancel_Btn.clicked.connect(self.buttonController.handle_cancel)
