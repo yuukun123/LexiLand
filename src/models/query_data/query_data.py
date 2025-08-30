@@ -1,7 +1,6 @@
 import sqlite3
 import os
-from datetime import datetime
-
+from datetime import datetime, timedelta
 
 class QueryData:
     def __init__(self):
@@ -59,6 +58,7 @@ class QueryData:
         try:
             cursor = conn.cursor()
             cursor.execute("BEGIN TRANSACTION")
+            first_review_time = datetime.now() + timedelta(minutes=10)
 
             # --- BƯỚC 1: XỬ LÝ BẢNG `words` ---
             cursor.execute("SELECT word_id FROM words WHERE word_name = ?", (word_data['word_name'],))

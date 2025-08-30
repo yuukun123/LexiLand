@@ -318,19 +318,44 @@ def convert_cache_to_db_format(word, cached_data, dict_data_raw):
     return word_data
 
 
-async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
+# async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
+#     word = word.strip().lower()
+#
+#     # --- BƯỚC 1: KIỂM TRA CACHE VÀ LẤY DỮ LIỆU TỪ API NẾU CẦN ---
+#     if word not in api_cache:
+#         print(f"\n--- Cache miss. Bắt đầu tra cứu API cho '{word}' ---")
+#
+#         gemini_task = asyncio.create_task(prompt_definition_from_gemini(word))
+#         dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
+#         gemini_response_text, dict_data = await asyncio.gather(gemini_task, dict_task)
+#
+#         gemini_pos, gemini_explanation = parse_gemini_response(gemini_response_text)
+#         # SỬA LỖI 3: Dùng phiên bản async của hàm dịch
+#         dict_pos, dict_fallback = await extract_pos_from_data(session, dict_data)
+#         final_pos = dict_pos if dict_pos != "N/A" else gemini_pos
+#
+#         api_cache[word] = {
+#             "pos": final_pos,
+#             "explanation": gemini_explanation,
+#             "fallback_info": dict_fallback,
+#             "dict_data_raw": dict_data
+#         }
+#     else:
+#         print(f"\n--- Cache hit for '{word}' ---")
+async def lookup_and_build_data(session, word):
+    """
+    Hàm này CHỈ tra cứu và trả về một dictionary word_data đã được chuẩn hóa.
+    Nó KHÔNG lưu vào CSDL.
+    """
     word = word.strip().lower()
 
-    # --- BƯỚC 1: KIỂM TRA CACHE VÀ LẤY DỮ LIỆU TỪ API NẾU CẦN ---
+    # Logic tra cứu API và cache
     if word not in api_cache:
-        print(f"\n--- Cache miss. Bắt đầu tra cứu API cho '{word}' ---")
-
         gemini_task = asyncio.create_task(prompt_definition_from_gemini(word))
         dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
         gemini_response_text, dict_data = await asyncio.gather(gemini_task, dict_task)
 
         gemini_pos, gemini_explanation = parse_gemini_response(gemini_response_text)
-        # SỬA LỖI 3: Dùng phiên bản async của hàm dịch
         dict_pos, dict_fallback = await extract_pos_from_data(session, dict_data)
         final_pos = dict_pos if dict_pos != "N/A" else gemini_pos
 
@@ -340,8 +365,25 @@ async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
             "fallback_info": dict_fallback,
             "dict_data_raw": dict_data
         }
-    else:
-        print(f"\n--- Cache hit for '{word}' ---")
+
+    cached_data = api_cache[word]
+    dict_data_raw = cached_data['dict_data_raw']
+
+    # Chuyển đổi sang định dạng CSDL và trả về
+    word_data_for_db = convert_cache_to_db_format(word, cached_data, dict_data_raw)
+    return word_data_for_db
+
+async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
+    """Hàm này bây giờ sẽ gọi hàm tra cứu và sau đó lưu."""
+    # 1. Tra cứu và lấy dữ liệu
+    word_data_for_db = await lookup_and_build_data(session, word)
+
+    if not word_data_for_db:
+        print(f"Không tìm thấy dữ liệu cho '{word}'.")
+        return
+
+    # 2. Lưu vào CSDL
+    print(f"Bắt đầu lưu vào CSDL cho user_id={user_id_to_save}...")
 
     # --- BƯỚC 2: LUÔN LUÔN THỰC HIỆN XỬ LÝ VÀ LƯU VÀO CSDL ---
     cached_data = api_cache[word]

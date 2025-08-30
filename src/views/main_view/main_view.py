@@ -6,6 +6,7 @@ from src.models.query_data.query_data import QueryData
 from src.views.main_view.topic_view import VocabWindow
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
+from src.utils.username_ui import set_user_info
 
 class MainWindow(QMainWindow, MoveableWindow):
     def __init__(self, username):
@@ -29,7 +30,7 @@ class MainWindow(QMainWindow, MoveableWindow):
             QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{username}'.")
             return
 
-        self.username_label.setText(f"👤 {self._user_context.get('user_name', '')}")
+        set_user_info(self.username_label, username)
 
         self.buttonController = buttonController(self)
         self.closeBtn.clicked.connect(self.buttonController.handle_close)

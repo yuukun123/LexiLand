@@ -207,6 +207,12 @@ border-bottom-left-radius:10px;</string>
             </item>
             <item>
              <widget class="QFrame" name="frame_12">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>50</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -422,7 +428,7 @@ border-radius: 5px;</string>
                 <number>0</number>
                </property>
                <item>
-                <widget class="QLabel" name="label_7">
+                <widget class="QLabel" name="definition">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -443,7 +449,7 @@ border-radius: 5px;</string>
                   <enum>QFrame::StyledPanel</enum>
                  </property>
                  <property name="text">
-                  <string>TextLabel</string>
+                  <string/>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -552,7 +558,7 @@ border-radius: 5px;</string>
                 <number>0</number>
                </property>
                <item>
-                <widget class="QLabel" name="label_8">
+                <widget class="QLabel" name="example">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -573,7 +579,7 @@ border-radius: 5px;</string>
                   <enum>QFrame::StyledPanel</enum>
                  </property>
                  <property name="text">
-                  <string>TextLabel</string>
+                  <string/>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -701,7 +707,7 @@ border-radius: 5px;</string>
                   </font>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">QComboBox {
+                  <string notr="true">QComboBox#Topic_opt {
     border: 1px solid #ccc;      
     border-radius: 6px;           
     padding: 6px 10px;             
@@ -709,26 +715,27 @@ border-radius: 5px;</string>
     font-size: 14px;
 }
 
-QComboBox:focus {
+QComboBox#Topic_opt:focus {
     border: 1px solid #888;        
     background: #ffffff;           
 }
-QComboBox::drop-down {
+
+QComboBox#Topic_opt::drop-down {
     subcontrol-origin: padding;
     subcontrol-position: top right;
     width: 24px;
     border-left: 1px solid #ccc;
 }
-QComboBox::down-arrow {
+
+QComboBox#Topic_opt::down-arrow {
 	image: url(:/icon/UI/icons/chevron-down.svg);
     width: 12px;
     height: 12px;
-	color: rgb(0, 0, 0)
 }
-
-QComboBox::down-arrow:on { 
-	image: url(:/icon/UI/icons/chevron-up.svg);
-}</string>
+</string>
+                 </property>
+                 <property name="frame">
+                  <bool>true</bool>
                  </property>
                  <item>
                   <property name="text">

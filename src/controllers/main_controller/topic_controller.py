@@ -115,22 +115,37 @@ class TopicController:
     def handle_add_vocabulary_click(self):
         from src.views.main_view.add_vocab_view import AddWordDialog
         print("DEBUG: Bắt đầu tạo AddWordDialog.")
-        # Tạo và hiển thị dialog thêm từ
+
+        # ==========================================================
+        # === SỬA LỖI Ở ĐÂY ===
+        # Thay vì 'dialog = ...', hãy gán trực tiếp vào 'self.add_word_dialog'
+        # Điều này sẽ tạo ra thuộc tính instance và lưu giữ tham chiếu đến dialog.
+        # ==========================================================
+        self.add_word_dialog = AddWordDialog(self._user_context, parent=self.parent)
+
+        # Bây giờ, self.add_word_dialog đã tồn tại và bạn có thể sử dụng nó
+        self.add_word_dialog.finished.connect(self.on_add_word_dialog_finished)
+        self.add_word_dialog.open()
+
+        print("DEBUG: AddWordDialog.open() đã được gọi.")
+
+    def on_add_word_dialog_finished(self, result):
+        """
+        Hàm này sẽ được tự động gọi khi dialog được đóng.
+        Tham số 'result' sẽ là QDialog.Accepted hoặc QDialog.Rejected.
+        """
+        print(f"DEBUG: Dialog đã đóng với kết quả: {result}")
+        if result == QDialog.Accepted:
+            print("DEBUG: Người dùng đã lưu từ mới. Đang làm mới giao diện...")
+            self.update_stats_display()
+            self.load_and_display_topics()
+        else:
+            print("DEBUG: Người dùng đã hủy việc thêm từ mới.")
+
+        # Dọn dẹp tham chiếu để cho phép Python xóa dialog khỏi bộ nhớ
         try:
-            dialog = AddWordDialog(self._user_context, parent=self.parent)
-
-            print("DEBUG: AddWordDialog đã được tạo. Đang hiển thị...")
-            result = dialog.exec_()
-            print(f"DEBUG: Dialog đã đóng với kết quả: {result}")
-
-            if result == QDialog.Accepted:
-                print("DEBUG: Người dùng đã lưu từ mới. Đang làm mới giao diện...")
-                self.update_stats_display()
-                self.load_and_display_topics()
-            else:
-                print("DEBUG: Người dùng đã hủy việc thêm từ mới.")
-        except Exception as e:
-            # Thêm khối try-except để bắt lỗi và in ra
-            print(f"LỖI NGHIÊM TRỌNG KHI TẠO/CHẠY DIALOG: {e}")
-            import traceback
-            traceback.print_exc()  # In ra toàn bộ stack trace của lỗi
+            # Dùng try-except để an toàn hơn
+            self.add_word_dialog.deleteLater()
+            self.add_word_dialog = None
+        except AttributeError:
+            pass  # Bỏ qua nếu thuộc tính không còn tồn tại

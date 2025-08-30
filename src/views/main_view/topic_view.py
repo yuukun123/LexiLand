@@ -2,6 +2,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 
 from src.controllers.main_controller.topic_controller import TopicController
+from src.utils.username_ui import set_user_info
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
 from src.utils.go_back import BaseWindow
@@ -20,7 +21,7 @@ class VocabWindow(BaseWindow, MoveableWindow):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(1.0)
 
-        self.username_label.setText(f"👤 {self.username}")
+        set_user_info(self.username_label, username)
 
         self.buttonController = buttonController(self)
         self.vocab_controller = TopicController(self)
