@@ -737,7 +737,7 @@ border-radius:10px;</string>
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QPushButton" name="Practice">
+                 <widget class="QPushButton" name="practice">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
@@ -756,7 +756,7 @@ border-radius:10px;</string>
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">#Practice{
+                   <string notr="true">#practice{
 	color: rgb(255, 255, 255);
 }</string>
                   </property>

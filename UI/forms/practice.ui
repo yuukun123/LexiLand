@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1143</width>
-    <height>718</height>
+    <width>1147</width>
+    <height>767</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1125</width>
+    <height>745</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -19,7 +25,7 @@
      <property name="minimumSize">
       <size>
        <width>1125</width>
-       <height>700</height>
+       <height>745</height>
       </size>
      </property>
      <property name="maximumSize">
@@ -641,7 +647,7 @@ border-radius:10px;</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>10</pointsize>
+                      <pointsize>9</pointsize>
                       <weight>75</weight>
                       <bold>true</bold>
                      </font>
@@ -712,7 +718,7 @@ border-radius:10px;</string>
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset>
+                        <iconset resource="../../resource/resource.qrc">
                          <normaloff>:/icon/UI/icons/speaker-64.ico</normaloff>:/icon/UI/icons/speaker-64.ico</iconset>
                        </property>
                        <property name="iconSize">

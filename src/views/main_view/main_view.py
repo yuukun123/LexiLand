@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 
 from src.models.query_data.query_data import QueryData
+from src.views.main_view.practice_view import PracticeWindow
 from src.views.main_view.topic_view import TopicWindow
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
@@ -38,6 +39,7 @@ class MainWindow(QMainWindow, MoveableWindow):
         self.logout.clicked.connect(self.buttonController.handle_logout)
 
         self.vocab.clicked.connect(self.open_vocab_window_click)
+        self.practice.clicked.connect(self.open_practice_window_click)
         print("DEBUG: vocab button connected")
 
     def load_user_context(self, username):
@@ -46,7 +48,6 @@ class MainWindow(QMainWindow, MoveableWindow):
         print(f"DEBUG: User context đã tải: {self._user_context}")
 
     def open_vocab_window_click(self):
-        from src.windows.window_manage import open_vocab_window
         print("DEBUG: start open_vocab_window")
 
         if not self._user_context:
@@ -65,4 +66,25 @@ class MainWindow(QMainWindow, MoveableWindow):
         except Exception as e:
             print("ERROR while opening vocab window:", e)
             self.show()
+
+    def open_practice_window_click(self):
+        print("DEBUG: start open_vocab_window")
+
+        if not self._user_context:
+            # Sử dụng self._user_context để lấy username cho thông báo lỗi
+            user_name_for_msg = self.username # Hoặc một giá trị mặc định
+            QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{user_name_for_msg}'.")
+            return
+        try:
+            self.hide()  # ẩn ngay lập tức
+            current_username = self._user_context.get('user_name')
+            self.practice_window = PracticeWindow(username=current_username, parent=self)
+            self.practice_window.practice_controller.setup_for_user(self._user_context)
+            print("DEBUG: vocab_window created", self.practice_window)
+            self.practice_window.show()
+            print("DEBUG: vocab_window show called")
+        except Exception as e:
+            print("ERROR while opening vocab window:", e)
+            self.show()
+
 
