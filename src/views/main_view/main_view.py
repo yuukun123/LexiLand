@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 
 from src.models.query_data.query_data import QueryData
-from src.views.main_view.topic_view import VocabWindow
+from src.views.main_view.topic_view import TopicWindow
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
 from src.utils.username_ui import set_user_info
@@ -57,7 +57,7 @@ class MainWindow(QMainWindow, MoveableWindow):
         try:
             self.hide()  # ẩn ngay lập tức
             current_username = self._user_context.get('user_name')
-            self.vocab_window = VocabWindow(username=current_username, parent=self)
+            self.vocab_window = TopicWindow(username=current_username, parent=self)
             self.vocab_window.vocab_controller.setup_for_user(self._user_context)
             print("DEBUG: vocab_window created", self.vocab_window)
             self.vocab_window.show()

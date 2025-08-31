@@ -1,53 +1,47 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QGridLayout, QWidget, QDialog
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QDialog, QGridLayout
+
 from src.models.query_data.query_data import QueryData
 
-class TopicCardWidget(QWidget):
+
+class VocabCardWidget(QWidget):
     """
     Một widget tùy chỉnh đại diện cho một thẻ chủ đề.
     Nó tải toàn bộ giao diện từ một file .ui riêng biệt.
     """
-    details_requested = pyqtSignal(int)
     def __init__(self, topic_data, parent=None):
         super().__init__(parent)
         # --- BƯỚC 1: Tải toàn bộ giao diện từ file .ui ---
-        uic.loadUi("../UI/forms/topic_card_name.ui", self)
+        uic.loadUi("../UI/forms/vocab_card_name.ui", self)
         # Lưu lại topic_id
         self.topic_id = topic_data['topic_id']
+        self.word_id = topic_data['word_id']
         # --- BƯỚC 2: Tìm các widget con và điền dữ liệu ---
         # Các widget con bây giờ đã là thuộc tính của self (ví dụ: self.topic_name)
-        self.topic_name.setText(topic_data['topic_name'])
-        word_count = topic_data.get('word_count', 0)
-        self.total_word.setText(f"Số từ: {word_count}")
+        self.vocabulary.setText(topic_data['vocab'])
+        self.define.setText(topic_data['define'])
+        self.example.setText(topic_data['example'])
         # --- BƯỚC 3: Kết nối tín hiệu cho nút ---
-        self.detailBtn.clicked.connect(self.on_details_clicked)
+        self.Practice_btn.connect(self.on_details_clicked)
 
-    def on_details_clicked(self):
-        print(f"Nút Details của Topic ID: {self.topic_id} đã được nhấn!")
-        self.details_requested.emit(self.topic_id)
-
-
-class TopicController:
+class VocabController:
     def __init__(self, parent):
-        print("DEBUG: VocabController.__init__ Bắt đầu.")
         self.parent = parent
         self.query_data = QueryData()
         self._user_context = None
 
         # --- Setup UI ---
-        self.topic_container = self.parent.container
-        print(f"DEBUG: Container được chọn là: {self.topic_container.objectName()}")
+        self.word_container = self.parent.container
+        print(f"DEBUG: Container được chọn là: {self.word_container.objectName()}")
 
         # Tạo và áp dụng layout cho container
-        if self.topic_container.layout() is None:
-            self.topic_layout = QGridLayout(self.topic_container)
+        if self.word_container.layout() is None:
+            self.topic_layout = QGridLayout(self.word_container)
         else:
-            self.topic_layout = self.topic_container.layout()
+            self.topic_layout = self.word_container.layout()
 
-        self.topic_layout.setHorizontalSpacing(15)
-        self.topic_layout.setVerticalSpacing(15)
-
+        self.topic_layout.setSpacing(15)
         self.topic_layout.setAlignment(Qt.AlignTop)
 
         print("DEBUG: VocabController.__init__ Hoàn thành.")
@@ -88,7 +82,7 @@ class TopicController:
         if hasattr(self.parent, 'review'):
             self.parent.review.setText(str(stats["review_needed"]))
 
-    def load_and_display_topics(self):
+    def load_and_display_words(self):
         print("DEBUG: Bắt đầu hàm load_and_display_topics.")
         self.clear_layout(self.topic_layout)
 
@@ -98,23 +92,23 @@ class TopicController:
 
         print(f"DEBUG: Đang tải topics cho user_id: {user_id}")
 
-        topics = self.query_data.get_all_topics_with_word_count(user_id)
-        print(f"DEBUG: Các topics tìm thấy từ CSDL: {topics}")
+        words = self.query_data.get_all_topics_with_word_count(user_id)
+        print(f"DEBUG: Các topics tìm thấy từ CSDL: {words}")
 
-        if not topics:
+        if not words:
             print("DEBUG: Không có topic nào để hiển thị. Dừng lại.")
             return
 
-        num_columns = 4
-        for index, topic_data in enumerate(topics):
+        num_columns = 3
+        for index, topic_data in enumerate(words):
             print(f"DEBUG: Đang tạo card cho topic: {topic_data['topic_name']}")
-            topic_card = TopicCardWidget(topic_data, parent=self.topic_container)
-            topic_card.details_requested.connect(self.handle_details_requested)
+            word_card = VocabCardWidget(topic_data, parent=self.word_container)
+            # topic_card.details_requested.connect(self.handle_details_requested)
             row = index // num_columns
             col = index % num_columns
-            self.topic_layout.addWidget(topic_card, row, col)
+            self.topic_layout.addWidget(word_card, row, col)
 
-    def handle_add_vocabulary_click(self):
+    def handle_edit_vocabulary_click(self):
         from src.views.main_view.add_vocab_view import AddWordDialog
         print("DEBUG: Bắt đầu tạo AddWordDialog.")
 
@@ -125,35 +119,6 @@ class TopicController:
         self.add_word_dialog.open()
 
         print("DEBUG: AddWordDialog.open() đã được gọi.")
-
-    def handle_details_requested(self, topic_id):
-        """
-        Đây là KHE (SLOT). Hàm này được gọi khi bất kỳ TopicCardWidget nào
-        phát ra tín hiệu 'details_requested'.
-        """
-        print(f"DEBUG: TopicController đã nhận được yêu cầu xem chi tiết cho topic_id: {topic_id}")
-
-        # Controller bây giờ có đầy đủ thông tin để mở cửa sổ mới
-        if not self._user_context:
-            return
-
-        # Import tại chỗ để tránh circular import
-        from src.views.main_view.vocab_view import VocabWindow
-
-        try:
-            # Lấy username từ context đã được lưu
-            username = self._user_context.get('user_name')
-
-            # Tạo và hiển thị cửa sổ chi tiết
-            # Cửa sổ này sẽ cần user_context và topic_id để truy vấn CSDL
-            self.detail_window = VocabWindow(username, topic_id, parent=self.parent)
-
-            # Ẩn cửa sổ hiện tại và hiển thị cửa sổ mới
-            self.parent.hide()
-            self.detail_window.show()
-
-        except Exception as e:
-            print(f"LỖI khi mở cửa sổ chi tiết: {e}")
 
     def on_add_word_dialog_finished(self, result):
         """
