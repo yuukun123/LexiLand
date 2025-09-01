@@ -235,6 +235,79 @@ class QueryData:
             if conn:
                 conn.close()
 
+    def get_stats_for_topic(self, user_id, topic_id):
+        """
+        Lấy các chỉ số thống kê (Đã học, Đã nhớ, Cần ôn tập)
+        chỉ cho các từ bên trong một chủ đề cụ thể.
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            sql_query = """
+                SELECT
+                    COUNT(p.word_id) as total_learned_in_topic,
+                    SUM(CASE WHEN p.is_mastered = 1 THEN 1 ELSE 0 END) as mastered_in_topic,
+                    SUM(CASE WHEN p.next_review_at <= ? AND p.is_mastered = 0 THEN 1 ELSE 0 END) as review_needed_in_topic
+                FROM
+                    user_word_progress p
+                JOIN
+                    topic_word tw ON p.word_id = tw.word_id
+                WHERE
+                    p.user_id = ? AND tw.topic_id = ?
+            """
+            cursor.execute(sql_query, (now_str, user_id, topic_id))
+
+            stats = cursor.fetchone()
+
+            if stats:
+                return {
+                    "learned": stats["total_learned_in_topic"] or 0,
+                    "memorized": stats["mastered_in_topic"] or 0,
+                    "review_needed": stats["review_needed_in_topic"] or 0
+                }
+            else:
+                return {"learned": 0, "memorized": 0, "review_needed": 0}
+
+        except sqlite3.Error as e:
+            print(f"Database error in get_stats_for_topic: {e}")
+            return {"learned": -1, "memorized": -1, "review_needed": -1}
+        finally:
+            if conn:
+                conn.close()
+
+    def get_topic_name_from_topic_id(self, user_id, topic_id):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+
+            sql_query = """
+                SELECT
+                    t.topic_name
+                FROM
+                    topics t
+                JOIN
+                    users u ON u.user_id = t.user_id
+                WHERE
+                    u.user_id = ? AND t.topic_id = ?
+            """
+            cursor.execute(sql_query, (user_id, topic_id))
+
+            result_row = cursor.fetchone()
+
+            if result_row:
+                return result_row['topic_name']
+            else:
+                return None
+
+        except sqlite3.Error as e:
+            print(f"Database error in get_stats_for_topic: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
     def debug_user_data(self, user_id):
         """
         In ra một báo cáo chi tiết về dữ liệu của một người dùng để gỡ lỗi.

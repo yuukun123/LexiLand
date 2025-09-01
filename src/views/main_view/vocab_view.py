@@ -2,6 +2,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 
 from src.controllers.main_controller.topic_controller import TopicController
+from src.controllers.main_controller.vocab_controller import VocabController
 from src.utils.username_ui import set_user_info
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
@@ -13,6 +14,7 @@ class VocabWindow(BaseWindow, MoveableWindow):
         uic.loadUi("../UI/forms/topic_word.ui", self)
         MoveableWindow.__init__(self)
         self.username = username
+        self.topic_id = topic_id
 
         self.go_back.clicked.connect(self.go_back_page)
 
@@ -24,11 +26,11 @@ class VocabWindow(BaseWindow, MoveableWindow):
         set_user_info(self.username_label, username)
 
         self.buttonController = buttonController(self)
-        # self.vocab_controller = TopicController(self)
+        self.vocab_controller = VocabController(self, self.topic_id)
 
         self.closeBtn.clicked.connect(self.buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
 
         # self.Practice_btn.clicked.connect(self.vocab_controller.handle_add_vocabulary_click)
-        print("DEBUG: vocab button connected")
+        # print("DEBUG: vocab button connected")

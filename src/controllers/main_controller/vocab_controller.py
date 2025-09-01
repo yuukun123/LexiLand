@@ -26,10 +26,13 @@ class VocabCardWidget(QWidget):
         self.Practice_btn.connect(self.on_details_clicked)
 
 class VocabController:
-    def __init__(self, parent):
+    def __init__(self, parent, topic_id):
         self.parent = parent
         self.query_data = QueryData()
         self._user_context = None
+        self.topic_id = topic_id
+
+        self.topic_label = self.parent.topic_label
 
         # --- Setup UI ---
         self.word_container = self.parent.container
@@ -46,6 +49,8 @@ class VocabController:
 
         print("DEBUG: VocabController.__init__ Hoàn thành.")
 
+        # self.update_stats_for_this_topic()
+
     def setup_for_user(self, user_context):
         print(f"DEBUG: VocabController.setup_for_user được gọi với context: {user_context}")
         self._user_context = user_context
@@ -53,8 +58,8 @@ class VocabController:
             print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
             return
 
-        self.update_stats_display()
-        self.load_and_display_topics()
+        self.update_stats_for_this_topic()
+        # self.load_and_display_topics()
 
     def clear_layout(self, layout):
         while layout.count():
@@ -62,23 +67,22 @@ class VocabController:
             if child.widget():
                 child.widget().deleteLater()
 
-    def update_stats_display(self):
+    def update_stats_for_this_topic(self):
         if not self._user_context or 'user_id' not in self._user_context:
             print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
             return
 
         user_id = self._user_context['user_id']
-        stats = self.query_data.get_user_stats(user_id)
-        print(f"DEBUG: Cập nhật thông tin user_id: {user_id}")
+        stats = self.query_data.get_stats_for_topic(user_id, self.topic_id)
+        print(f"DEBUG: Cập nhật thông tin user_id: {user_id}, topic_id: {self.topic_id}")
+
+        topic_name = self.query_data.get_topic_name_from_topic_id(user_id, self.topic_id)
+        self.topic_label.setText(f"Topic: {topic_name}")
 
         if hasattr(self.parent, 'learned'):
             self.parent.learned.setText(str(stats["learned"]))
-
-        # Ví dụ, nếu widget hiển thị số 50 (Đã nhớ) có objectName là 'memorizedCountLabel'
         if hasattr(self.parent, 'memorized'):
             self.parent.memorized.setText(str(stats["memorized"]))
-
-        # Ví dụ, nếu widget hiển thị số 50 (Cần ôn tập) có objectName là 'reviewCountLabel'
         if hasattr(self.parent, 'review'):
             self.parent.review.setText(str(stats["review_needed"]))
 

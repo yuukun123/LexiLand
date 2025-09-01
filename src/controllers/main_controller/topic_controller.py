@@ -146,11 +146,12 @@ class TopicController:
 
             # Tạo và hiển thị cửa sổ chi tiết
             # Cửa sổ này sẽ cần user_context và topic_id để truy vấn CSDL
-            self.detail_window = VocabWindow(username, topic_id, parent=self.parent)
+            self.vocab_window = VocabWindow(username, topic_id, parent=self.parent)
+            self.vocab_window.vocab_controller.setup_for_user(self._user_context)
 
             # Ẩn cửa sổ hiện tại và hiển thị cửa sổ mới
             self.parent.hide()
-            self.detail_window.show()
+            self.vocab_window.show()
 
         except Exception as e:
             print(f"LỖI khi mở cửa sổ chi tiết: {e}")
