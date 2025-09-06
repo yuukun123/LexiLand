@@ -308,6 +308,60 @@ class QueryData:
             if conn:
                 conn.close()
 
+    def get_words_in_topic(self, topic_id):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+
+            sql_query = """
+                            SELECT
+                                w.word_id,
+                                w.word_name,
+                                p.phonetic_text,
+                                p.audio_url,
+                                p.region,
+                                m.part_of_speech,
+                                def_vi.definition_text as definition_vi,
+                                e.example_en,
+                                e.example_vi
+                            FROM
+                                topic_word tw
+                            -- Kết nối đến bảng words để lấy tên từ
+                            JOIN
+                                words w ON tw.word_id = w.word_id
+                            -- LEFT JOIN đến các bảng chi tiết khác
+                            LEFT JOIN
+                                pronunciations p ON w.word_id = p.word_id
+                            LEFT JOIN
+                                meanings m ON w.word_id = m.word_id
+                            -- JOIN đến bảng definition cho nghĩa tiếng Việt
+                            LEFT JOIN
+                                definition def_vi ON m.meaning_id = def_vi.meaning_id AND def_vi.language = 'vi'
+                            LEFT JOIN
+                                examples e ON m.meaning_id = e.meaning_id
+                            WHERE
+                                tw.topic_id = ?
+                            -- GROUP BY để đảm bảo mỗi từ chỉ xuất hiện một lần (nếu có nhiều nghĩa/phát âm)
+                            GROUP BY
+                                w.word_id
+                            ORDER BY
+                                w.word_name ASC
+                        """
+            cursor.execute(sql_query, (topic_id, ))
+
+            # Dùng fetchall() để lấy tất cả các từ
+            rows = cursor.fetchall()
+
+            # Chuyển đổi danh sách các hàng thành danh sách các dictionary
+            return [dict(row) for row in rows]
+
+        except sqlite3.Error as e:
+            print(f"Database error in get_words_in_topic: {e}")
+            return []  # Trả về danh sách rỗng nếu có lỗi
+        finally:
+            if conn:
+                conn.close()
+
     def debug_user_data(self, user_id):
         """
         In ra một báo cáo chi tiết về dữ liệu của một người dùng để gỡ lỗi.

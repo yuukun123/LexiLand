@@ -1143,10 +1143,7 @@ QScrollBar::handle:horizontal {
                       <property name="frameShadow">
                        <enum>QFrame::Raised</enum>
                       </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_17">
-                       <property name="spacing">
-                        <number>20</number>
-                       </property>
+                      <layout class="QGridLayout" name="gridLayout">
                        <property name="leftMargin">
                         <number>0</number>
                        </property>

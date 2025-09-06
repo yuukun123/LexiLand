@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QGridLayout, QWidget, QDialog
 from src.models.query_data.query_data import QueryData
 
+
 class TopicCardWidget(QWidget):
     """
     Một widget tùy chỉnh đại diện cho một thẻ chủ đề.
@@ -29,11 +30,13 @@ class TopicCardWidget(QWidget):
 
 
 class TopicController:
-    def __init__(self, parent):
-        print("DEBUG: VocabController.__init__ Bắt đầu.")
+    def __init__(self, parent, main_window):
+        print("DEBUG: TopicController.__init__ Bắt đầu.")
         self.parent = parent
         self.query_data = QueryData()
         self._user_context = None
+        self.main_window_ref = main_window
+        # self.vocab_window = None
 
         # --- Setup UI ---
         self.topic_container = self.parent.container
@@ -50,10 +53,10 @@ class TopicController:
 
         self.topic_layout.setAlignment(Qt.AlignTop)
 
-        print("DEBUG: VocabController.__init__ Hoàn thành.")
+        print("DEBUG: TopicController.__init__ Hoàn thành.")
 
     def setup_for_user(self, user_context):
-        print(f"DEBUG: VocabController.setup_for_user được gọi với context: {user_context}")
+        print(f"DEBUG: TopicController.setup_for_user được gọi với context: {user_context}")
         self._user_context = user_context
         if not self._user_context or 'user_id' not in self._user_context:
             print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
@@ -138,23 +141,28 @@ class TopicController:
             return
 
         # Import tại chỗ để tránh circular import
-        from src.views.main_view.vocab_view import VocabWindow
+        # from src.views.main_view.vocab_view import VocabWindow
+        from src.windows.window_manage import open_vocab_window
 
         try:
-            # Lấy username từ context đã được lưu
-            username = self._user_context.get('user_name')
+            self.parent.hide()
 
             # Tạo và hiển thị cửa sổ chi tiết
             # Cửa sổ này sẽ cần user_context và topic_id để truy vấn CSDL
-            self.vocab_window = VocabWindow(username, topic_id, parent=self.parent)
-            self.vocab_window.vocab_controller.setup_for_user(self._user_context)
+            self.vocab_window = open_vocab_window(
+                self._user_context,
+                topic_id,
+                parent=self.main_window_ref
+            )
 
             # Ẩn cửa sổ hiện tại và hiển thị cửa sổ mới
-            self.parent.hide()
-            self.vocab_window.show()
+            # self.vocab_window.show()
 
         except Exception as e:
             print(f"LỖI khi mở cửa sổ chi tiết: {e}")
+            import traceback
+            traceback.print_exc()
+            self.parent.show()
 
     def on_add_word_dialog_finished(self, result):
         """

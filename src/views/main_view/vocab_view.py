@@ -26,7 +26,8 @@ class VocabWindow(BaseWindow, MoveableWindow):
         set_user_info(self.username_label, username)
 
         self.buttonController = buttonController(self)
-        self.vocab_controller = VocabController(self, self.topic_id)
+        self.vocab_controller = VocabController(self, self.username, self.topic_id)
+        self.vocab_controller.setup_for_user()
 
         self.closeBtn.clicked.connect(self.buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)

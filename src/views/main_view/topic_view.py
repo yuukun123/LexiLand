@@ -8,7 +8,7 @@ from src.controllers.buttonController import buttonController
 from src.utils.go_back import BaseWindow
 
 class TopicWindow(BaseWindow, MoveableWindow):
-    def __init__(self, username, parent=None):
+    def __init__(self, username, main_window ,parent=None):
         super().__init__(parent)
         uic.loadUi("../UI/forms/topic.ui", self)
         MoveableWindow.__init__(self)
@@ -24,11 +24,11 @@ class TopicWindow(BaseWindow, MoveableWindow):
         set_user_info(self.username_label, username)
 
         self.buttonController = buttonController(self)
-        self.vocab_controller = TopicController(self)
+        self.topic_controller = TopicController(self, main_window)
 
         self.closeBtn.clicked.connect(self.buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
 
-        self.add_vocab_btn.clicked.connect(self.vocab_controller.handle_add_vocabulary_click)
+        self.add_vocab_btn.clicked.connect(self.topic_controller.handle_add_vocabulary_click)
         print("DEBUG: vocab button connected")

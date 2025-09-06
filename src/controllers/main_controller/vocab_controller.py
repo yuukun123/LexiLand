@@ -10,29 +10,48 @@ class VocabCardWidget(QWidget):
     Một widget tùy chỉnh đại diện cho một thẻ chủ đề.
     Nó tải toàn bộ giao diện từ một file .ui riêng biệt.
     """
-    def __init__(self, topic_data, parent=None):
+    def __init__(self, word_data, parent=None):
         super().__init__(parent)
-        # --- BƯỚC 1: Tải toàn bộ giao diện từ file .ui ---
         uic.loadUi("../UI/forms/vocab_card_name.ui", self)
-        # Lưu lại topic_id
-        self.topic_id = topic_data['topic_id']
-        self.word_id = topic_data['word_id']
-        # --- BƯỚC 2: Tìm các widget con và điền dữ liệu ---
-        # Các widget con bây giờ đã là thuộc tính của self (ví dụ: self.topic_name)
-        self.vocabulary.setText(topic_data['vocab'])
-        self.define.setText(topic_data['define'])
-        self.example.setText(topic_data['example'])
-        # --- BƯỚC 3: Kết nối tín hiệu cho nút ---
-        self.Practice_btn.connect(self.on_details_clicked)
+        self.word_id = word_data.get('word_id')
+
+        self.phonetic_UK.hide()
+        self.region_UK.hide()
+
+        word_name_text = word_data.get('word_name', 'N/A')
+        self.vocabulary.setText(word_name_text)
+
+        definition_text = word_data.get('definition_vi', 'Chưa có định nghĩa')
+        self.define.setText(definition_text)
+
+        example_text = word_data.get('example_en', 'Chưa có ví dụ')
+        self.example.setText(example_text)
+
+        region_text = word_data.get('region')
+        if region_text == 'US':
+            self.region_US.setText(region_text)
+            phonetic_text = word_data.get('phonetic')
+            self.phonetic_US.setText(phonetic_text)
+        # elif region_text == 'UK':
+        #     self.region_UK.setText(region_text)
+        #     phonetic_text_uk = word_data.get('phonetic')
+        #     self.phonetic_UK.setText(phonetic_text_uk)
+
+
+
+        # accent = word_data.get('audio_url', 'Chưa có âm thanh')
+        # self.voice.setText(accent)
+
 
 class VocabController:
-    def __init__(self, parent, topic_id):
+    def __init__(self, parent, user_context, topic_id):
         self.parent = parent
         self.query_data = QueryData()
-        self._user_context = None
+        self._user_context = user_context
         self.topic_id = topic_id
-
         self.topic_label = self.parent.topic_label
+
+
 
         # --- Setup UI ---
         self.word_container = self.parent.container
@@ -40,26 +59,25 @@ class VocabController:
 
         # Tạo và áp dụng layout cho container
         if self.word_container.layout() is None:
-            self.topic_layout = QGridLayout(self.word_container)
+            self.word_layout = QGridLayout(self.word_container)
         else:
-            self.topic_layout = self.word_container.layout()
+            self.word_layout = self.word_container.layout()
 
-        self.topic_layout.setSpacing(15)
-        self.topic_layout.setAlignment(Qt.AlignTop)
+        self.word_layout.setSpacing(15)
+        self.word_layout.setAlignment(Qt.AlignTop)
 
         print("DEBUG: VocabController.__init__ Hoàn thành.")
 
         # self.update_stats_for_this_topic()
 
-    def setup_for_user(self, user_context):
-        print(f"DEBUG: VocabController.setup_for_user được gọi với context: {user_context}")
-        self._user_context = user_context
+    def setup_for_user(self):
+        print(f"DEBUG: VocabController.setup_for_user được gọi với context:")
         if not self._user_context or 'user_id' not in self._user_context:
             print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
             return
 
         self.update_stats_for_this_topic()
-        # self.load_and_display_topics()
+        self.load_and_display_words()
 
     def clear_layout(self, layout):
         while layout.count():
@@ -87,60 +105,66 @@ class VocabController:
             self.parent.review.setText(str(stats["review_needed"]))
 
     def load_and_display_words(self):
-        print("DEBUG: Bắt đầu hàm load_and_display_topics.")
-        self.clear_layout(self.topic_layout)
+        while self.word_layout.count():
+            child = self.word_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
 
+        print("DEBUG: Bắt đầu hàm load_and_display_words.")
+        # SỬA LỖI 1: Gọi hàm truy vấn với đúng tham số
         user_id = self._user_context['user_id']
-
-        self.query_data.debug_user_data(user_id)
-
-        print(f"DEBUG: Đang tải topics cho user_id: {user_id}")
-
-        words = self.query_data.get_all_topics_with_word_count(user_id)
-        print(f"DEBUG: Các topics tìm thấy từ CSDL: {words}")
+        words = self.query_data.get_words_in_topic(self.topic_id)
+        print(f"DEBUG: Các TỪ tìm thấy của user_id: {user_id} trong topic {self.topic_id}: {words}")
 
         if not words:
-            print("DEBUG: Không có topic nào để hiển thị. Dừng lại.")
+            print("DEBUG: Không có từ nào để hiển thị trong chủ đề này.")
+            # Có thể hiển thị một QLabel thông báo ở đây
             return
 
-        num_columns = 3
-        for index, topic_data in enumerate(words):
-            print(f"DEBUG: Đang tạo card cho topic: {topic_data['topic_name']}")
-            word_card = VocabCardWidget(topic_data, parent=self.word_container)
-            # topic_card.details_requested.connect(self.handle_details_requested)
-            row = index // num_columns
-            col = index % num_columns
-            self.topic_layout.addWidget(word_card, row, col)
+        # Lặp qua danh sách từ, mỗi từ là một HÀNG mới
+        for index, word_data in enumerate(words):
+            print(f"DEBUG: Đang tạo card cho từ: {word_data.get('word_name')}")
 
-    def handle_edit_vocabulary_click(self):
-        from src.views.main_view.add_vocab_view import AddWordDialog
-        print("DEBUG: Bắt đầu tạo AddWordDialog.")
+            word_card = VocabCardWidget(word_data, parent=self.word_container)
 
-        self.add_word_dialog = AddWordDialog(self._user_context, parent=self.parent)
+            # Luôn đặt widget vào CỘT 0
+            # Chỉ số HÀNG (row) sẽ là chỉ số index của vòng lặp
+            self.word_layout.addWidget(word_card, index, 0)
 
-        # Bây giờ, self.add_word_dialog đã tồn tại và bạn có thể sử dụng nó
-        self.add_word_dialog.finished.connect(self.on_add_word_dialog_finished)
-        self.add_word_dialog.open()
+        # (Tùy chọn nhưng khuyến khích)
+        # Thêm một stretch vào cuối để dồn tất cả các card lên trên
+        # nếu chúng không lấp đầy toàn bộ không gian
+        self.word_layout.setRowStretch(len(words), 1)
 
-        print("DEBUG: AddWordDialog.open() đã được gọi.")
-
-    def on_add_word_dialog_finished(self, result):
-        """
-        Hàm này sẽ được tự động gọi khi dialog được đóng.
-        Tham số 'result' sẽ là QDialog.Accepted hoặc QDialog.Rejected.
-        """
-        print(f"DEBUG: Dialog đã đóng với kết quả: {result}")
-        if result == QDialog.Accepted:
-            print("DEBUG: Người dùng đã lưu từ mới. Đang làm mới giao diện...")
-            self.update_stats_display()
-            self.load_and_display_topics()
-        else:
-            print("DEBUG: Người dùng đã hủy việc thêm từ mới.")
-
-        # Dọn dẹp tham chiếu để cho phép Python xóa dialog khỏi bộ nhớ
-        try:
-            # Dùng try-except để an toàn hơn
-            self.add_word_dialog.deleteLater()
-            self.add_word_dialog = None
-        except AttributeError:
-            pass  # Bỏ qua nếu thuộc tính không còn tồn tại
+    # def handle_edit_vocabulary_click(self):
+    #     from src.views.main_view.add_vocab_view import AddWordDialog
+    #     print("DEBUG: Bắt đầu tạo AddWordDialog.")
+    #
+    #     self.add_word_dialog = AddWordDialog(self._user_context, parent=self.parent)
+    #
+    #     # Bây giờ, self.add_word_dialog đã tồn tại và bạn có thể sử dụng nó
+    #     self.add_word_dialog.finished.connect(self.on_add_word_dialog_finished)
+    #     self.add_word_dialog.open()
+    #
+    #     print("DEBUG: AddWordDialog.open() đã được gọi.")
+    #
+    # def on_add_word_dialog_finished(self, result):
+    #     """
+    #     Hàm này sẽ được tự động gọi khi dialog được đóng.
+    #     Tham số 'result' sẽ là QDialog.Accepted hoặc QDialog.Rejected.
+    #     """
+    #     print(f"DEBUG: Dialog đã đóng với kết quả: {result}")
+    #     if result == QDialog.Accepted:
+    #         print("DEBUG: Người dùng đã lưu từ mới. Đang làm mới giao diện...")
+    #         self.update_stats_display()
+    #         self.load_and_display_topics()
+    #     else:
+    #         print("DEBUG: Người dùng đã hủy việc thêm từ mới.")
+    #
+    #     # Dọn dẹp tham chiếu để cho phép Python xóa dialog khỏi bộ nhớ
+    #     try:
+    #         # Dùng try-except để an toàn hơn
+    #         self.add_word_dialog.deleteLater()
+    #         self.add_word_dialog = None
+    #     except AttributeError:
+    #         pass  # Bỏ qua nếu thuộc tính không còn tồn tại

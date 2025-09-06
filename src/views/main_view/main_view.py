@@ -25,6 +25,7 @@ class MainWindow(QMainWindow, MoveableWindow):
 
         self.query_data = QueryData()
         self._user_context = None
+        # self.topic_window = None
         self.load_user_context(username)
 
         if not self._user_context:
@@ -38,8 +39,8 @@ class MainWindow(QMainWindow, MoveableWindow):
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
 
-        self.vocab.clicked.connect(self.open_vocab_window_click)
-        self.practice.clicked.connect(self.open_practice_window_click)
+        self.vocab.clicked.connect(self.handle_topic_window_click)
+        self.practice.clicked.connect(self.handle_practice_window_click)
         print("DEBUG: vocab button connected")
 
     def load_user_context(self, username):
@@ -47,8 +48,8 @@ class MainWindow(QMainWindow, MoveableWindow):
         self._user_context = self.query_data.get_user_by_username(username)
         print(f"DEBUG: User context đã tải: {self._user_context}")
 
-    def open_vocab_window_click(self):
-        print("DEBUG: start open_vocab_window")
+    def handle_topic_window_click(self):
+        print("DEBUG: start open_topic_window")
 
         if not self._user_context:
             # Sử dụng self._user_context để lấy username cho thông báo lỗi
@@ -58,17 +59,17 @@ class MainWindow(QMainWindow, MoveableWindow):
         try:
             self.hide()  # ẩn ngay lập tức
             current_username = self._user_context.get('user_name')
-            self.vocab_window = TopicWindow(username=current_username, parent=self)
-            self.vocab_window.vocab_controller.setup_for_user(self._user_context)
-            print("DEBUG: vocab_window created", self.vocab_window)
-            self.vocab_window.show()
+            self.topic_window = TopicWindow(username=current_username, main_window=self, parent=self)
+            self.topic_window.topic_controller.setup_for_user(self._user_context)
+            print("DEBUG: topic_window created", self.topic_window)
+            self.topic_window.show()
             print("DEBUG: vocab_window show called")
         except Exception as e:
-            print("ERROR while opening vocab window:", e)
+            print("ERROR while opening topic window:", e)
             self.show()
 
-    def open_practice_window_click(self):
-        print("DEBUG: start open_vocab_window")
+    def handle_practice_window_click(self):
+        print("DEBUG: start open_practice_window")
 
         if not self._user_context:
             # Sử dụng self._user_context để lấy username cho thông báo lỗi
@@ -84,7 +85,7 @@ class MainWindow(QMainWindow, MoveableWindow):
             self.practice_window.show()
             print("DEBUG: vocab_window show called")
         except Exception as e:
-            print("ERROR while opening vocab window:", e)
+            print("ERROR while opening practice window:", e)
             self.show()
 
 
