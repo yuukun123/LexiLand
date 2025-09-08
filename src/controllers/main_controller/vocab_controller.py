@@ -27,11 +27,11 @@ class VocabCardWidget(QWidget):
         example_text = word_data.get('example_en', 'Chưa có ví dụ')
         self.example.setText(example_text)
 
-        region_text = word_data.get('region')
-        if region_text == 'US':
-            self.region_US.setText(region_text)
-            phonetic_text = word_data.get('phonetic')
-            self.phonetic_US.setText(phonetic_text)
+        # region_text = word_data.get('region')
+        # if region_text == 'US':
+        #     self.region_US.setText(region_text)
+        #     phonetic_text = word_data.get('phonetic')
+        #     self.phonetic_US.setText(phonetic_text)
         # elif region_text == 'UK':
         #     self.region_UK.setText(region_text)
         #     phonetic_text_uk = word_data.get('phonetic')
@@ -41,7 +41,6 @@ class VocabCardWidget(QWidget):
 
         # accent = word_data.get('audio_url', 'Chưa có âm thanh')
         # self.voice.setText(accent)
-
 
 class VocabController:
     def __init__(self, parent, user_context, topic_id):
@@ -70,8 +69,9 @@ class VocabController:
 
         # self.update_stats_for_this_topic()
 
-    def setup_for_user(self):
-        print(f"DEBUG: VocabController.setup_for_user được gọi với context:")
+    def setup_for_user(self, user_context):
+        print(f"DEBUG: VocabController.setup_for_user được gọi với context: {user_context}")
+        self._user_context = user_context
         if not self._user_context or 'user_id' not in self._user_context:
             print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
             return
@@ -105,12 +105,9 @@ class VocabController:
             self.parent.review.setText(str(stats["review_needed"]))
 
     def load_and_display_words(self):
-        while self.word_layout.count():
-            child = self.word_layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
-
         print("DEBUG: Bắt đầu hàm load_and_display_words.")
+        self.clear_layout(self.word_layout)
+
         # SỬA LỖI 1: Gọi hàm truy vấn với đúng tham số
         user_id = self._user_context['user_id']
         words = self.query_data.get_words_in_topic(self.topic_id)

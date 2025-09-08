@@ -21,7 +21,7 @@ def open_topic_window(username_login, parent=None):
     window.show()
     return window
 
-def open_vocab_window(username_login, topic_id, parent=None):
-    window = VocabWindow(username_login, topic_id, parent=parent)
+def open_vocab_window(username_login, topic_id, pre_window, parent=None):
+    window = VocabWindow(username_login, topic_id, pre_window, parent=parent)
     window.show()
     return window

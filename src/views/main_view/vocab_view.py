@@ -9,12 +9,14 @@ from src.controllers.buttonController import buttonController
 from src.utils.go_back import BaseWindow
 
 class VocabWindow(BaseWindow, MoveableWindow):
-    def __init__(self, username, topic_id, parent=None):
+    def __init__(self, username, topic_id, pre_window, parent=None):
         super().__init__(parent)
         uic.loadUi("../UI/forms/topic_word.ui", self)
         MoveableWindow.__init__(self)
         self.username = username
         self.topic_id = topic_id
+
+        self.pre_window = pre_window
 
         self.go_back.clicked.connect(self.go_back_page)
 
@@ -27,7 +29,6 @@ class VocabWindow(BaseWindow, MoveableWindow):
 
         self.buttonController = buttonController(self)
         self.vocab_controller = VocabController(self, self.username, self.topic_id)
-        self.vocab_controller.setup_for_user()
 
         self.closeBtn.clicked.connect(self.buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
@@ -35,3 +36,9 @@ class VocabWindow(BaseWindow, MoveableWindow):
 
         # self.Practice_btn.clicked.connect(self.vocab_controller.handle_add_vocabulary_click)
         # print("DEBUG: vocab button connected")
+
+    def go_back_to_previous(self):
+        """Hàm này bây giờ sẽ quay lại đúng cửa sổ đã gọi nó."""
+        if self.previous_window:
+            self.previous_window.show()  # Hiển thị lại TopicWindow
+        self.close()  # Đóng cửa sổ hiện tại (DetailTopicWindow)

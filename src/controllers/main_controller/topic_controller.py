@@ -18,7 +18,8 @@ class TopicCardWidget(QWidget):
         self.topic_id = topic_data['topic_id']
         # --- BƯỚC 2: Tìm các widget con và điền dữ liệu ---
         # Các widget con bây giờ đã là thuộc tính của self (ví dụ: self.topic_name)
-        self.topic_name.setText(topic_data['topic_name'])
+        topic_name = topic_data.get('topic_name', 'N/A')
+        self.topic_name.setText(topic_name)
         word_count = topic_data.get('word_count', 0)
         self.total_word.setText(f"Số từ: {word_count}")
         # --- BƯỚC 3: Kết nối tín hiệu cho nút ---
@@ -96,11 +97,8 @@ class TopicController:
         self.clear_layout(self.topic_layout)
 
         user_id = self._user_context['user_id']
-
         self.query_data.debug_user_data(user_id)
-
         print(f"DEBUG: Đang tải topics cho user_id: {user_id}")
-
         topics = self.query_data.get_all_topics_with_word_count(user_id)
         print(f"DEBUG: Các topics tìm thấy từ CSDL: {topics}")
 
@@ -145,15 +143,19 @@ class TopicController:
         from src.windows.window_manage import open_vocab_window
 
         try:
+            topic_window = self.parent
             self.parent.hide()
 
             # Tạo và hiển thị cửa sổ chi tiết
             # Cửa sổ này sẽ cần user_context và topic_id để truy vấn CSDL
+            current_username = self._user_context.get('user_name')
             self.vocab_window = open_vocab_window(
-                self._user_context,
+                current_username,
                 topic_id,
-                parent=self.main_window_ref
+                pre_window = topic_window,
+                parent = topic_window
             )
+            self.vocab_window.vocab_controller.setup_for_user(self._user_context)
 
             # Ẩn cửa sổ hiện tại và hiển thị cửa sổ mới
             # self.vocab_window.show()

@@ -539,8 +539,8 @@ border-radius: 10px;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../resource/resource.qrc">
-             <normaloff>:/icon/UI/icons/delete-64.ico</normaloff>:/icon/UI/icons/delete-64.ico</iconset>
+            <iconset>
+             <normaloff>../icons/delete-64.ico</normaloff>../icons/delete-64.ico</iconset>
            </property>
            <property name="iconSize">
             <size>
