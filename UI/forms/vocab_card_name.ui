@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>VocabCardWidget</class>
+ <widget class="QWidget" name="VocabCardWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QFrame" name="detail_word">
+    <widget class="QFrame" name="frame_detail_word">
      <property name="styleSheet">
       <string notr="true">#detail_word{
 background-color: rgb(225, 225, 225);
@@ -30,7 +30,7 @@ border-radius: 10px;
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_18">
       <property name="spacing">
-       <number>0</number>
+       <number>7</number>
       </property>
       <property name="bottomMargin">
        <number>11</number>
@@ -43,178 +43,101 @@ border-radius: 10px;
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="spacing">
-          <number>10</number>
+          <number>12</number>
          </property>
          <property name="leftMargin">
-          <number>0</number>
+          <number>11</number>
          </property>
          <property name="topMargin">
           <number>0</number>
          </property>
          <property name="rightMargin">
-          <number>0</number>
+          <number>11</number>
          </property>
          <property name="bottomMargin">
-          <number>10</number>
+          <number>5</number>
          </property>
          <item>
-          <widget class="QFrame" name="frame_26">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+          <widget class="QLabel" name="vocabulary">
+           <property name="font">
+            <font>
+             <pointsize>16</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(88, 88, 88);</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_7">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="vocabulary">
-              <property name="font">
-               <font>
-                <pointsize>16</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(88, 88, 88);</string>
-              </property>
-              <property name="text">
-               <string>Vocabulary</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <property name="text">
+            <string>Vocabulary</string>
+           </property>
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="frame">
-           <property name="minimumSize">
-            <size>
-             <width>150</width>
-             <height>0</height>
-            </size>
+          <widget class="QLabel" name="region_UK">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
            </property>
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+           <property name="text">
+            <string>TextLabel</string>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <property name="alignment">
+            <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="region_US">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="phonetic_US">
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="frame_2">
-           <property name="minimumSize">
-            <size>
-             <width>150</width>
-             <height>0</height>
-            </size>
+          <widget class="QLabel" name="phonetic_UK">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+            </font>
            </property>
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+           <property name="text">
+            <string>TextLabel</string>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <property name="alignment">
+            <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="region_UK">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="phonetic_UK">
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="soundBtn">
+          <widget class="QLabel" name="region_US">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="phonetic_US">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="frame_4">
            <property name="minimumSize">
             <size>
              <width>45</width>
@@ -249,7 +172,7 @@ border-radius: 10px;
              <number>0</number>
             </property>
             <item>
-             <widget class="QPushButton" name="voice">
+             <widget class="QPushButton" name="playAudioBtn">
               <property name="minimumSize">
                <size>
                 <width>30</width>
@@ -264,8 +187,8 @@ border-radius: 10px;
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../resource/resource.qrc">
-                <normaloff>:/icon/UI/icons/speaker-64.ico</normaloff>:/icon/UI/icons/speaker-64.ico</iconset>
+               <iconset>
+                <normaloff>../icons/speaker-64.ico</normaloff>../icons/speaker-64.ico</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -279,7 +202,7 @@ border-radius: 10px;
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="editBtn">
+          <widget class="QFrame" name="frame_3">
            <property name="minimumSize">
             <size>
              <width>45</width>
@@ -301,13 +224,13 @@ border-radius: 10px;</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_9">
             <item>
-             <widget class="QPushButton" name="edit">
+             <widget class="QPushButton" name="editBtn">
               <property name="text">
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../resource/resource.qrc">
-                <normaloff>:/icon/UI/icons/edit-11-64.ico</normaloff>:/icon/UI/icons/edit-11-64.ico</iconset>
+               <iconset>
+                <normaloff>../icons/edit-11-64.ico</normaloff>../icons/edit-11-64.ico</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -336,85 +259,34 @@ border-radius: 10px;</string>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_10">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QFrame" name="frame_31">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+          <widget class="QLabel" name="label_11">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(88, 88, 88);</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_15">
-            <property name="rightMargin">
-             <number>3</number>
-            </property>
-            <property name="bottomMargin">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label_11">
-              <property name="font">
-               <font>
-                <pointsize>10</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(88, 88, 88);</string>
-              </property>
-              <property name="text">
-               <string>Định nghĩa:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <property name="text">
+            <string>Định nghĩa:</string>
+           </property>
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="frame_32">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+          <widget class="QLabel" name="define">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <property name="text">
+            <string>Từ vựng</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_16">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="define">
-              <property name="font">
-               <font>
-                <pointsize>10</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Từ vựng</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </widget>
          </item>
         </layout>
@@ -428,79 +300,34 @@ border-radius: 10px;</string>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_13">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QFrame" name="frame_34">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+          <widget class="QLabel" name="label_12">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(88, 88, 88);</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_17">
-            <property name="rightMargin">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label_12">
-              <property name="font">
-               <font>
-                <pointsize>10</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(88, 88, 88);</string>
-              </property>
-              <property name="text">
-               <string>Ví dụ:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <property name="text">
+            <string>Ví dụ:</string>
+           </property>
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="frame_35">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+          <widget class="QLabel" name="example">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <property name="text">
+            <string>I'm learning vocabulary</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_18">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="example">
-              <property name="font">
-               <font>
-                <pointsize>10</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>I'm learning vocabulary</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </widget>
          </item>
         </layout>

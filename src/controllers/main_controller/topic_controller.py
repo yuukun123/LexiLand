@@ -15,7 +15,8 @@ class TopicCardWidget(QWidget):
         # --- BƯỚC 1: Tải toàn bộ giao diện từ file .ui ---
         uic.loadUi("../UI/forms/topic_card_name.ui", self)
         # Lưu lại topic_id
-        self.topic_id = topic_data['topic_id']
+        self.topic_id = topic_data.get('topic_id')
+
         # --- BƯỚC 2: Tìm các widget con và điền dữ liệu ---
         # Các widget con bây giờ đã là thuộc tính của self (ví dụ: self.topic_name)
         topic_name = topic_data.get('topic_name', 'N/A')

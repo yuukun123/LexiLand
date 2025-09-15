@@ -1,7 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QDialog, QGridLayout
-
 from src.models.query_data.query_data import QueryData
 
 
@@ -13,34 +12,74 @@ class VocabCardWidget(QWidget):
     def __init__(self, word_data, parent=None):
         super().__init__(parent)
         uic.loadUi("../UI/forms/vocab_card_name.ui", self)
+        if parent:
+            self.setStyleSheet(parent.styleSheet())
+
         self.word_id = word_data.get('word_id')
 
+        # --- ĐIỀN DỮ LIỆU ---
+        self.vocabulary.setText(word_data.get('word_name', 'N/A'))
+        self.define.setText(word_data.get('definition_vi', 'Chưa có định nghĩa'))
+        self.example.setText(word_data.get('example_en', 'Chưa có ví dụ'))
+
+        # --- XỬ LÝ PHÁT ÂM (LOGIC MỚI) ---
+        pronunciations = word_data.get('pronunciations', [])
+
+        # Ẩn tất cả các label phiên âm trước
+        self.phonetic_US.hide()
+        self.region_US.hide()
         self.phonetic_UK.hide()
         self.region_UK.hide()
 
-        word_name_text = word_data.get('word_name', 'N/A')
-        self.vocabulary.setText(word_name_text)
+        us_found = False
+        uk_found = False
 
-        definition_text = word_data.get('definition_vi', 'Chưa có định nghĩa')
-        self.define.setText(definition_text)
+        # Lặp qua danh sách phát âm và hiển thị chúng
+        for pron in pronunciations:
+            region = pron.get('region', '').upper()
+            phonetic_text = pron.get('phonetic_text', '')
 
-        example_text = word_data.get('example_en', 'Chưa có ví dụ')
-        self.example.setText(example_text)
+            if region == 'US':
+                self.region_US.setText("US")
+                self.phonetic_US.setText(phonetic_text)
+                self.region_US.show()
+                self.phonetic_US.show()
+            elif region == 'UK':
+                self.region_UK.setText("UK")
+                self.phonetic_UK.setText(phonetic_text)
+                self.region_UK.show()
+                self.phonetic_UK.show()
 
-        # region_text = word_data.get('region')
-        # if region_text == 'US':
-        #     self.region_US.setText(region_text)
-        #     phonetic_text = word_data.get('phonetic')
-        #     self.phonetic_US.setText(phonetic_text)
-        # elif region_text == 'UK':
-        #     self.region_UK.setText(region_text)
-        #     phonetic_text_uk = word_data.get('phonetic')
-        #     self.phonetic_UK.setText(phonetic_text_uk)
+        if not us_found and not uk_found and pronunciations:
+            # Lấy bản ghi phát âm đầu tiên (có thể là TTS hoặc Dict)
+            first_pron = pronunciations[0]
+            region_text = first_pron.get('region', 'N/A')
+            phonetic_text = first_pron.get('phonetic_text', '')
 
+            # Sử dụng lại cặp label US để hiển thị
+            self.region_US.setText(region_text)  # Hiển thị "TTS" hoặc "Dict"
+            self.phonetic_US.setText(phonetic_text)
+            self.region_US.show()
+            self.phonetic_US.show()
+            # Bạn có thể thêm các trường hợp khác ở đây
 
+        # --- KẾT NỐI TÍN HIỆU ---
+        # Giả sử bạn có các nút: editBtn, deleteBtn, playAudioBtn
+        if hasattr(self, 'editBtn'):
+            self.editBtn.clicked.connect(self.on_edit_clicked)
+        if hasattr(self, 'deleteBtn'):
+            self.deleteBtn.clicked.connect(self.on_delete_clicked)
+        if hasattr(self, 'playAudioBtn'):
+            self.playAudioBtn.clicked.connect(self.on_play_audio_clicked)
 
-        # accent = word_data.get('audio_url', 'Chưa có âm thanh')
-        # self.voice.setText(accent)
+    def on_edit_clicked(self):
+        print(f"Nút Edit của Word ID: {self.word_id} đã được nhấn!")
+
+    def on_delete_clicked(self):
+        print(f"Nút Delete của Word ID: {self.word_id} đã được nhấn!")
+
+    def on_play_audio_clicked(self):
+        print(f"Nút Play Audio của Word ID: {self.word_id} đã được nhấn!")
 
 class VocabController:
     def __init__(self, parent, user_context, topic_id):
@@ -50,10 +89,8 @@ class VocabController:
         self.topic_id = topic_id
         self.topic_label = self.parent.topic_label
 
-
-
         # --- Setup UI ---
-        self.word_container = self.parent.container
+        self.word_container = self.parent.word_container
         print(f"DEBUG: Container được chọn là: {self.word_container.objectName()}")
 
         # Tạo và áp dụng layout cho container
@@ -66,8 +103,6 @@ class VocabController:
         self.word_layout.setAlignment(Qt.AlignTop)
 
         print("DEBUG: VocabController.__init__ Hoàn thành.")
-
-        # self.update_stats_for_this_topic()
 
     def setup_for_user(self, user_context):
         print(f"DEBUG: VocabController.setup_for_user được gọi với context: {user_context}")

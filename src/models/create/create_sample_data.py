@@ -51,7 +51,12 @@ class CreateSampleData:
                         ('Topic 7', datetime('now'), 1),
                         ('Topic 7', datetime('now'), 2),
                         ('Topic 8', datetime('now'), 1),
-                        ('Topic 8', datetime('now'), 2)
+                        ('Topic 8', datetime('now'), 2),
+                        ('Topic 9', datetime('now'), 1),
+                        ('Topic 9', datetime('now'), 2),
+                        ('Topic 10', datetime('now'), 1),
+                        ('Topic 10', datetime('now'), 2)                      
+                        
             """)
         self.connection.commit()
         print("Sample data inserted successfully.")

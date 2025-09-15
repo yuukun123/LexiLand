@@ -1058,7 +1058,7 @@ color:#ffffff;</string>
                 <item>
                  <widget class="QScrollArea" name="scrollArea">
                   <property name="styleSheet">
-                   <string notr="true">QScrollArea{
+                   <string notr="true">#scrollArea{
 	border-radius: 10px;
 }
 
@@ -1127,7 +1127,7 @@ QScrollBar::handle:horizontal {
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QFrame" name="container">
+                     <widget class="QFrame" name="word_container">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                         <horstretch>0</horstretch>
