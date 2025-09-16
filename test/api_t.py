@@ -74,7 +74,7 @@ async def get_dictionary_data_async(session, word):
     print("--Both appi connect fail")
     return None
 
-async def prompt_definition_from_gemini(word_to_define):
+async def prompt_gemini_async(word_to_define):
     """
     Gọi API của Gemini và chuyển đổi kết quả về định dạng giống
     như DictionaryAPI.dev để xử lý nhất quán.
@@ -121,7 +121,7 @@ async def prompt_definition_from_gemini(word_to_define):
         print(f"Đã xảy ra lỗi khi gọi API: {e}")
         return None
 
-async def extract_pos_from_data(session, dict_data):
+async def parse_dictionary_data(session, dict_data):
     # if not dict_data or 'meanings' not in dict_data[0]:
     #     return "N/A", "N/A", "(Can't find this phrase in dictionary"
     # try:
@@ -175,42 +175,54 @@ async def extract_pos_from_data(session, dict_data):
     except (KeyError, IndexError):
         return [], "N/A", "(Error parsing dictionary data)"
 
-def translate_word(text_to_translate, source_lang = 'en', target_lang = 'vi'):
-    """
-        Dịch văn bản sử dụng MyMemory API.
+# def translate_word(text_to_translate, source_lang = 'en', target_lang = 'vi'):
+#     """
+#         Dịch văn bản sử dụng MyMemory API.
+#
+#         Args:
+#             text_to_translate (str): Đoạn văn bản cần dịch.
+#             source_lang (str): Mã ngôn ngữ nguồn (mặc định là 'en').
+#             target_lang (str): Mã ngôn ngữ đích (mặc định là 'vi').
+#
+#         Returns:
+#             str: Đoạn văn bản đã được dịch, hoặc None nếu có lỗi.
+#     """
+#     if not text_to_translate:
+#         return None
+#
+#     encoded_text = urllib.parse.quote(text_to_translate)
+#     url = f'https://api.mymemory.translated.net/get?q={encoded_text}&langpair={source_lang}|{target_lang}'
+#     try:
+#         response = requests.get(url)
+#
+#         # check connect status
+#         if response.status_code == 400:
+#             print(f"API request failed with status code {response.status_code}")
+#             return None
+#         # check response
+#         response.raise_for_status()
+#         data = response.json()
+#
+#         if 'responseData' in data and 'translatedText' in data['responseData']:
+#             return data['responseData']['translatedText']
+#         else:
+#             print("API response does not contain 'responseData' or 'translatedText'")
+#             return None
+#     except requests.exceptions.RequestException as e:
+#         print(f"API request failed: {e}")
+#         return None
 
-        Args:
-            text_to_translate (str): Đoạn văn bản cần dịch.
-            source_lang (str): Mã ngôn ngữ nguồn (mặc định là 'en').
-            target_lang (str): Mã ngôn ngữ đích (mặc định là 'vi').
-
-        Returns:
-            str: Đoạn văn bản đã được dịch, hoặc None nếu có lỗi.
-    """
-    if not text_to_translate:
-        return None
-
-    encoded_text = urllib.parse.quote(text_to_translate)
-    url = f'https://api.mymemory.translated.net/get?q={encoded_text}&langpair={source_lang}|{target_lang}'
+async def translate_text_async(session, text):
+    if not isinstance(text, str) or not text: return text
+    encoded_text = urllib.parse.quote(text)
+    url = f"https://api.mymemory.translated.net/get?q={encoded_text}&langpair=en|vi"
     try:
-        response = requests.get(url)
-
-        # check connect status
-        if response.status_code == 400:
-            print(f"API request failed with status code {response.status_code}")
-            return None
-        # check response
-        response.raise_for_status()
-        data = response.json()
-
-        if 'responseData' in data and 'translatedText' in data['responseData']:
-            return data['responseData']['translatedText']
-        else:
-            print("API response does not contain 'responseData' or 'translatedText'")
-            return None
-    except requests.exceptions.RequestException as e:
-        print(f"API request failed: {e}")
-        return None
+        async with session.get(url, timeout=5) as response:
+            if response.status == 200:
+                data = await response.json()
+                return data.get('responseData', {}).get('translatedText', text)
+    except Exception: pass
+    return text
 
 def parse_gemini_response(text):
     # if not text: return "N/A", "N/A", None
@@ -324,7 +336,6 @@ async def run_lookup(session, word):
 
     gemini_task = asyncio.create_task(prompt_gemini_async(word))
     dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
-
     gemini_response_text, dict_data = await asyncio.gather(gemini_task, dict_task)
 
     # Tất cả các hàm parser bây giờ trả về cùng một cấu trúc (list, str, str)
@@ -354,6 +365,6 @@ async def main():
         tasks = [run_lookup(session, word) for word in words_to_lookup]
         await asyncio.gather(*tasks)
 
-
 if __name__ == "__main__":
     asyncio.run(main())
+    print("program stop")
