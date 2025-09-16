@@ -1,13 +1,15 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
+from src.views.moveable_window import MoveableWindow
 
-class topic_practice(QDialog):
+class topic_practice(QDialog, MoveableWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         uic.loadUi("../UI/forms/Topic_for_practice.ui", self)
+        MoveableWindow.__init__(self)
         # Thêm frameless + trong suốt
-        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(1.0)
 

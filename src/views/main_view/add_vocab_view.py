@@ -55,7 +55,8 @@ class AddWordDialog(QDialog, MoveableWindow):
             parent_rect = parent.geometry()
             # Lấy hình chữ nhật của chính dialog này
             dialog_rect = self.geometry()
-
+            print(f"DEBUG: PARENT RECT: {parent_rect}")
+            print(f"DEBUG: DIALOG RECT: {dialog_rect}")
             # Tính toán vị trí x, y để dialog nằm ở giữa
             move_x = parent_rect.x() + (parent_rect.width() - dialog_rect.width()) // 2
             move_y = parent_rect.y() + (parent_rect.height() - dialog_rect.height()) // 2

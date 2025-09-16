@@ -71,6 +71,6 @@ class MainWindow(QMainWindow, MoveableWindow):
     def handle_practice_window_click(self):
         print("DEBUG: start open dialog topic_for_practice")
         dialog = topic_practice(self)
-        dialog.exec_()
+        dialog.open()
 
 
