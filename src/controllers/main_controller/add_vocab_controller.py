@@ -17,7 +17,6 @@ class AddWordController:
         self.query_data = QueryData()
 
         # Kết nối các nút của dialog
-        self.view.SaveVocabBtn.clicked.connect(self.handle_save)
         self.view.CreateVocabBtn.clicked.connect(self.handle_create_definition_wrapper)
 
         # --- THAY ĐỔI 1: Kết nối tín hiệu của ComboBox ---
@@ -151,7 +150,7 @@ class AddWordController:
         if target_topic_id is None:
             # Tự động gán vào topic "Other" nếu không chọn
             if target_topic_id is None:
-                QMessageBox.warning(self.view, "Lỗi", "Không tìm thấy chủ đề mặc định 'Other'.")
+                QMessageBox.warning(self.view, "Thiếu thông tin", "Bạn phải chọn một chủ đề.")
                 return
 
         # 3. Gọi hàm lưu vào CSDL
