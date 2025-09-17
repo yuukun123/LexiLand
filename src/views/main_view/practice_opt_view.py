@@ -1,6 +1,9 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QDialog, QGraphicsDropShadowEffect, QWidget, QFrame
+
+from src.controllers.buttonController import buttonController
 from src.views.moveable_window import MoveableWindow
 
 class topic_practice(QDialog, MoveableWindow):
@@ -13,6 +16,16 @@ class topic_practice(QDialog, MoveableWindow):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(1.0)
 
+        shadow = QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(20)
+        shadow.setXOffset(0)
+        shadow.setYOffset(5)
+        shadow.setColor(QColor(0, 0, 0, 150))
+        self.findChild(QFrame, "MainFrame").setGraphicsEffect(shadow)
+
+        self.buttonController = buttonController(self)
+        # Gán nút
+        self.Cancel_Btn.clicked.connect(self.buttonController.handle_cancel)
 
         if parent:
             # Lấy hình chữ nhật (vị trí và kích thước) của cửa sổ cha
