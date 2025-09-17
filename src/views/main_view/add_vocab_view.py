@@ -6,6 +6,7 @@ from src.constants.form_mode import FormMode
 from src.controllers.buttonController import buttonController
 from src.controllers.main_controller.add_vocab_controller import AddWordController
 from src.views.moveable_window import MoveableWindow
+from resources import resources_rc
 
 
 class AddWordDialog(QDialog, MoveableWindow):

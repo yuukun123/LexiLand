@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="icon">
+  <qresource prefix="/">
     <file>../UI/icons/delete-64.ico</file>
     <file>../UI/icons/speaker-64.ico</file>
     <file>../UI/icons/edit-11-64.ico</file>
@@ -13,7 +13,7 @@
     <file>../UI/icons/email-3-64.ico</file>
     <file>../UI/icons/key-3-64.ico</file>
     <file>../UI/icons/user-64.ico</file>
-    <file>../UI/icons/arrow-left</file>
+    <file>../UI/icons/arrow-left.svg</file>
     <file>../UI/fonts/LuckiestGuy-Regular.ttf</file>
   </qresource>
 </RCC>

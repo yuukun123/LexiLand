@@ -707,7 +707,7 @@ border-radius: 5px;</string>
                   </font>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">QComboBox#Topic_opt {
+                  <string notr="true">#Topic_opt {
     border: 1px solid #ccc;      
     border-radius: 6px;           
     padding: 6px 10px;             
@@ -715,23 +715,26 @@ border-radius: 5px;</string>
     font-size: 14px;
 }
 
-QComboBox#Topic_opt:focus {
+#Topic_opt:focus {
     border: 1px solid #888;        
     background: #ffffff;           
 }
 
-QComboBox#Topic_opt::drop-down {
+#Topic_opt::down-arrow {
+	
+	image: url(:/UI/icons/chevron-down.svg);
+    width: 12px;
+    height: 12px;
+}
+
+#Topic_opt::drop-down {
     subcontrol-origin: padding;
     subcontrol-position: top right;
     width: 24px;
     border-left: 1px solid #ccc;
 }
 
-QComboBox#Topic_opt::down-arrow {
-	image: url(:/icon/UI/icons/chevron-down.svg);
-    width: 12px;
-    height: 12px;
-}
+
 </string>
                  </property>
                  <property name="frame">
@@ -1010,6 +1013,7 @@ QLineEdit:focus {
  </widget>
  <resources>
   <include location="../../resource/resource.qrc"/>
+  <include location="../../resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>
