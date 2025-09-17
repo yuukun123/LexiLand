@@ -348,11 +348,14 @@ def convert_cache_to_db_format(word, cached_data, dict_data_raw):
     }
 
     explanation = cached_data.get('explanation')
-    phonetic_text_from_gemini = ""
+    phonetic_us_from_gemini = ""
+    phonetic_uk_from_gemini = ""
 
     if explanation:
-        phonetic_match = re.search(r"Phonetic:\s*(.*)", explanation, re.I)
-        phonetic_text_from_gemini = phonetic_match.group(1).strip() if phonetic_match else ""
+        us_match = re.search(r"Phonetic US:\s*(.*)", explanation, re.I)
+        uk_match = re.search(r"Phonetic UK:\s*(.*)", explanation, re.I)
+        phonetic_us_from_gemini = us_match.group(1).strip() if us_match else ""
+        phonetic_uk_from_gemini = uk_match.group(1).strip() if uk_match else ""
 
         def_en_match = re.search(r"Simple Definition English\s*:\s*(.*)", explanation, re.I)
         def_vi_match = re.search(r"Simple Definition Vietnamese\s*:\s*(.*)", explanation, re.I)
@@ -369,27 +372,44 @@ def convert_cache_to_db_format(word, cached_data, dict_data_raw):
 
     # Xử lý phần phát âm (pronunciations)
     pronunciations_list = []
-    has_audio_from_dict = False
 
     # Ưu tiên lấy URL âm thanh từ dữ liệu từ điển
     if dict_data_raw and isinstance(dict_data_raw, list) and dict_data_raw[0].get('phonetics'):
         for phonetic_item in dict_data_raw[0].get('phonetics', []):
-            if phonetic_item.get('audio'):
-                has_audio_from_dict = True
+            audio = phonetic_item.get('audio', '')
+            region = ""
+            if "us.mp3" in audio:
+                region = "US"
+            elif "uk.mp3" in audio:
+                region = "UK"
+
+            if region:  # Chỉ thêm nếu là US hoặc UK
                 pronunciations_list.append({
                     "phonetic_text": phonetic_item.get('text', ''),
-                    "audio_url": phonetic_item['audio'],
-                    "region": "US" if "us.mp3" in phonetic_item['audio'] else "UK" if "uk.mp3" in phonetic_item['audio'] else "Dict"
+                    "audio_url": audio,
+                    "region": region
                 })
 
-    # Nếu KHÔNG có audio từ từ điển, hãy TẠO RA nó bằng gTTS
-    if not has_audio_from_dict:
-        audio_path = generate_audio_from_text(word)
-        pronunciations_list.append({
-            "phonetic_text": phonetic_text_from_gemini,
-            "audio_url": audio_path,
-            "region": "TTS"
-        })
+        # Kiểm tra xem đã có đủ US và UK chưa
+        has_us = any(p['region'] == 'US' for p in pronunciations_list)
+        has_uk = any(p['region'] == 'UK' for p in pronunciations_list)
+
+        # Nếu thiếu US, hãy tạo nó từ Gemini và TTS
+        if not has_us:
+            audio_path = generate_audio_from_text(word)  # gTTS mặc định giọng Mỹ
+            pronunciations_list.append({
+                "phonetic_text": phonetic_us_from_gemini,
+                "audio_url": audio_path,
+                "region": "US"
+            })
+
+        # Nếu thiếu UK, hãy tạo nó từ Gemini (không có audio)
+        if not has_uk and phonetic_uk_from_gemini:
+            pronunciations_list.append({
+                "phonetic_text": phonetic_uk_from_gemini,
+                "audio_url": "",  # Không có audio cho giọng UK từ TTS
+                "region": "UK"
+            })
 
     word_data['pronunciations'] = pronunciations_list
     return word_data
@@ -503,7 +523,6 @@ async def main():
             run_lookup(session, "rain", 2, 2),
             run_lookup(session, "tomato", 2, 2),  # Ví dụ: topic_id=1, user_id=1
             run_lookup(session, "potato", 2, 2),
-
         ]
         await asyncio.gather(*tasks)
 
