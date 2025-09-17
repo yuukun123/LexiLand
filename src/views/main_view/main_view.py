@@ -1,14 +1,15 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
 
 from src.models.query_data.query_data import QueryData
 from src.views.main_view.practice_view import PracticeWindow
 from src.views.main_view.topic_view import TopicWindow
 from src.views.moveable_window import MoveableWindow
+from src.views.main_view.topic_for_practice import topic_practice
 from src.controllers.buttonController import buttonController
 from src.utils.username_ui import set_user_info
-
+from src.views.moveable_window import MoveableWindow
 class MainWindow(QMainWindow, MoveableWindow):
     def __init__(self, username):
         self.username = username
@@ -50,7 +51,6 @@ class MainWindow(QMainWindow, MoveableWindow):
 
     def handle_topic_window_click(self):
         print("DEBUG: start open_topic_window")
-
         if not self._user_context:
             # Sử dụng self._user_context để lấy username cho thông báo lỗi
             user_name_for_msg = self.username # Hoặc một giá trị mặc định
@@ -69,23 +69,8 @@ class MainWindow(QMainWindow, MoveableWindow):
             self.show()
 
     def handle_practice_window_click(self):
-        print("DEBUG: start open_practice_window")
-
-        if not self._user_context:
-            # Sử dụng self._user_context để lấy username cho thông báo lỗi
-            user_name_for_msg = self.username # Hoặc một giá trị mặc định
-            QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{user_name_for_msg}'.")
-            return
-        try:
-            self.hide()  # ẩn ngay lập tức
-            current_username = self._user_context.get('user_name')
-            self.practice_window = PracticeWindow(username=current_username, parent=self)
-            self.practice_window.practice_controller.setup_for_user(self._user_context)
-            print("DEBUG: vocab_window created", self.practice_window)
-            self.practice_window.show()
-            print("DEBUG: vocab_window show called")
-        except Exception as e:
-            print("ERROR while opening practice window:", e)
-            self.show()
+        print("DEBUG: start open dialog topic_for_practice")
+        dialog = topic_practice(self)
+        dialog.open()
 
 

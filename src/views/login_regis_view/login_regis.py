@@ -28,12 +28,46 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
         self.login_controller = LoginController(self)
         self.register_controller = RegisterController(self, self.stackedWidget, self.login_page)
 
+        #login khi ấn enter
+        self.username_login.returnPressed.connect(
+            lambda: self.login_controller.handle_login(
+                self.username_login.text(), self.password_login.text()
+            )
+        )
+        self.password_login.returnPressed.connect(
+            lambda: self.login_controller.handle_login(
+                self.username_login.text(), self.password_login.text()
+            )
+        )
+        #signup khi ấn enter
+        self.username_register.returnPressed.connect(
+            lambda: self.register_controller.handle_register(
+                self.username_register.text(), self.email_register.text(), self.password_register.text(), self.cf_password_register.text()
+            )
+        )
+        self.email_register.returnPressed.connect(
+            lambda: self.register_controller.handle_register(
+                self.username_register.text(), self.email_register.text(), self.password_register.text(), self.cf_password_register.text()
+            )
+        )
+        self.password_register.returnPressed.connect(
+            lambda: self.register_controller.handle_register(
+                self.username_register.text(), self.email_register.text(), self.password_register.text(), self.cf_password_register.text()
+            )
+        )
+        self.cf_password_register.returnPressed.connect(
+            lambda: self.register_controller.handle_register(
+                self.username_register.text(), self.email_register.text(), self.password_register.text(), self.cf_password_register.text()
+            )
+        )
+
         # Gắn nút
         self.LoginBtn.clicked.connect(
             lambda: self.login_controller.handle_login(
                 self.username_login.text(), self.password_login.text()
             )
         )
+
         self.SignUp_Btn.clicked.connect(
             lambda: self.register_controller.handle_register(
                 self.username_register.text(), self.email_register.text(), self.password_register.text(), self.cf_password_register.text()
