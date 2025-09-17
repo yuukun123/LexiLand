@@ -6,7 +6,7 @@ from src.models.query_data.query_data import QueryData
 from src.views.main_view.practice_view import PracticeWindow
 from src.views.main_view.topic_view import TopicWindow
 from src.views.moveable_window import MoveableWindow
-from src.views.main_view.topic_for_practice import topic_practice
+from src.views.main_view.practice_opt_view import topic_practice
 from src.controllers.buttonController import buttonController
 from src.utils.username_ui import set_user_info
 from src.views.moveable_window import MoveableWindow
