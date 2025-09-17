@@ -403,6 +403,54 @@ class QueryData:
             if conn:
                 conn.close()
 
+    def add_topic(self, user_id, topic_name):
+        """
+        Thêm một chủ đề mới cho một người dùng.
+        Xử lý trường hợp tên chủ đề đã tồn tại.
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+
+            # UNIQUE(topic_name, user_id) trong CSDL sẽ tự động ngăn trùng lặp
+            # và ném ra lỗi IntegrityError.
+
+            now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            cursor.execute(
+                "INSERT INTO topics (topic_name, user_id, created_at) VALUES (?, ?, ?)",
+                (topic_name, user_id, now_str)
+            )
+
+            new_topic_id = cursor.lastrowid
+            conn.commit()
+
+            print(f"DEBUG: Đã tạo topic mới '{topic_name}' với ID: {new_topic_id}")
+            return {"success": True, "topic_id": new_topic_id}
+
+        except sqlite3.IntegrityError:
+            # Lỗi này xảy ra do ràng buộc UNIQUE(topic_name, user_id)
+            print(f"CẢNH BÁO: Topic '{topic_name}' đã tồn tại cho user_id={user_id}.")
+            # Chúng ta có thể chọn lấy ID của topic đã tồn tại
+            cursor.execute(
+                "SELECT topic_id FROM topics WHERE user_id = ? AND topic_name = ?",
+                (user_id, topic_name)
+            )
+            existing_topic = cursor.fetchone()
+            if existing_topic:
+                return {"success": True, "topic_id": existing_topic['topic_id'], "message": "Topic already exists."}
+            else:
+                # Trường hợp hiếm gặp
+                return {"success": False, "error": "Topic already exists but could not be retrieved."}
+
+        except sqlite3.Error as e:
+            if conn: conn.rollback()
+            print(f"Lỗi CSDL khi thêm topic: {e}")
+            return {"success": False, "error": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
     def debug_user_data(self, user_id):
         """
         In ra một báo cáo chi tiết về dữ liệu của một người dùng để gỡ lỗi.

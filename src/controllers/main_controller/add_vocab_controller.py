@@ -20,6 +20,13 @@ class AddWordController:
         self.view.SaveVocabBtn.clicked.connect(self.handle_save)
         self.view.CreateVocabBtn.clicked.connect(self.handle_create_definition_wrapper)
 
+        # --- THAY ĐỔI 1: Kết nối tín hiệu của ComboBox ---
+        self.view.Topic_opt.currentIndexChanged.connect(self.on_topic_selection_changed)
+
+        # Ban đầu, ẩn ô nhập topic mới
+        self.view.topic_input.hide()
+        self.view.addTopicLabel.hide()
+
         # Tải danh sách topics vào ComboBox
         self.load_topics_into_combobox()
 
@@ -27,12 +34,22 @@ class AddWordController:
         user_id = self._user_context['user_id']
         topics = self.query_data.get_all_topics_with_word_count(user_id)  # Cần hàm này
 
+        self.view.Topic_opt.blockSignals(True)
+
         # Xóa các item cũ
         self.view.Topic_opt.clear()
+
+        self.view.Topic_opt.addItem("--- Choose a topic ---", None)
+        self.view.Topic_opt.addItem("--Add New Topic--", -1)
+
+        if topics:
+            self.view.Topic_opt.insertSeparator(2)
 
         # Thêm các topic vào combobox
         for topic in topics:
             self.view.Topic_opt.addItem(topic['topic_name'], topic['topic_id'])
+
+        self.view.Topic_opt.blockSignals(False)
 
         # Nếu là chế độ edit, chọn topic hiện tại
         if self.mode == "edit" and self.topic_data_on_edit:
@@ -40,6 +57,23 @@ class AddWordController:
             index = self.view.Topic_opt.findData(topic_id)
             if index >= 0:
                 self.view.Topic_opt.setCurrentIndex(index)
+        else:
+            self.view.Topic_opt.setCurrentIndex(0)
+
+    def on_topic_selection_changed(self, index):
+        """Hàm được gọi mỗi khi người dùng thay đổi lựa chọn trong ComboBox."""
+        # Lấy userData của item được chọn
+        selected_data = self.view.Topic_opt.itemData(index)
+
+        # --- THAY ĐỔI 3: Logic ẩn/hiện ---
+        # Nếu userData là -1 (item "Add New Topic"), thì hiển thị ô input
+        if selected_data == -1:
+            self.view.topic_input.show()
+            self.view.addTopicLabel.show()
+        else:
+            self.view.topic_input.hide()
+            self.view.addTopicLabel.hide()
+            self.view.topic_input.clear()  # Xóa text cũ nếu có
 
     def handle_create_definition_wrapper(self):
         word = self.view.vocab.text().strip()
@@ -95,11 +129,18 @@ class AddWordController:
         new_topic_name = self.view.topic_input.text().strip()
         target_topic_id = None
 
-        if new_topic_name:
+        if new_topic_name and self.view.Topic_opt.currentData():
             # Ưu tiên tạo topic mới nếu người dùng nhập vào
+            print(f"Debug đang tạo topic mới: '{new_topic_name}'")
             result = self.query_data.add_topic(self._user_context['user_id'], new_topic_name)
+
             if result['success']:
                 target_topic_id = result['topic_id']
+                self.load_topics_into_combobox()
+                index = self.view.Topic_opt.findData(target_topic_id)
+                if index > 0:
+                    self.view.Topic_opt.setCurrentIndex(index)
+                self.view.topic_input.clear()
             else:
                 QMessageBox.critical(self.view, "Error", f"Could not create topic: {result['error']}")
                 return
@@ -109,7 +150,6 @@ class AddWordController:
 
         if target_topic_id is None:
             # Tự động gán vào topic "Other" nếu không chọn
-            target_topic_id = self.query_data.get_other_topic_id(self._user_context['user_id'])
             if target_topic_id is None:
                 QMessageBox.warning(self.view, "Lỗi", "Không tìm thấy chủ đề mặc định 'Other'.")
                 return
