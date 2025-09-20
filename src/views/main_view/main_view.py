@@ -12,7 +12,7 @@ from src.utils.username_ui import set_user_info
 from src.views.moveable_window import MoveableWindow
 class MainWindow(QMainWindow, MoveableWindow):
     def __init__(self, username):
-        self.username = username
+        # self.username = username
         super().__init__()
         uic.loadUi("../UI/forms/main_screen.ui", self)
         MoveableWindow.__init__(self)
@@ -26,7 +26,6 @@ class MainWindow(QMainWindow, MoveableWindow):
 
         self.query_data = QueryData()
         self._user_context = None
-        # self.topic_window = None
         self.load_user_context(username)
 
         if not self._user_context:
