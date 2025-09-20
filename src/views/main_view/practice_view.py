@@ -8,7 +8,7 @@ from src.controllers.buttonController import buttonController
 from src.utils.go_back import BaseWindow
 
 class PracticeWindow(BaseWindow, MoveableWindow):
-    def __init__(self, username, parent=None):
+    def __init__(self, username, topics, parent=None):
         super().__init__(parent)
         uic.loadUi("../UI/forms/practice.ui", self)
         MoveableWindow.__init__(self)

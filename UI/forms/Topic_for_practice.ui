@@ -142,7 +142,7 @@ border-bottom-left-radius:10px;</string>
               <property name="widgetResizable">
                <bool>true</bool>
               </property>
-              <widget class="QWidget" name="scrollAreaWidgetContents">
+              <widget class="QWidget" name="container">
                <property name="geometry">
                 <rect>
                  <x>0</x>
@@ -261,8 +261,6 @@ border-bottom-left-radius:10px;</string>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../../resource/resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

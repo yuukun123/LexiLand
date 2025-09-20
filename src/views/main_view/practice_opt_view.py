@@ -2,12 +2,12 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QDialog, QGraphicsDropShadowEffect, QWidget, QFrame
-
+from src.controllers.main_controller.practice_otp_controller import PracticeOtpController
 from src.controllers.buttonController import buttonController
 from src.views.moveable_window import MoveableWindow
 
 class topic_practice(QDialog, MoveableWindow):
-    def __init__(self, parent=None):
+    def __init__(self, user_context, parent=None):
         super().__init__(parent)
         uic.loadUi("../UI/forms/Topic_for_practice.ui", self)
         MoveableWindow.__init__(self)
@@ -22,7 +22,7 @@ class topic_practice(QDialog, MoveableWindow):
         shadow.setYOffset(5)
         shadow.setColor(QColor(0, 0, 0, 150))
         self.findChild(QFrame, "MainFrame").setGraphicsEffect(shadow)
-
+        self.controller = PracticeOtpController(self, user_context)
         self.buttonController = buttonController(self)
         # Gán nút
         self.Cancel_Btn.clicked.connect(self.buttonController.handle_cancel)

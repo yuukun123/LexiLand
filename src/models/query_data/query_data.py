@@ -2,6 +2,9 @@ import sqlite3
 import os
 from datetime import datetime, timedelta
 
+from nltk.sem.chat80 import sql_query
+
+
 class QueryData:
     def __init__(self):
         # lấy đường dẫn đến thư mục chứ file hiện tại
@@ -510,3 +513,26 @@ class QueryData:
             if conn:
                 conn.close()
         print("=" * 20 + " KẾT THÚC BÁO CÁO " + "=" * 20 + "\n")
+
+    def get_list_topic(self, user_id):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+            """
+                SELECT T.topic_id, T.topic_name, COUNT(TW.word_id) AS word_count
+                FROM topics AS T
+                LEFT JOIN topic_word AS TW ON T.topic_id = TW.topic_id
+                WHERE T.user_id = ?
+                GROUP BY T.topic_id, T.topic_name;
+
+            """,(user_id,)
+            )
+            rows = cursor.fetchall()
+            topics = [dict(row) for row in rows]
+            return topics
+        except Exception as e:
+            print(f"\n!!! ĐÃ XẢY RA LỖI KHI DEBUG: {e}")
+        finally:
+            if conn:
+                conn.close()
