@@ -13,7 +13,7 @@ __pycache__/
 .vscode/
 
 # Ignore databases / local files
-database/*.db
+src/database/*.db
 
 # Ignore logs
 *.log
