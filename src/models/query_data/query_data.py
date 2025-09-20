@@ -2,9 +2,6 @@ import sqlite3
 import os
 from datetime import datetime, timedelta
 
-from nltk.sem.chat80 import sql_query
-
-
 class QueryData:
     def __init__(self):
         # lấy đường dẫn đến thư mục chứ file hiện tại
