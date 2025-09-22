@@ -1007,12 +1007,12 @@ color:#ffffff;</string>
                      </property>
                      <property name="styleSheet">
                       <string notr="true">#Practice_btn{
-	background-color: rgb(56, 128, 190);
+	background-color: #f9844a;
 	color:#ffffff;
 	padding: 10px;
 }
 #Practice_btn::hover{
-	background-color: rgb(54, 82, 175);
+	background-color: #f3722c;
 }</string>
                      </property>
                      <property name="text">
