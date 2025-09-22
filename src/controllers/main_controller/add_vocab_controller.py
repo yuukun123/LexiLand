@@ -9,11 +9,11 @@ from src.models.API.word_api import run_lookup, lookup_and_build_data # Giả s�
 
 
 class AddWordController:
-    def __init__(self, view, user_context, mode, topic_data=None):
+    def __init__(self, view, user_context, mode, word_data_to_edit=None):
         self.view = view  # view ở đây là AddWordDialog
         self._user_context = user_context
         self.mode = mode
-        self.topic_data_on_edit = topic_data  # Dữ liệu gốc khi edit
+        self.word_data_to_edit = word_data_to_edit  # Dữ liệu gốc khi edit
         self.query_data = QueryData()
 
         # Kết nối các nút của dialog
@@ -28,6 +28,23 @@ class AddWordController:
 
         # Tải danh sách topics vào ComboBox
         self.load_topics_into_combobox()
+        self.populate_form_if_editing()
+
+    def populate_form_if_editing(self):
+        """Điền dữ liệu có sẵn vào form nếu đang ở chế độ edit."""
+        if self.mode == "edit" and self.word_data_to_edit:
+            self.view.setWindowTitle("Edit Word")  # Đổi tiêu đề cửa sổ
+            self.view.label.setText("Edit Word")
+
+            # Điền các trường text
+            self.view.vocab.setText(self.word_data_to_edit.get('word_name', ''))
+            if self.word_data_to_edit.get('meanings'):
+                first_meaning = self.word_data_to_edit['meanings'][0]
+                self.view.definition.setText(first_meaning.get('definition_vi', ''))
+                self.view.example.setText(first_meaning.get('example_en', ''))
+
+                # Nút "Create..." bị vô hiệu hóa
+            # self.view.CreateVocabBtn.setEnabled(False)
 
     def load_topics_into_combobox(self):
         user_id = self._user_context['user_id']
@@ -51,8 +68,8 @@ class AddWordController:
         self.view.Topic_opt.blockSignals(False)
 
         # Nếu là chế độ edit, chọn topic hiện tại
-        if self.mode == "edit" and self.topic_data_on_edit:
-            topic_id = self.topic_data_on_edit.get('topic_id')
+        if self.mode == "edit" and self.word_data_to_edit:
+            topic_id = self.word_data_to_edit.get('topic_id')
             index = self.view.Topic_opt.findData(topic_id)
             if index >= 0:
                 self.view.Topic_opt.setCurrentIndex(index)
@@ -117,12 +134,14 @@ class AddWordController:
             self.view.definition.setText(f"Error: {e}")
 
     def handle_save(self):
+        form_data = self.view.get_form_data()
+
         # 1. Kiểm tra xem đã có dữ liệu từ API chưa
         if not hasattr(self.view, 'retrieved_word_data') or not self.view.retrieved_word_data:
             QMessageBox.warning(self.view, "Thiếu thông tin", "Vui lòng nhấn 'Create Definition And Example' trước khi lưu.")
             return
 
-        word_data_to_save = self.view.retrieved_word_data
+        # word_data_to_save = self.view.retrieved_word_data
 
         # 2. Xử lý Topic
         new_topic_name = self.view.topic_input.text().strip()
@@ -149,18 +168,32 @@ class AddWordController:
 
         if target_topic_id is None:
             # Tự động gán vào topic "Other" nếu không chọn
-            if target_topic_id is None:
-                QMessageBox.warning(self.view, "Thiếu thông tin", "Bạn phải chọn một chủ đề.")
+            QMessageBox.warning(self.view, "Thiếu thông tin", "Bạn phải chọn một chủ đề.")
+            return
+
+        result = None
+        if self.mode == "add":
+            print("DEBUG: Đang ở chế độ ADD, gọi add_word_to_topic...")
+            result = self.query_data.add_word_to_topic(
+                target_topic_id,
+                form_data,
+                self._user_context['user_id']
+            )
+        elif self.mode == "edit":
+            print("DEBUG: Đang ở chế độ EDIT, gọi update_word_details...")
+            word_id_to_edit = self.word_data_to_edit.get('word_id')
+            if not word_id_to_edit:
+                QMessageBox.critical(self.view, "Lỗi", "Không tìm thấy ID của từ cần chỉnh sửa.")
                 return
 
-        # 3. Gọi hàm lưu vào CSDL
-        result = self.query_data.add_word_to_topic(
-            target_topic_id,
-            word_data_to_save,
-            self._user_context['user_id']
-        )
+            result = self.query_data.update_word_details(word_id_to_edit, form_data)
 
-        if result["success"]:
-            self.view.accept()  # Đóng dialog và báo thành công
+            # (Nâng cao) Cập nhật lại liên kết topic_word nếu người dùng đổi topic
+            self.query_data.update_word_topic_link(word_id_to_edit, target_topic_id)
+
+        # 4. Xử lý kết quả
+        if result and result.get("success"):
+            self.view.accept()
         else:
-            QMessageBox.critical(self.view, "Database Error", f"Failed to save word: {result['error']}")
+            error_msg = result.get('error') if result else "Unknown error"
+            QMessageBox.critical(self.view, "Lỗi CSDL", f"Không thể lưu: {error_msg}")

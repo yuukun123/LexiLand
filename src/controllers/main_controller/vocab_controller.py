@@ -1,6 +1,8 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QDialog, QGridLayout
+from PyQt5.QtWidgets import QWidget, QDialog, QGridLayout, QMessageBox
+
+from src.controllers.base_controller import BaseController
 from src.models.query_data.query_data import QueryData
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent # <-- Import các thành phần media
 from PyQt5.QtCore import QUrl
@@ -12,6 +14,9 @@ class VocabCardWidget(QWidget):
     Nó tải toàn bộ giao diện từ một file .ui riêng biệt.
     """
     play_audio_requested = pyqtSignal(str)
+    edit_requested = pyqtSignal(int)
+    delete_requested = pyqtSignal(int)
+
     def __init__(self, word_data, parent=None):
         super().__init__(parent)
         uic.loadUi("../UI/forms/vocab_card_name.ui", self)
@@ -37,6 +42,7 @@ class VocabCardWidget(QWidget):
         self.phonetic_UK.hide()
         self.region_UK.hide()
         self.frame_5.hide()
+        self.frame_3.hide()
 
         us_found = False
         uk_found = False
@@ -66,8 +72,8 @@ class VocabCardWidget(QWidget):
                 self.frame_5.show()
 
         # --- KẾT NỐI TÍN HIỆU ---
-        if hasattr(self, 'editBtn'):
-            self.editBtn.clicked.connect(self.on_edit_clicked)
+        # if hasattr(self, 'editBtn'):
+        #     self.editBtn.clicked.connect(self.on_edit_clicked)
         if hasattr(self, 'deleteBtn'):
             self.deleteBtn.clicked.connect(self.on_delete_clicked)
         if hasattr(self, 'playAudioBtn_US'):
@@ -75,11 +81,10 @@ class VocabCardWidget(QWidget):
         if hasattr(self, 'playAudioBtn_UK'):
             self.playAudioBtn_UK.clicked.connect(lambda: self.on_play_audio_clicked('UK'))
 
-    def on_edit_clicked(self):
-        print(f"Nút Edit của Word ID: {self.word_id} đã được nhấn!")
-
     def on_delete_clicked(self):
-        print(f"Nút Delete của Word ID: {self.word_id} đã được nhấn!")
+        print(f"--- BƯỚC 1: on_delete_clicked được gọi cho word_id: {self.word_id} ---")
+        self.delete_requested.emit(self.word_id)
+        print(f"--- BƯỚC 2: Tín hiệu delete_requested đã được phát đi. ---")
 
     def on_play_audio_clicked(self, region):
         print(f"Nút Play Audio của Word ID: {self.word_id} đã được nhấn!")
@@ -90,17 +95,21 @@ class VocabCardWidget(QWidget):
             print(f"DEBUG: Yêu cầu phát âm thanh từ URL: {url}")
             self.play_audio_requested.emit(url)
 
-class VocabController:
-    def __init__(self, parent, user_context, topic_id):
-        self.parent = parent
+class VocabController(BaseController):
+    def __init__(self, parent_view, user_context, topic_id):
+        # Gọi __init__ của lớp cha
+        super().__init__(parent_view)
+        self.parent = parent_view
         self.query_data = QueryData()
         self._user_context = user_context
         self.topic_id = topic_id
         self.topic_label = self.parent.topic_label
 
         self.media_player = QMediaPlayer()
-        # Kết nối tín hiệu lỗi để debug (rất hữu ích)
         self.media_player.error.connect(self.handle_media_error)
+
+        if hasattr(self.parent, 'Add_word_btn'):
+            self.parent.Add_word_btn.clicked.connect(self.handle_add_word_click)
 
         # --- Setup UI ---
         self.word_container = self.parent.word_container
@@ -117,15 +126,26 @@ class VocabController:
 
         print("DEBUG: VocabController.__init__ Hoàn thành.")
 
-    def setup_for_user(self, user_context):
-        print(f"DEBUG: VocabController.setup_for_user được gọi với context: {user_context}")
-        self._user_context = user_context
-        if not self._user_context or 'user_id' not in self._user_context:
-            print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
-            return
+    def __del__(self):
+        print(f"!!! CẢNH BÁO: Controller tại địa chỉ {id(self)} đang bị hủy (garbage collected) !!!")
 
+    # Triển khai các phương thức trừu tượng
+    def _update_stats(self):
+        user_id = self._user_context['user_id']
         self.update_stats_for_this_topic()
+
+    def _load_and_display_items(self):
         self.load_and_display_words()
+
+    # def setup_for_user(self, user_context):
+    #     print(f"DEBUG: VocabController.setup_for_user được gọi với context: {user_context}")
+    #     self._user_context = user_context
+    #     if not self._user_context or 'user_id' not in self._user_context:
+    #         print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
+    #         return
+    #
+    #     self.update_stats_for_this_topic()
+    #     self.load_and_display_words()
 
     def clear_layout(self, layout):
         while layout.count():
@@ -173,6 +193,11 @@ class VocabController:
             word_card = VocabCardWidget(word_data, parent=self.word_container)
 
             word_card.play_audio_requested.connect(self.play_audio)
+            # word_card.edit_requested.connect(self.handle_edit_word_click)
+            word_card.delete_requested.connect(self.handle_delete_word_click)
+            print(f"DEBUG: Đã kết nối delete_requested của card '{word_data.get('word_name')}' vào slot tại địa chỉ: {id(self.handle_delete_word_click)}")
+
+            # print(f"DEBUG: Đã kết nối tín hiệu 'edit_requested' cho word '{word_data.get('word_name')}' vào {self.handle_edit_word_click}")
 
             # Luôn đặt widget vào CỘT 0
             # Chỉ số HÀNG (row) sẽ là chỉ số index của vòng lặp
@@ -205,35 +230,136 @@ class VocabController:
         """Hàm này sẽ được gọi nếu QMediaPlayer gặp lỗi."""
         print(f"LỖI MEDIA PLAYER: {self.media_player.errorString()}")
 
-    # def handle_edit_vocabulary_click(self):
-    #     from src.views.main_view.add_vocab_view import AddWordDialog
-    #     print("DEBUG: Bắt đầu tạo AddWordDialog.")
-    #
-    #     self.add_word_dialog = AddWordDialog(self._user_context, parent=self.parent)
-    #
-    #     # Bây giờ, self.add_word_dialog đã tồn tại và bạn có thể sử dụng nó
-    #     self.add_word_dialog.finished.connect(self.on_add_word_dialog_finished)
-    #     self.add_word_dialog.open()
-    #
-    #     print("DEBUG: AddWordDialog.open() đã được gọi.")
-    #
-    # def on_add_word_dialog_finished(self, result):
-    #     """
-    #     Hàm này sẽ được tự động gọi khi dialog được đóng.
-    #     Tham số 'result' sẽ là QDialog.Accepted hoặc QDialog.Rejected.
-    #     """
-    #     print(f"DEBUG: Dialog đã đóng với kết quả: {result}")
-    #     if result == QDialog.Accepted:
-    #         print("DEBUG: Người dùng đã lưu từ mới. Đang làm mới giao diện...")
-    #         self.update_stats_display()
-    #         self.load_and_display_topics()
-    #     else:
-    #         print("DEBUG: Người dùng đã hủy việc thêm từ mới.")
-    #
-    #     # Dọn dẹp tham chiếu để cho phép Python xóa dialog khỏi bộ nhớ
+    def handle_add_vocabulary_click(self):
+        from src.views.main_view.add_vocab_view import AddWordDialog
+        print("DEBUG: Bắt đầu tạo AddWordDialog.")
+
+        self.add_word_dialog = AddWordDialog(self._user_context, parent=self.parent)
+
+        # Bây giờ, self.add_word_dialog đã tồn tại và bạn có thể sử dụng nó
+        self.add_word_dialog.finished.connect(self.on_add_word_dialog_finished)
+        self.add_word_dialog.open()
+
+        print("DEBUG: AddWordDialog.open() đã được gọi.")
+
+    def handle_details_requested(self, topic_id):
+        """
+        Đây là KHE (SLOT). Hàm này được gọi khi bất kỳ TopicCardWidget nào
+        phát ra tín hiệu 'details_requested'.
+        """
+        print(f"DEBUG: TopicController đã nhận được yêu cầu xem chi tiết cho topic_id: {topic_id}")
+
+        # Controller bây giờ có đầy đủ thông tin để mở cửa sổ mới
+        if not self._user_context:
+            return
+
+        # Import tại chỗ để tránh circular import
+        # from src.views.main_view.vocab_view import VocabWindow
+        from src.windows.window_manage import open_vocab_window
+
+        try:
+            topic_window = self.parent
+            self.parent.hide()
+
+            # Tạo và hiển thị cửa sổ chi tiết
+            # Cửa sổ này sẽ cần user_context và topic_id để truy vấn CSDL
+            current_username = self._user_context.get('user_name')
+            self.vocab_window = open_vocab_window(
+                current_username,
+                topic_id,
+                pre_window = topic_window,
+                parent = topic_window
+            )
+            self.vocab_window.vocab_controller.setup_for_user(self._user_context)
+
+            # Ẩn cửa sổ hiện tại và hiển thị cửa sổ mới
+            # self.vocab_window.show()
+
+        except Exception as e:
+            print(f"LỖI khi mở cửa sổ chi tiết: {e}")
+            import traceback
+            traceback.print_exc()
+            self.parent.show()
+
+    # def on_edit_clicked(self):
     #     try:
-    #         # Dùng try-except để an toàn hơn
-    #         self.add_word_dialog.deleteLater()
-    #         self.add_word_dialog = None
-    #     except AttributeError:
-    #         pass  # Bỏ qua nếu thuộc tính không còn tồn tại
+    #         print(f"Nút Edit của Word ID: {self.word_id} đã được nhấn!")
+    #         self.edit_requested.emit(self.word_id)
+    #         print(f"DEBUG: Tín hiệu 'edit_requested' cho word_id {self.word_id} đã được phát đi.")
+    #     except Exception as e:
+    #         print(f"LỖI trong on_edit_clicked: {e}")
+    #         import traceback
+    #         traceback.print_exc()
+
+    def handle_add_word_click(self):
+        """
+        Mở dialog AddWord ở chế độ 'add'.
+        Được gọi bởi nút "+ Add word" trên màn hình chi tiết.
+        """
+        from src.views.main_view.add_vocab_view import AddWordDialog
+
+        print("DEBUG: Mở dialog để THÊM từ mới vào topic hiện tại.")
+
+        # Mở dialog ở chế độ "add", không cần truyền word_data_to_edit
+        dialog = AddWordDialog(
+            user_context=self._user_context,
+            parent=self.parent,
+            mode="add"
+        )
+
+        # Tự động chọn topic hiện tại trong dialog
+        index = dialog.controller.view.Topic_opt.findData(self.topic_id)
+        if index >= 0:
+            dialog.controller.view.Topic_opt.setCurrentIndex(index)
+            # Vô hiệu hóa combobox để người dùng không đổi topic
+            dialog.controller.view.Topic_opt.setEnabled(False)
+            dialog.controller.view.addTopicLabel.hide()
+            dialog.controller.view.topic_input.hide()
+
+        result = dialog.exec_()
+
+        if result == QDialog.Accepted:
+            print("DEBUG: Từ mới đã được thêm. Làm mới...")
+            self.update_stats_for_this_topic()
+            self.load_and_display_words()
+
+            # signal change data for parent
+            self.parent.data_changed.emit()
+
+    def handle_delete_word_click(self, word_id):
+        """
+        Xử lý khi người dùng yêu cầu xóa một từ khỏi chủ đề hiện tại.
+        """
+        print(f"DEBUG: Controller đã nhận yêu cầu xóa word_id: {word_id}")
+
+        # Lấy tên từ để hiển thị trong hộp thoại xác nhận
+        word_details = self.query_data.get_full_word_details(word_id)
+        word_name = word_details.get('word_name', 'từ này') if word_details else 'từ này'
+
+        # 1. Hiển thị hộp thoại xác nhận
+        reply = QMessageBox.question(
+            self.parent,
+            'Xác nhận xóa',
+            f"Bạn có chắc chắn muốn xóa từ '{word_name}' khỏi chủ đề này không?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No  # Nút mặc định là No
+        )
+
+        # 2. Xử lý câu trả lời của người dùng
+        if reply == QMessageBox.Yes:
+            print(f"DEBUG: Người dùng đã xác nhận xóa word_id: {word_id}")
+
+            # 3. Gọi hàm CSDL để xóa
+            result = self.query_data.remove_word_from_topic(self.topic_id, word_id)
+
+            if result.get("success"):
+                QMessageBox.information(self.parent, "Thành công", f"Đã xóa từ '{word_name}'.")
+                # 4. Làm mới giao diện
+                self.update_stats_for_this_topic()
+                self.load_and_display_words()
+
+                self.parent.data_changed.emit()
+            else:
+                QMessageBox.critical(self.parent, "Lỗi", f"Không thể xóa từ: {result.get('error')}")
+        else:
+            print("DEBUG: Người dùng đã hủy việc xóa.")

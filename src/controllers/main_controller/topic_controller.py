@@ -1,6 +1,8 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QGridLayout, QWidget, QDialog
+
+from src.controllers.base_controller import BaseController
 from src.models.query_data.query_data import QueryData
 
 
@@ -31,14 +33,15 @@ class TopicCardWidget(QWidget):
         self.details_requested.emit(self.topic_id)
 
 
-class TopicController:
-    def __init__(self, parent, main_window):
+class TopicController(BaseController):
+    def __init__(self, parent_view, main_window):
+        # Gọi __init__ của lớp cha
+        super().__init__(parent_view)
         print("DEBUG: TopicController.__init__ Bắt đầu.")
-        self.parent = parent
-        self.query_data = QueryData()
-        self._user_context = None
+        # self.parent = parent_view
+        # self.query_data = QueryData()
+        # self._user_context = None
         self.main_window_ref = main_window
-        # self.vocab_window = None
 
         # --- Setup UI ---
         self.topic_container = self.parent.container
@@ -57,14 +60,14 @@ class TopicController:
 
         print("DEBUG: TopicController.__init__ Hoàn thành.")
 
-    def setup_for_user(self, user_context):
-        print(f"DEBUG: TopicController.setup_for_user được gọi với context: {user_context}")
-        self._user_context = user_context
-        if not self._user_context or 'user_id' not in self._user_context:
-            print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
-            return
-
+    # Triển khai các phương thức trừu tượng
+    def _update_stats(self):
+        # Đổi tên hàm cũ thành _update_stats và gọi nó
+        user_id = self._user_context['user_id']
         self.update_stats_display()
+
+    def _load_and_display_items(self):
+        # Đổi tên hàm cũ thành _load_and_display_items và gọi nó
         self.load_and_display_topics()
 
     def clear_layout(self, layout):
@@ -98,7 +101,7 @@ class TopicController:
         self.clear_layout(self.topic_layout)
 
         user_id = self._user_context['user_id']
-        self.query_data.debug_user_data(user_id)
+        # self.query_data.debug_user_data(user_id)
         print(f"DEBUG: Đang tải topics cho user_id: {user_id}")
         topics = self.query_data.get_all_topics_with_word_count(user_id)
         print(f"DEBUG: Các topics tìm thấy từ CSDL: {topics}")
@@ -156,6 +159,7 @@ class TopicController:
                 pre_window = topic_window,
                 parent = topic_window
             )
+            self.vocab_window.data_changed.connect(self.refresh_data)
             self.vocab_window.vocab_controller.setup_for_user(self._user_context)
 
             # Ẩn cửa sổ hiện tại và hiển thị cửa sổ mới

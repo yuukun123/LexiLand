@@ -58,7 +58,7 @@ class MainWindow(QMainWindow, MoveableWindow):
         try:
             self.hide()  # ẩn ngay lập tức
             current_username = self._user_context.get('user_name')
-            self.topic_window = TopicWindow(username=current_username, main_window=self, parent=self)
+            self.topic_window = TopicWindow(parent=self, username=current_username, main_window=self)
             self.topic_window.topic_controller.setup_for_user(self._user_context)
             print("DEBUG: topic_window created", self.topic_window)
             self.topic_window.show()

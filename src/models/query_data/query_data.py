@@ -451,6 +451,254 @@ class QueryData:
             if conn:
                 conn.close()
 
+    def update_word_details(self, word_id, word_data):
+        """Cập nhật thông tin chi tiết của một từ đã có."""
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute("BEGIN TRANSACTION")
+
+            # Cập nhật bảng words
+            cursor.execute(
+                "UPDATE words SET word_name = ? WHERE word_id = ?",
+                # SỬA LỖI: Bỏ dấu phẩy thừa
+                (word_data.get('word_name'), word_id)
+            )
+
+            # Xóa các chi tiết cũ để thêm lại
+            # (PRAGMA foreign_keys = ON sẽ đảm bảo definition/examples bị xóa theo meanings)
+            cursor.execute("DELETE FROM pronunciations WHERE word_id = ?", (word_id,))
+            cursor.execute("DELETE FROM meanings WHERE word_id = ?", (word_id,))
+
+            # Thêm lại pronunciations một cách an toàn
+            for pron_info in word_data.get('pronunciations', []):
+                cursor.execute(
+                    "INSERT INTO pronunciations (word_id, region, phonetic_text, audio_url) VALUES (?, ?, ?, ?)",
+                    (
+                        word_id,
+                        pron_info.get('region'),
+                        pron_info.get('phonetic_text'),
+                        pron_info.get('audio_url')
+                    )
+                )
+
+            # Thêm lại meanings và các chi tiết liên quan một cách an toàn
+            for meaning_info in word_data.get('meanings', []):
+                cursor.execute(
+                    "INSERT INTO meanings (word_id, part_of_speech) VALUES (?, ?)",
+                    (word_id, meaning_info.get('part_of_speech', 'N/A'))
+                )
+                meaning_id = cursor.lastrowid
+
+                if meaning_info.get('definition_en'):
+                    cursor.execute(
+                        "INSERT INTO definition (meaning_id, language, definition_text) VALUES (?, 'en', ?)",
+                        (meaning_id, meaning_info.get('definition_en'))
+                    )
+                if meaning_info.get('definition_vi'):
+                    cursor.execute(
+                        "INSERT INTO definition (meaning_id, language, definition_text) VALUES (?, 'vi', ?)",
+                        (meaning_id, meaning_info.get('definition_vi'))
+                    )
+                if meaning_info.get('example_en'):
+                    cursor.execute(
+                        "INSERT INTO examples (meaning_id, example_en, example_vi) VALUES (?, ?, ?)",
+                        (
+                            meaning_id,
+                            meaning_info.get('example_en'),
+                            meaning_info.get('example_vi')
+                        )
+                    )
+
+            conn.commit()
+            return {"success": True}
+
+        except sqlite3.Error as e:
+            if conn: conn.rollback()
+            return {"success": False, "error": str(e)}
+        finally:
+            if conn: conn.close()
+
+    def get_full_word_details(self, word_id):
+        """
+        Lấy TẤT CẢ thông tin chi tiết của một từ duy nhất bằng word_id.
+        Hàm này sẽ trả về một dictionary có cấu trúc phức tạp, sẵn sàng
+        để điền vào form hoặc để xử lý tiếp.
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+
+            # --- 1. Lấy thông tin cơ bản của từ ---
+            cursor.execute("SELECT word_id, word_name FROM words WHERE word_id = ?", (word_id,))
+            word_base = cursor.fetchone()
+
+            if not word_base:
+                return None  # Trả về None nếu không tìm thấy từ
+
+            # Khởi tạo dictionary kết quả
+            word_details = dict(word_base)
+
+            # --- 2. Lấy tất cả các cách phát âm ---
+            cursor.execute("SELECT region, phonetic_text, audio_url FROM pronunciations WHERE word_id = ?", (word_id,))
+            word_details['pronunciations'] = [dict(row) for row in cursor.fetchall()]
+
+            # --- 3. Lấy tất cả các nghĩa (và chi tiết của chúng) ---
+            cursor.execute("SELECT meaning_id, part_of_speech FROM meanings WHERE word_id = ?", (word_id,))
+            meanings_rows = cursor.fetchall()
+
+            word_details['meanings'] = []
+            for meaning_row in meanings_rows:
+                meaning_info = dict(meaning_row)
+                meaning_id = meaning_info['meaning_id']
+
+                # 3.1 Lấy các định nghĩa cho nghĩa này
+                cursor.execute("SELECT language, definition_text FROM definition WHERE meaning_id = ?", (meaning_id,))
+                definitions = cursor.fetchall()
+                for d in definitions:
+                    if d['language'] == 'en':
+                        meaning_info['definition_en'] = d['definition_text']
+                    elif d['language'] == 'vi':
+                        meaning_info['definition_vi'] = d['definition_text']
+
+                # 3.2 Lấy các ví dụ cho nghĩa này
+                cursor.execute("SELECT example_en, example_vi FROM examples WHERE meaning_id = ?", (meaning_id,))
+                examples = cursor.fetchall()
+                # Tạm thời chỉ lấy ví dụ đầu tiên, bạn có thể sửa để lấy tất cả
+                if examples:
+                    meaning_info['example_en'] = examples[0]['example_en']
+                    meaning_info['example_vi'] = examples[0]['example_vi']
+
+                word_details['meanings'].append(meaning_info)
+
+            return word_details
+
+        except sqlite3.Error as e:
+            print(f"Database error in get_full_word_details for word_id={word_id}: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def update_word_topic_link(self, word_id, new_topic_id):
+        """
+        Cập nhật liên kết của một từ với một chủ đề.
+        (Phiên bản đơn giản: xóa các liên kết topic cũ và thêm liên kết mới).
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute("BEGIN TRANSACTION")
+
+            # Xóa tất cả các liên kết topic cũ của từ này
+            # LƯU Ý: Nếu bạn muốn một từ có thể thuộc nhiều topic, bạn chỉ nên
+            # xóa liên kết với topic cũ đang edit, không phải xóa tất cả.
+            cursor.execute("DELETE FROM topic_word WHERE word_id = ?", (word_id,))
+
+            # Thêm liên kết mới
+            cursor.execute(
+                "INSERT INTO topic_word (topic_id, word_id) VALUES (?, ?)",
+                (new_topic_id, word_id)
+            )
+
+            conn.commit()
+            return {"success": True}
+        except sqlite3.Error as e:
+            if conn: conn.rollback()
+            return {"success": False, "error": str(e)}
+        finally:
+            if conn: conn.close()
+
+    def remove_word_from_topic(self, topic_id, word_id):
+        """
+        Xóa liên kết giữa một từ và một chủ đề trong bảng topic_word.
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "DELETE FROM topic_word WHERE topic_id = ? AND word_id = ?",
+                (topic_id, word_id)
+            )
+            conn.commit()
+
+            # rowcount > 0 có nghĩa là đã có ít nhất 1 hàng bị xóa
+            if cursor.rowcount > 0:
+                print(f"INFO: Đã xóa thành công liên kết giữa topic_id={topic_id} và word_id={word_id}")
+                return {"success": True}
+            else:
+                print(f"CẢNH BÁO: Không tìm thấy liên kết để xóa cho topic_id={topic_id}, word_id={word_id}")
+                return {"success": False, "error": "Link not found"}
+
+        except sqlite3.Error as e:
+            if conn: conn.rollback()
+            print(f"LỖI CSDL khi xóa liên kết từ/chủ đề: {e}")
+            return {"success": False, "error": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    # def remove_word_from_topic(self, topic_id, word_id):
+    #     """
+    #     Xóa liên kết giữa một từ và một chủ đề.
+    #     SAU ĐÓ, kiểm tra xem từ đó có còn thuộc chủ đề nào khác không.
+    #     Nếu không, xóa luôn từ đó khỏi CSDL.
+    #     """
+    #     conn = self._get_connection()
+    #     try:
+    #         cursor = conn.cursor()
+    #         cursor.execute("BEGIN TRANSACTION")
+    #
+    #         # --- BƯỚC 1: XÓA LIÊN KẾT ---
+    #         cursor.execute(
+    #             "DELETE FROM topic_word WHERE topic_id = ? AND word_id = ?",
+    #             (topic_id, word_id)
+    #         )
+    #
+    #         if cursor.rowcount == 0:
+    #             # Nếu không có hàng nào bị xóa, nghĩa là liên kết không tồn tại
+    #             conn.rollback()
+    #             print(f"CẢNH BÁO: Không tìm thấy liên kết để xóa cho topic_id={topic_id}, word_id={word_id}")
+    #             return {"success": False, "error": "Link not found"}
+    #
+    #         print(f"INFO: Đã xóa thành công liên kết giữa topic_id={topic_id} và word_id={word_id}")
+    #
+    #         # --- BƯỚC 2: KIỂM TRA TỪ "MỒ CÔI" ---
+    #         cursor.execute(
+    #             "SELECT COUNT(*) FROM topic_word WHERE word_id = ?",
+    #             (word_id,)
+    #         )
+    #         remaining_links = cursor.fetchone()[0]
+    #
+    #         print(f"DEBUG: Số liên kết còn lại cho word_id={word_id} là: {remaining_links}")
+    #
+    #         # --- BƯỚC 3: NẾU LÀ "MỒ CÔI", XÓA TỪ ---
+    #         if remaining_links == 0:
+    #             print(f"INFO: Từ word_id={word_id} đã trở thành 'mồ côi'. Đang xóa khỏi CSDL...")
+    #             # Lệnh xóa này sẽ tự động xóa các dòng liên quan trong
+    #             # pronunciations, meanings, definition, examples nhờ ON DELETE CASCADE
+    #             cursor.execute(
+    #                 "DELETE FROM words WHERE word_id = ?",
+    #                 (word_id,)
+    #             )
+    #             # Cũng nên xóa khỏi bảng progress
+    #             cursor.execute(
+    #                 "DELETE FROM user_word_progress WHERE word_id = ?",
+    #                 (word_id,)
+    #             )
+    #             print(f"INFO: Đã xóa hoàn toàn word_id={word_id}.")
+    #
+    #         conn.commit()
+    #         return {"success": True}
+    #
+    #     except sqlite3.Error as e:
+    #         if conn: conn.rollback()
+    #         print(f"LỖI CSDL khi xóa từ/liên kết: {e}")
+    #         return {"success": False, "error": str(e)}
+    #     finally:
+    #         if conn:
+    #             conn.close()
+
     def debug_user_data(self, user_id):
         """
         In ra một báo cáo chi tiết về dữ liệu của một người dùng để gỡ lỗi.
@@ -533,3 +781,8 @@ class QueryData:
         finally:
             if conn:
                 conn.close()
+
+# if __name__ == "__main__":
+#     query = QueryData()
+#     query.remove_word_from_topic(self, )
+

@@ -1,5 +1,5 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 
 from src.controllers.main_controller.topic_controller import TopicController
 from src.controllers.main_controller.vocab_controller import VocabController
@@ -9,6 +9,9 @@ from src.controllers.buttonController import buttonController
 from src.utils.go_back import BaseWindow
 
 class VocabWindow(BaseWindow, MoveableWindow):
+    # signal if have change data
+    data_changed = pyqtSignal()
+
     def __init__(self, username, topic_id, pre_window, parent=None):
         super().__init__(parent)
         uic.loadUi("../UI/forms/topic_word.ui", self)
@@ -39,6 +42,9 @@ class VocabWindow(BaseWindow, MoveableWindow):
 
     def go_back_to_previous(self):
         """Hàm này bây giờ sẽ quay lại đúng cửa sổ đã gọi nó."""
+        # signal before close
+        self.data_changed.emit()
+
         if self.previous_window:
             self.previous_window.show()  # Hiển thị lại TopicWindow
         self.close()  # Đóng cửa sổ hiện tại (DetailTopicWindow)

@@ -956,18 +956,6 @@ color:#ffffff;</string>
                    <enum>QFrame::Raised</enum>
                   </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_6">
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
-                   </property>
                    <item alignment="Qt::AlignLeft">
                     <widget class="QLabel" name="topic_label">
                      <property name="minimumSize">
@@ -994,7 +982,7 @@ color:#ffffff;</string>
                      </property>
                     </widget>
                    </item>
-                   <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                   <item alignment="Qt::AlignHCenter">
                     <widget class="QPushButton" name="Practice_btn">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -1043,12 +1031,50 @@ color:#ffffff;</string>
                     </widget>
                    </item>
                    <item alignment="Qt::AlignRight">
-                    <widget class="QFrame" name="frame_20">
-                     <property name="frameShape">
-                      <enum>QFrame::StyledPanel</enum>
+                    <widget class="QPushButton" name="Add_word_btn">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
-                     <property name="frameShadow">
-                      <enum>QFrame::Raised</enum>
+                     <property name="minimumSize">
+                      <size>
+                       <width>250</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#Add_word_btn{
+	background-color: rgb(56, 128, 190);
+	color:#ffffff;
+	padding: 10px;
+}
+#Add_word_btn::hover{
+	background-color: rgb(54, 82, 175);
+}</string>
+                     </property>
+                     <property name="text">
+                      <string>Add word</string>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>../icons/plus.svg</normaloff>../icons/plus.svg</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
                      </property>
                     </widget>
                    </item>
@@ -1103,7 +1129,7 @@ QScrollBar::handle:horizontal {
                      <x>0</x>
                      <y>0</y>
                      <width>1113</width>
-                     <height>416</height>
+                     <height>394</height>
                     </rect>
                    </property>
                    <property name="styleSheet">
@@ -1179,7 +1205,7 @@ QScrollBar::handle:horizontal {
   </widget>
  </widget>
  <resources>
-  <include location="../../resource/resource.qrc"/>
+  <include location="../../resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

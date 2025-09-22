@@ -60,7 +60,7 @@ def create_table():
             word_id INTEGER NOT NULL,
             region TEXT,          -- Vùng miền, ví dụ: 'UK', 'US'
             phonetic_text TEXT,   -- Phiên âm dạng text, ví dụ: '/həˈləʊ/'
-            audio_url TEXT NOT NULL,      -- Đường dẫn URL đến file MP3
+            audio_url TEXT,      -- Đường dẫn URL đến file MP3
             FOREIGN KEY(word_id) REFERENCES words(word_id) ON DELETE CASCADE
         )
     """)
