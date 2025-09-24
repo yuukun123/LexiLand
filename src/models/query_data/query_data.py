@@ -781,7 +781,24 @@ class QueryData:
         finally:
             if conn:
                 conn.close()
-
+    def get_name_topic_by_id(self,user_id, topic_id):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            placeholders = ",".join(["?"] * len(topic_id))
+            cursor.execute(
+            f"""
+                SELECT topic_id, topic_name FROM topics
+                WHERE user_id = ? AND topic_id IN ({placeholders})
+            """,(user_id, *topic_id)
+            )
+            rows = cursor.fetchall()
+            return [{"id": row[0], "name": row[1]} for row in rows]
+        except Exception as e:
+            print(f"\n!!! ĐÃ XẢY RA LỖI KHI DEBUG: {e}")
+        finally:
+            if conn:
+                conn.close()
 # if __name__ == "__main__":
 #     query = QueryData()
 #     query.remove_word_from_topic(self, )

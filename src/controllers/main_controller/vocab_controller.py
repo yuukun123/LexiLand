@@ -6,7 +6,7 @@ from src.controllers.base_controller import BaseController
 from src.models.query_data.query_data import QueryData
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent # <-- Import các thành phần media
 from PyQt5.QtCore import QUrl
-
+from src.views.main_view.practice_view  import PracticeWindow
 
 class VocabCardWidget(QWidget):
     """
@@ -103,6 +103,8 @@ class VocabController(BaseController):
         self.query_data = QueryData()
         self._user_context = user_context
         self.topic_id = topic_id
+        self.topic_id_list = []
+        self.topic_id_list.append(topic_id)
         self.topic_label = self.parent.topic_label
 
         self.media_player = QMediaPlayer()
@@ -363,3 +365,25 @@ class VocabController(BaseController):
                 QMessageBox.critical(self.parent, "Lỗi", f"Không thể xóa từ: {result.get('error')}")
         else:
             print("DEBUG: Người dùng đã hủy việc xóa.")
+
+    def handle_open_practice_click(self):
+        print("DEBUG: start open_practice_window")
+        if not self._user_context:
+            # Sử dụng self._user_context để lấy username cho thông báo lỗi
+            user_name_for_msg = self.username # Hoặc một giá trị mặc định
+            QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{user_name_for_msg}'.")
+            return
+        try:
+            self.parent.hide()
+            current_username = self._user_context.get('user_name')
+            user_id = self._user_context.get('user_id')
+            topics = self.query_data.get_name_topic_by_id(user_id, self.topic_id_list)
+            self.practice_window = PracticeWindow(username=current_username, topics = topics, parent=self.parent)
+            self.practice_window.practice_controller.setup_for_user(self._user_context)
+            print("DEBUG: practice_window created", self.practice_window)
+            self.practice_window.show()
+            print("DEBUG: practice_window show called")
+        except Exception as e:
+            print("ERROR while opening topic window:", e)
+            self.parent.show()
+

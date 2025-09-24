@@ -13,7 +13,9 @@ class PracticeWindow(BaseWindow, MoveableWindow):
         uic.loadUi("../UI/forms/practice.ui", self)
         MoveableWindow.__init__(self)
         self.username = username
-
+        for t in topics:
+            self.topic_name = t["name"]
+            print(f"DEBUG: PRACTICE FOR TOPIC topic {self.topic_name} ")
         self.go_back.clicked.connect(self.go_back_page)
 
         # Thêm frameless + trong suốt

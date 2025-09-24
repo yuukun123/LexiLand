@@ -37,7 +37,7 @@ class VocabWindow(BaseWindow, MoveableWindow):
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
 
-        # self.Practice_btn.clicked.connect(self.vocab_controller.handle_add_vocabulary_click)
+        self.Practice_btn.clicked.connect(self.vocab_controller.handle_open_practice_click)
         # print("DEBUG: vocab button connected")
 
     def go_back_to_previous(self):
