@@ -1,6 +1,7 @@
 import sys
 import asyncio
 import qasync  # <-- Import thư viện mới
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QApplication
 
 # Import cửa sổ đầu tiên của bạn một cách rõ ràng
@@ -23,7 +24,10 @@ async def main():
 
     # Tạo đối tượng QApplication
     # Dùng QApplication.instance() để tránh tạo nhiều instance nếu được gọi lại
-    app = QApplication.instance() or QApplication(sys.argv)
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+
+    app = QtWidgets.QApplication(sys.argv)
 
     # Kết nối tín hiệu aboutToQuit của app với hàm dọn dẹp
     # để vòng lặp asyncio có thể kết thúc khi cửa sổ cuối cùng đóng lại.
