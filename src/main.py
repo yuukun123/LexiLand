@@ -2,11 +2,16 @@ import sys
 import asyncio
 import qasync  # <-- Import thư viện mới
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import QApplication
-
-# Import cửa sổ đầu tiên của bạn một cách rõ ràng
 from src.views.login_regis_view.login_regis import Login_and_Register_Window
 
+def load_stylesheet(filename):
+    """Đọc và trả về nội dung của file stylesheet."""
+    try:
+        with open(filename, "r") as f:
+            return f.read()
+    except FileNotFoundError:
+        print(f"CẢNH BÁO: Không tìm thấy file stylesheet: {filename}")
+        return ""
 
 # Hàm main bây giờ sẽ là một coroutine
 async def main():
@@ -28,6 +33,13 @@ async def main():
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
     app = QtWidgets.QApplication(sys.argv)
+
+    stylesheet = load_stylesheet("../UI/css/style_scroll.css")  # Đảm bảo đường dẫn đúng
+
+    # 2. Áp dụng stylesheet cho toàn bộ ứng dụng
+    if stylesheet:
+        app.setStyleSheet(stylesheet)
+        print("DEBUG: Đã áp dụng stylesheet toàn cục.")
 
     # Kết nối tín hiệu aboutToQuit của app với hàm dọn dẹp
     # để vòng lặp asyncio có thể kết thúc khi cửa sổ cuối cùng đóng lại.

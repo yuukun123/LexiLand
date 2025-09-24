@@ -932,6 +932,9 @@ color:#ffffff;</string>
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
+                <property name="spacing">
+                 <number>20</number>
+                </property>
                 <item>
                  <widget class="QFrame" name="frame_8">
                   <property name="frameShape">
@@ -984,7 +987,7 @@ color:#ffffff;</string>
                       <string>Add vocabulary</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../resource/resource.qrc">
+                      <iconset>
                        <normaloff>:/icon/UI/icons/plus.svg</normaloff>:/icon/UI/icons/plus.svg</iconset>
                      </property>
                     </widget>
@@ -994,6 +997,33 @@ color:#ffffff;</string>
                 </item>
                 <item>
                  <widget class="QScrollArea" name="scrollArea">
+                  <property name="styleSheet">
+                   <string notr="true">QScrollBar:vertical {
+    border: none;
+    background: #f0f0f0;
+    width: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #a9a9a9;
+    min-height: 50px;
+    border-radius: 4px;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background: #f0f0f0;
+    height: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #a9a9a9;
+    min-width: 20px;
+    border-radius: 4px;
+}</string>
+                  </property>
                   <property name="widgetResizable">
                    <bool>true</bool>
                   </property>
@@ -1003,7 +1033,7 @@ color:#ffffff;</string>
                      <x>0</x>
                      <y>0</y>
                      <width>1113</width>
-                     <height>429</height>
+                     <height>420</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -1041,13 +1071,13 @@ color:#ffffff;</string>
                         <number>0</number>
                        </property>
                        <property name="topMargin">
-                        <number>20</number>
+                        <number>0</number>
                        </property>
                        <property name="rightMargin">
                         <number>0</number>
                        </property>
                        <property name="bottomMargin">
-                        <number>20</number>
+                        <number>5</number>
                        </property>
                        <property name="spacing">
                         <number>15</number>
@@ -1075,7 +1105,7 @@ color:#ffffff;</string>
   </widget>
  </widget>
  <resources>
-  <include location="../../resource/resource.qrc"/>
+  <include location="../../resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>
