@@ -38,9 +38,14 @@ class Login_Register_Model:
         # Bước 1: Lấy thông tin người dùng bằng username
         # Chúng ta chỉ cần lấy password_hash để kiểm tra
         cursor.execute("""
-            SELECT user_id AS id, user_name, password AS password_hash
-            FROM users
-            WHERE user_name = ?
+            SELECT
+                user_id AS id,
+                user_name,
+                password AS password_hash
+            FROM
+                users
+            WHERE
+                LOWER(user_name) = LOWER(?)
         """, (username_login,))
         user_data = cursor.fetchone()
 

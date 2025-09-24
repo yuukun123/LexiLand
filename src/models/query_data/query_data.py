@@ -27,7 +27,7 @@ class QueryData:
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("SELECT user_id, user_name FROM users WHERE user_name = ?", (username,))
+            cursor.execute("SELECT user_id, user_name FROM users WHERE LOWER(user_name) = LOWER(?)", (username,))
             row = cursor.fetchone()
             return dict(row) if row else None
         except sqlite3.Error as e:

@@ -23,8 +23,8 @@ class LoadingOverlay(QDialog):
         #
         # self.hide()  # Mặc định là ẩn
 
-        self.design_size = self.size()
-        print(f"DEBUG: Kích thước thiết kế của LoadingOverlay là: {self.design_size.width()}x{self.design_size.height()}")
+        # self.design_size = self.size()
+        # print(f"DEBUG: Kích thước thiết kế của LoadingOverlay là: {self.design_size.width()}x{self.design_size.height()}")
 
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -48,21 +48,10 @@ class LoadingOverlay(QDialog):
 
             # In ra để debug
             print(f"DEBUG: Căn giữa LoadingOverlay. Parent geo: {parent_rect}, Dialog hint: {dialog_size}. Di chuyển đến ({move_x}, {move_y})")
-
             self.move(move_x, move_y)
 
     def showEvent(self, event):
-        """
-        Được gọi tự động bởi Qt. Chúng ta sẽ dùng QTimer để trì hoãn việc căn giữa.
-        """
         super().showEvent(event)
-        # ==========================================================
-        # === GIẢI PHÁP NẰM Ở ĐÂY ===
-        # QTimer.singleShot(0, ...) sẽ đợi cho đến khi vòng lặp sự kiện
-        # rảnh rỗi (tức là đã xử lý xong các yêu cầu vẽ và di chuyển khác)
-        # rồi mới thực thi hàm center_on_parent.
-        # Tại thời điểm đó, self.parent().geometry() sẽ trả về giá trị chính xác.
-        # ==========================================================
         QTimer.singleShot(0, self.center_on_parent)
 
     def start_animation(self):
