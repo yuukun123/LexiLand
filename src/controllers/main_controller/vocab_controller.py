@@ -1,12 +1,12 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QDialog, QGridLayout, QMessageBox
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer
+from PyQt5.QtWidgets import QWidget, QDialog, QGridLayout, QMessageBox, QApplication
 
 from src.controllers.base_controller import BaseController
 from src.models.query_data.query_data import QueryData
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent # <-- Import các thành phần media
 from PyQt5.QtCore import QUrl
-
+from src.views.main_view.practice_view  import PracticeWindow
 
 class VocabCardWidget(QWidget):
     """
@@ -103,6 +103,10 @@ class VocabController(BaseController):
         self.query_data = QueryData()
         self._user_context = user_context
         self.topic_id = topic_id
+
+        self.topic_id_list = []
+        self.topic_id_list.append(topic_id)
+        self.topic_label = self.parent.topic_label
 
         self.topic_label = self.parent.topic_label
         self.media_player = QMediaPlayer()
@@ -284,18 +288,6 @@ class VocabController(BaseController):
         """Hàm này sẽ được gọi nếu QMediaPlayer gặp lỗi."""
         print(f"LỖI MEDIA PLAYER: {self.media_player.errorString()}")
 
-    def handle_add_vocabulary_click(self):
-        from src.views.main_view.add_vocab_view import AddWordDialog
-        print("DEBUG: Bắt đầu tạo AddWordDialog.")
-
-        self.add_word_dialog = AddWordDialog(self._user_context, parent=self.parent)
-
-        # Bây giờ, self.add_word_dialog đã tồn tại và bạn có thể sử dụng nó
-        self.add_word_dialog.finished.connect(self.on_add_word_dialog_finished)
-        self.add_word_dialog.open()
-
-        print("DEBUG: AddWordDialog.open() đã được gọi.")
-
     def handle_details_requested(self, topic_id):
         """
         Đây là KHE (SLOT). Hàm này được gọi khi bất kỳ TopicCardWidget nào
@@ -336,39 +328,66 @@ class VocabController(BaseController):
             self.parent.show()
 
     def handle_add_word_click(self):
-        """
-        Mở dialog AddWord ở chế độ 'add'.
-        Được gọi bởi nút "+ Add word" trên màn hình chi tiết.
-        """
+        """Bắt đầu quá trình mở dialog với hiệu ứng loading."""
+        print("DEBUG: Yêu cầu mở AddWordDialog. Hiển thị loading...")
+        self.loading_overlay.start_animation()
+        QApplication.processEvents()
+
+        # Trì hoãn việc tạo dialog
+        QTimer.singleShot(50, self._create_and_prepare_add_dialog)
+
+    def _create_and_prepare_add_dialog(self):
+        """Tạo và chuẩn bị dialog ở nền."""
         from src.views.main_view.add_vocab_view import AddWordDialog
 
-        print("DEBUG: Mở dialog để THÊM từ mới vào topic hiện tại.")
-
-        # Mở dialog ở chế độ "add", không cần truyền word_data_to_edit
-        dialog = AddWordDialog(
+        self.add_word_dialog = AddWordDialog(
             user_context=self._user_context,
             parent=self.parent,
             mode="add"
         )
 
-        # Tự động chọn topic hiện tại trong dialog
-        index = dialog.controller.view.Topic_opt.findData(self.topic_id)
+        # Kết nối các tín hiệu
+        self.add_word_dialog.ready_to_show.connect(self._on_add_dialog_ready)
+        self.add_word_dialog.finished.connect(self._on_add_dialog_finished)
+
+        # Tự động chọn topic và bắt đầu tải dữ liệu nền của dialog
+        self._prepare_dialog_for_current_topic()
+        self.add_word_dialog.controller.load_initial_data()
+
+    def _prepare_dialog_for_current_topic(self):
+        """Hàm helper để thiết lập topic cho dialog."""
+        try:
+            index = self.add_word_dialog.controller.view.Topic_opt.findData(self.topic_id)
+            if index >= 0:
+                # Chỉ cần gọi hàm này một lần, on_topics_loaded sẽ xử lý
+                pass
+        except Exception as e:
+            print(f"Lỗi khi chuẩn bị dialog: {e}")
+
+    def _on_add_dialog_ready(self):
+        """Được gọi khi dialog đã sẵn sàng để hiển thị."""
+        print("DEBUG: Dialog đã sẵn sàng. Ẩn loading và hiển thị dialog.")
+
+        # Tự động chọn topic hiện tại sau khi combobox đã được điền
+        index = self.add_word_dialog.controller.view.Topic_opt.findData(self.topic_id)
         if index >= 0:
-            dialog.controller.view.Topic_opt.setCurrentIndex(index)
-            # Vô hiệu hóa combobox để người dùng không đổi topic
-            dialog.controller.view.Topic_opt.setEnabled(False)
-            dialog.controller.view.addTopicLabel.hide()
-            dialog.controller.view.topic_input.hide()
+            self.add_word_dialog.controller.view.Topic_opt.setCurrentIndex(index)
+            self.add_word_dialog.controller.view.Topic_opt.setEnabled(False)
+            self.add_word_dialog.controller.view.addTopicLabel.hide()
+            self.add_word_dialog.controller.view.topic_input.hide()
 
-        result = dialog.exec_()
+        self.loading_overlay.stop_animation()
+        self.add_word_dialog.open()
 
+    def _on_add_dialog_finished(self, result):
+        """Được gọi khi dialog đóng lại."""
         if result == QDialog.Accepted:
-            print("DEBUG: Từ mới đã được thêm. Làm mới...")
-            self.update_stats_for_this_topic()
-            self.load_and_display_words()
-
-            # signal change data for parent
+            self.refresh_data()
             self.parent.data_changed.emit()
+
+        # Dọn dẹp
+        self.add_word_dialog.deleteLater()
+        self.add_word_dialog = None
 
     def handle_delete_word_click(self, word_id):
         """
@@ -399,11 +418,32 @@ class VocabController(BaseController):
             if result.get("success"):
                 QMessageBox.information(self.parent, "Thành công", f"Đã xóa từ '{word_name}'.")
                 # 4. Làm mới giao diện
-                self.update_stats_for_this_topic()
-                self.load_and_display_words()
+                self.refresh_data()
 
                 self.parent.data_changed.emit()
             else:
                 QMessageBox.critical(self.parent, "Lỗi", f"Không thể xóa từ: {result.get('error')}")
         else:
             print("DEBUG: Người dùng đã hủy việc xóa.")
+
+    def handle_open_practice_click(self):
+        print("DEBUG: start open_practice_window")
+        if not self._user_context:
+            # Sử dụng self._user_context để lấy username cho thông báo lỗi
+            user_name_for_msg = self.username # Hoặc một giá trị mặc định
+            QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{user_name_for_msg}'.")
+            return
+        try:
+            self.parent.hide()
+            current_username = self._user_context.get('user_name')
+            user_id = self._user_context.get('user_id')
+            topics = self.query_data.get_name_topic_by_id(user_id, self.topic_id_list)
+            self.practice_window = PracticeWindow(username=current_username, topics = topics, parent=self.parent)
+            self.practice_window.practice_controller.setup_for_user(self._user_context)
+            print("DEBUG: practice_window created", self.practice_window)
+            self.practice_window.show()
+            print("DEBUG: practice_window show called")
+        except Exception as e:
+            print("ERROR while opening topic window:", e)
+            self.parent.show()
+

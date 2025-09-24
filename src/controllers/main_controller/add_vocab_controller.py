@@ -78,7 +78,6 @@ class AddWordController:
 
         # Điền dữ liệu cho chế độ edit (nếu có)
         self.populate_form_if_editing()
-
         self.view.ready_to_show.emit()
 
     def populate_form_if_editing(self):
