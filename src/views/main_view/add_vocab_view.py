@@ -1,5 +1,5 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QDialog
 
 from src.constants.form_mode import FormMode
@@ -8,7 +8,9 @@ from src.controllers.main_controller.add_vocab_controller import AddWordControll
 from src.views.moveable_window import MoveableWindow
 from resources import resources_rc
 
+
 class AddWordDialog(QDialog, MoveableWindow):
+    ready_to_show = pyqtSignal()
     def __init__(self, user_context, parent=None, mode="add", word_data_to_edit=None):
         super().__init__(parent)
         uic.loadUi("../UI/forms/add_vocabulary.ui", self)
@@ -17,35 +19,14 @@ class AddWordDialog(QDialog, MoveableWindow):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
-        # self.user_id_to_edit = None
-        # self.word_id_to_edit = None
-        # self.topic_id_to_edit = None
-
         self.buttonController = buttonController(self)
-        # Gán nút
         self.Cancel_Btn.clicked.connect(self.buttonController.handle_cancel)
-        # Biến để lưu dữ liệu API lấy về
         self.retrieved_word_data = word_data_to_edit
-        # Giao toàn bộ logic cho Controller
         self.controller = AddWordController(self, user_context, mode, word_data_to_edit)
-
-        # self.vocab.textChanged.connect(self.buttonController.handle_add)
 
         # Tùy chỉnh giao diện theo mode
         if mode == FormMode.ADD:
             self.label.setText("Add New Word")
-        # elif mode == FormMode.EDIT:
-        #     self.label.setText("Edit Word")
-        #
-        #     if not word_data_to_edit:
-        #         print("⚠️ word_data_to_edit is None")
-        #         self.reject()
-        #         return
-        #
-        #     # Load data
-        #     self.vocab.setText(word_data_to_edit.get("vocab", ""))
-        #     self.definition.setText(word_data_to_edit.get("definition", ""))
-        #     self.example.setText(word_data_to_edit.get("example", ""))
 
         # Gắn sự kiện
         self.SaveVocabBtn.clicked.connect(self.controller.handle_save)
@@ -84,10 +65,5 @@ class AddWordDialog(QDialog, MoveableWindow):
                     'example_en': '', 'example_vi': ''
                 }]
             }
-
-        # Cập nhật lại định nghĩa và ví dụ từ UI (vì người dùng có thể đã sửa)
-        # Giả sử bạn có 2 TextEdit: definitionTextEdit và exampleTextEdit
-        # word_data['meanings'][0]['definition_vi'] = self.definition.toPlainText()
-        # word_data['meanings'][0]['example_en'] = self.example.toPlainText()
 
         return word_data

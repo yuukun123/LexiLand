@@ -1,6 +1,6 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QGridLayout, QWidget, QDialog
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer
+from PyQt5.QtWidgets import QGridLayout, QWidget, QDialog, QApplication
 
 from src.controllers.base_controller import BaseController
 from src.models.query_data.query_data import QueryData
@@ -55,64 +55,63 @@ class TopicController(BaseController):
 
         self.topic_layout.setHorizontalSpacing(15)
         self.topic_layout.setVerticalSpacing(15)
-
         self.topic_layout.setAlignment(Qt.AlignTop)
+
+        self.items_layout = self.topic_layout
 
         print("DEBUG: TopicController.__init__ Hoàn thành.")
 
-    # Triển khai các phương thức trừu tượng
-    def _update_stats(self):
-        # Đổi tên hàm cũ thành _update_stats và gọi nó
-        user_id = self._user_context['user_id']
-        self.update_stats_display()
+    def _query_stats(self):
+        """Hàm này chỉ truy vấn CSDL, không đụng đến UI."""
+        return self.query_data.get_user_stats(self._user_context['user_id'])
 
-    def _load_and_display_items(self):
-        # Đổi tên hàm cũ thành _load_and_display_items và gọi nó
-        self.load_and_display_topics()
+    def _query_items(self):
+        """Hàm này chỉ truy vấn CSDL, không đụng đến UI."""
+        return self.query_data.get_all_topics_with_word_count(self._user_context['user_id'])
 
-    def clear_layout(self, layout):
-        while layout.count():
-            child = layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+    def _update_stats_ui(self, stats):
+        """Hàm này chỉ cập nhật UI, không truy vấn CSDL."""
+        print(f"[MainThread] TopicController đang cập nhật stats UI: {stats}")
+        if hasattr(self.parent, 'learned'): self.parent.learned.setText(str(stats["learned"]))
+        if hasattr(self.parent, 'memorized'): self.parent.memorized.setText(str(stats["memorized"]))
+        if hasattr(self.parent, 'review'): self.parent.review.setText(str(stats["review_needed"]))
 
-    def update_stats_display(self):
-        if not self._user_context or 'user_id' not in self._user_context:
-            print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
-            return
+    # def load_and_display_topics(self):
+    #     print("DEBUG: Bắt đầu hàm load_and_display_topics.")
+    #     self.clear_layout(self.topic_layout)
+    #
+    #     user_id = self._user_context['user_id']
+    #     # self.query_data.debug_user_data(user_id)
+    #     print(f"DEBUG: Đang tải topics cho user_id: {user_id}")
+    #     topics = self.query_data.get_all_topics_with_word_count(user_id)
+    #     print(f"DEBUG: Các topics tìm thấy từ CSDL: {topics}")
+    #
+    #     if not topics:
+    #         print("DEBUG: Không có topic nào để hiển thị. Dừng lại.")
+    #         return
+    #
+    #     num_columns = 4
+    #     for index, topic_data in enumerate(topics):
+    #         print(f"DEBUG: Đang tạo card cho topic: {topic_data['topic_name']}")
+    #         topic_card = TopicCardWidget(topic_data, parent=self.topic_container)
+    #         topic_card.details_requested.connect(self.handle_details_requested)
+    #         row = index // num_columns
+    #         col = index % num_columns
+    #         self.topic_layout.addWidget(topic_card, row, col)
 
-        user_id = self._user_context['user_id']
-        stats = self.query_data.get_user_stats(user_id)
-        print(f"DEBUG: Cập nhật thông tin user_id: {user_id}")
+    def _display_items_ui(self, topics):
+        """Hàm này chỉ cập nhật UI, không truy vấn CSDL."""
+        print(f"[MainThread] TopicController đang hiển thị {len(topics)} topics...")
+        # Xóa layout cũ
+        while self.topic_layout.count():
+            child = self.topic_layout.takeAt(0)
+            if child.widget(): child.widget().deleteLater()
 
-        if hasattr(self.parent, 'learned'):
-            self.parent.learned.setText(str(stats["learned"]))
+        if not topics: return
 
-        # Ví dụ, nếu widget hiển thị số 50 (Đã nhớ) có objectName là 'memorizedCountLabel'
-        if hasattr(self.parent, 'memorized'):
-            self.parent.memorized.setText(str(stats["memorized"]))
-
-        # Ví dụ, nếu widget hiển thị số 50 (Cần ôn tập) có objectName là 'reviewCountLabel'
-        if hasattr(self.parent, 'review'):
-            self.parent.review.setText(str(stats["review_needed"]))
-
-    def load_and_display_topics(self):
-        print("DEBUG: Bắt đầu hàm load_and_display_topics.")
-        self.clear_layout(self.topic_layout)
-
-        user_id = self._user_context['user_id']
-        # self.query_data.debug_user_data(user_id)
-        print(f"DEBUG: Đang tải topics cho user_id: {user_id}")
-        topics = self.query_data.get_all_topics_with_word_count(user_id)
-        print(f"DEBUG: Các topics tìm thấy từ CSDL: {topics}")
-
-        if not topics:
-            print("DEBUG: Không có topic nào để hiển thị. Dừng lại.")
-            return
-
+        # Tạo và thêm card (thao tác GUI)
         num_columns = 4
         for index, topic_data in enumerate(topics):
-            print(f"DEBUG: Đang tạo card cho topic: {topic_data['topic_name']}")
             topic_card = TopicCardWidget(topic_data, parent=self.topic_container)
             topic_card.details_requested.connect(self.handle_details_requested)
             row = index // num_columns
@@ -120,16 +119,54 @@ class TopicController(BaseController):
             self.topic_layout.addWidget(topic_card, row, col)
 
     def handle_add_vocabulary_click(self):
-        from src.views.main_view.add_vocab_view import AddWordDialog
-        print("DEBUG: Bắt đầu tạo AddWordDialog.")
+        """
+        Xử lý khi người dùng nhấn nút "+ Add vocabulary".
+        Hiển thị loading TRƯỚC KHI tạo dialog.
+        """
+        print("DEBUG: Yêu cầu mở AddWordDialog. Hiển thị loading...")
 
+        # 1. HIỂN THỊ LOADING NGAY LẬP TỨC TRÊN TOPICWINDOW
+        self.loading_overlay.start_animation()
+        QApplication.processEvents()  # Ép UI vẽ lại ngay
+
+        # 2. DÙNG QTIMER ĐỂ TRÌ HOÃN VIỆC TẠO DIALOG
+        # Cho phép loading có thời gian hiển thị mượt mà
+        QTimer.singleShot(50, self._create_and_prepare_add_dialog)
+
+    def _create_and_prepare_add_dialog(self):
+        """
+        Hàm này tạo dialog và bắt đầu quá trình tải dữ liệu nền của nó.
+        Nó chạy sau một khoảng trễ nhỏ.
+        """
+        from src.views.main_view.add_vocab_view import AddWordDialog
+
+        print("DEBUG: Đang tạo AddWordDialog ở nền...")
+
+        # Tạo dialog, nó sẽ tự tạo controller của nó
         self.add_word_dialog = AddWordDialog(self._user_context, parent=self.parent)
 
-        # Bây giờ, self.add_word_dialog đã tồn tại và bạn có thể sử dụng nó
-        self.add_word_dialog.finished.connect(self.on_add_word_dialog_finished)
-        self.add_word_dialog.open()
+        # Kết nối tín hiệu "ready_to_show" của dialog với hàm của chúng ta
+        self.add_word_dialog.ready_to_show.connect(self._on_add_dialog_ready)
 
-        print("DEBUG: AddWordDialog.open() đã được gọi.")
+        # Kết nối tín hiệu "finished" để làm mới dữ liệu
+        self.add_word_dialog.finished.connect(self.on_add_word_dialog_finished)
+
+        # Bắt đầu quá trình tải dữ liệu nền BÊN TRONG dialog
+        # Dòng này sẽ kích hoạt loading (nếu có) BÊN TRONG dialog
+        self.add_word_dialog.controller.load_initial_data()
+
+    def _on_add_dialog_ready(self):
+        """
+        Slot được gọi khi AddWordDialog đã tải xong topics và sẵn sàng.
+        """
+        print("DEBUG: AddWordDialog đã sẵn sàng. Ẩn loading và hiển thị dialog.")
+
+        # ẨN LOADING TRÊN TOPICWINDOW
+        self.loading_overlay.stop_animation()
+
+        # HIỂN THỊ DIALOG
+        # Dùng .open() thay vì .exec_() để tránh blocking nếu dialog có tác vụ async
+        self.add_word_dialog.open()
 
     def handle_details_requested(self, topic_id):
         """
@@ -179,8 +216,8 @@ class TopicController(BaseController):
         print(f"DEBUG: Dialog đã đóng với kết quả: {result}")
         if result == QDialog.Accepted:
             print("DEBUG: Người dùng đã lưu từ mới. Đang làm mới giao diện...")
-            self.update_stats_display()
-            self.load_and_display_topics()
+
+            self.refresh_data()
         else:
             print("DEBUG: Người dùng đã hủy việc thêm từ mới.")
 

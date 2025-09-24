@@ -11,6 +11,7 @@ from src.utils.changeTab import MenuNavigator
 class Login_and_Register_Window(QMainWindow , MoveableWindow):
     def __init__(self):
         super().__init__()
+
         uic.loadUi("../UI/forms/login_register.ui", self)
         MoveableWindow.__init__(self)
 

@@ -103,18 +103,16 @@ class VocabController(BaseController):
         self.query_data = QueryData()
         self._user_context = user_context
         self.topic_id = topic_id
-        self.topic_label = self.parent.topic_label
 
+        self.topic_label = self.parent.topic_label
         self.media_player = QMediaPlayer()
         self.media_player.error.connect(self.handle_media_error)
-
         if hasattr(self.parent, 'Add_word_btn'):
             self.parent.Add_word_btn.clicked.connect(self.handle_add_word_click)
 
         # --- Setup UI ---
         self.word_container = self.parent.word_container
         print(f"DEBUG: Container được chọn là: {self.word_container.objectName()}")
-
         # Tạo và áp dụng layout cho container
         if self.word_container.layout() is None:
             self.word_layout = QGridLayout(self.word_container)
@@ -124,46 +122,31 @@ class VocabController(BaseController):
         self.word_layout.setSpacing(15)
         self.word_layout.setAlignment(Qt.AlignTop)
 
+        self.items_layout = self.word_layout
+
         print("DEBUG: VocabController.__init__ Hoàn thành.")
 
     def __del__(self):
         print(f"!!! CẢNH BÁO: Controller tại địa chỉ {id(self)} đang bị hủy (garbage collected) !!!")
 
-    # Triển khai các phương thức trừu tượng
-    def _update_stats(self):
-        user_id = self._user_context['user_id']
-        self.update_stats_for_this_topic()
+    def _query_stats(self):
+        return self.query_data.get_stats_for_topic(self._user_context['user_id'], self.topic_id)
 
-    def _load_and_display_items(self):
-        self.load_and_display_words()
+    def _query_items(self):
+        return self.query_data.get_words_in_topic(self.topic_id)
 
-    # def setup_for_user(self, user_context):
-    #     print(f"DEBUG: VocabController.setup_for_user được gọi với context: {user_context}")
-    #     self._user_context = user_context
-    #     if not self._user_context or 'user_id' not in self._user_context:
-    #         print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
-    #         return
-    #
-    #     self.update_stats_for_this_topic()
-    #     self.load_and_display_words()
+    def _update_stats_ui(self, stats):
 
-    def clear_layout(self, layout):
-        while layout.count():
-            child = layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
-
-    def update_stats_for_this_topic(self):
-        if not self._user_context or 'user_id' not in self._user_context:
-            print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
-            return
-
-        user_id = self._user_context['user_id']
-        stats = self.query_data.get_stats_for_topic(user_id, self.topic_id)
-        print(f"DEBUG: Cập nhật thông tin user_id: {user_id}, topic_id: {self.topic_id}")
-
-        topic_name = self.query_data.get_topic_name_from_topic_id(user_id, self.topic_id)
-        self.topic_label.setText(f"Topic: {topic_name}")
+        # if not self._user_context or 'user_id' not in self._user_context:
+        #     print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
+        #     return
+        #
+        # user_id = self._user_context['user_id']
+        # stats = self.query_data.get_stats_for_topic(user_id, self.topic_id)
+        # print(f"DEBUG: Cập nhật thông tin user_id: {user_id}, topic_id: {self.topic_id}")
+        #
+        # topic_name = self.query_data.get_topic_name_from_topic_id(user_id, self.topic_id)
+        # self.topic_label.setText(f"Topic: {topic_name}")
 
         if hasattr(self.parent, 'learned'):
             self.parent.learned.setText(str(stats["learned"]))
@@ -172,14 +155,20 @@ class VocabController(BaseController):
         if hasattr(self.parent, 'review'):
             self.parent.review.setText(str(stats["review_needed"]))
 
-    def load_and_display_words(self):
+    def _display_items_ui(self, words):
         print("DEBUG: Bắt đầu hàm load_and_display_words.")
-        self.clear_layout(self.word_layout)
+        # self.clear_layout(self.word_layout)
 
         # SỬA LỖI 1: Gọi hàm truy vấn với đúng tham số
-        user_id = self._user_context['user_id']
-        words = self.query_data.get_words_in_topic(self.topic_id)
-        print(f"DEBUG: Các TỪ tìm thấy của user_id: {user_id} trong topic {self.topic_id}: {words}")
+        # user_id = self._user_context['user_id']
+        # words = self.query_data.get_words_in_topic(self.topic_id)
+        # print(f"DEBUG: Các TỪ tìm thấy của user_id: {user_id} trong topic {self.topic_id}: {words}")
+        # --- THÊM LẠI LOGIC XÓA VÀO ĐÂY ---
+
+        while self.items_layout.count():
+            child = self.items_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
 
         if not words:
             print("DEBUG: Không có từ nào để hiển thị trong chủ đề này.")
@@ -203,10 +192,75 @@ class VocabController(BaseController):
             # Chỉ số HÀNG (row) sẽ là chỉ số index của vòng lặp
             self.word_layout.addWidget(word_card, index, 0)
 
-        # (Tùy chọn nhưng khuyến khích)
-        # Thêm một stretch vào cuối để dồn tất cả các card lên trên
-        # nếu chúng không lấp đầy toàn bộ không gian
         self.word_layout.setRowStretch(len(words), 1)
+
+    # def setup_for_user(self, user_context):
+    #     print(f"DEBUG: VocabController.setup_for_user được gọi với context: {user_context}")
+    #     self._user_context = user_context
+    #     if not self._user_context or 'user_id' not in self._user_context:
+    #         print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
+    #         return
+    #
+    #     self.update_stats_for_this_topic()
+    #     self.load_and_display_words()
+
+    # def clear_layout(self, layout):
+    #     while layout.count():
+    #         child = layout.takeAt(0)
+    #         if child.widget():
+    #             child.widget().deleteLater()
+
+    # def update_stats_for_this_topic(self):
+    #     if not self._user_context or 'user_id' not in self._user_context:
+    #         print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
+    #         return
+    #
+    #     user_id = self._user_context['user_id']
+    #     stats = self.query_data.get_stats_for_topic(user_id, self.topic_id)
+    #     print(f"DEBUG: Cập nhật thông tin user_id: {user_id}, topic_id: {self.topic_id}")
+    #
+    #     topic_name = self.query_data.get_topic_name_from_topic_id(user_id, self.topic_id)
+    #     self.topic_label.setText(f"Topic: {topic_name}")
+    #
+    #     if hasattr(self.parent, 'learned'):
+    #         self.parent.learned.setText(str(stats["learned"]))
+    #     if hasattr(self.parent, 'memorized'):
+    #         self.parent.memorized.setText(str(stats["memorized"]))
+    #     if hasattr(self.parent, 'review'):
+    #         self.parent.review.setText(str(stats["review_needed"]))
+
+    # def load_and_display_words(self):
+    #     print("DEBUG: Bắt đầu hàm load_and_display_words.")
+    #     self.clear_layout(self.word_layout)
+    #
+    #     # SỬA LỖI 1: Gọi hàm truy vấn với đúng tham số
+    #     user_id = self._user_context['user_id']
+    #     words = self.query_data.get_words_in_topic(self.topic_id)
+    #     print(f"DEBUG: Các TỪ tìm thấy của user_id: {user_id} trong topic {self.topic_id}: {words}")
+    #
+    #     if not words:
+    #         print("DEBUG: Không có từ nào để hiển thị trong chủ đề này.")
+    #         # Có thể hiển thị một QLabel thông báo ở đây
+    #         return
+    #
+    #     # Lặp qua danh sách từ, mỗi từ là một HÀNG mới
+    #     for index, word_data in enumerate(words):
+    #         print(f"DEBUG: Đang tạo card cho từ: {word_data.get('word_name')}")
+    #
+    #         word_card = VocabCardWidget(word_data, parent=self.word_container)
+    #
+    #         word_card.play_audio_requested.connect(self.play_audio)
+    #         # word_card.edit_requested.connect(self.handle_edit_word_click)
+    #         word_card.delete_requested.connect(self.handle_delete_word_click)
+    #         print(f"DEBUG: Đã kết nối delete_requested của card '{word_data.get('word_name')}' vào slot tại địa chỉ: {id(self.handle_delete_word_click)}")
+    #
+    #         # print(f"DEBUG: Đã kết nối tín hiệu 'edit_requested' cho word '{word_data.get('word_name')}' vào {self.handle_edit_word_click}")
+    #
+    #         # Luôn đặt widget vào CỘT 0
+    #         # Chỉ số HÀNG (row) sẽ là chỉ số index của vòng lặp
+    #         self.word_layout.addWidget(word_card, index, 0)
+    #
+    #     self.word_layout.setRowStretch(len(words), 1)
 
     def play_audio(self, audio_url):
         """Slot này nhận URL và ra lệnh cho media player phát nhạc."""
@@ -280,16 +334,6 @@ class VocabController(BaseController):
             import traceback
             traceback.print_exc()
             self.parent.show()
-
-    # def on_edit_clicked(self):
-    #     try:
-    #         print(f"Nút Edit của Word ID: {self.word_id} đã được nhấn!")
-    #         self.edit_requested.emit(self.word_id)
-    #         print(f"DEBUG: Tín hiệu 'edit_requested' cho word_id {self.word_id} đã được phát đi.")
-    #     except Exception as e:
-    #         print(f"LỖI trong on_edit_clicked: {e}")
-    #         import traceback
-    #         traceback.print_exc()
 
     def handle_add_word_click(self):
         """

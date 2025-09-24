@@ -1,12 +1,24 @@
-# trong src/controllers/main_controller/add_word_controller.py
 import asyncio
-
-from PyQt5.QtWidgets import QMessageBox
 import aiohttp
+from PyQt5.QtCore import QThread, QObject, pyqtSignal
+from PyQt5.QtWidgets import QMessageBox, QApplication
 
 from src.models.query_data.query_data import QueryData
 from src.models.API.word_api import run_lookup, lookup_and_build_data # Giả sử bạn có hàm này
 
+class TopicLoaderWorker(QObject):
+    finished = pyqtSignal(list) # Tín hiệu mang theo danh sách topics
+
+    def __init__(self, query_data, user_id):
+        super().__init__()
+        self.query_data = query_data
+        self.user_id = user_id
+
+    def run(self):
+        """Chạy truy vấn CSDL ở nền."""
+        print("[WorkerThread] Đang tải danh sách topics...")
+        topics = self.query_data.get_all_topics_with_word_count(self.user_id)
+        self.finished.emit(topics)
 
 class AddWordController:
     def __init__(self, view, user_context, mode, word_data_to_edit=None):
@@ -18,7 +30,6 @@ class AddWordController:
 
         # Kết nối các nút của dialog
         self.view.CreateVocabBtn.clicked.connect(self.handle_create_definition_wrapper)
-
         # --- THAY ĐỔI 1: Kết nối tín hiệu của ComboBox ---
         self.view.Topic_opt.currentIndexChanged.connect(self.on_topic_selection_changed)
 
@@ -27,8 +38,48 @@ class AddWordController:
         self.view.addTopicLabel.hide()
 
         # Tải danh sách topics vào ComboBox
-        self.load_topics_into_combobox()
+        # self.load_topics_into_combobox()
+        # self.populate_form_if_editing()
+
+    def load_initial_data(self):
+        # """Bắt đầu quá trình tải dữ liệu nền cho dialog."""
+        # # Hiển thị loading ngay khi mở
+        # self.view.loading_overlay.start_animation()
+        # QApplication.processEvents()  # Đảm bảo UI được vẽ
+
+        # Tạo và chạy thread để tải topics
+        self.topic_loader_worker = TopicLoaderWorker(self.query_data, self._user_context['user_id'])
+        self.topic_loader_thread = QThread()
+        self.topic_loader_worker.moveToThread(self.topic_loader_thread)
+
+        self.topic_loader_thread.started.connect(self.topic_loader_worker.run)
+        self.topic_loader_worker.finished.connect(self.on_topics_loaded)
+
+        self.topic_loader_worker.finished.connect(self.topic_loader_thread.quit)
+        self.topic_loader_worker.finished.connect(self.topic_loader_worker.deleteLater)
+        self.topic_loader_thread.finished.connect(self.topic_loader_thread.deleteLater)
+
+        self.topic_loader_thread.start()
+
+    def on_topics_loaded(self, topics):
+        """Slot được gọi khi thread tải topics hoàn thành."""
+        print("[MainThread] Đã tải xong topics. Đang điền vào ComboBox...")
+
+        # --- Logic điền ComboBox (giống như hàm load_topics_into_combobox cũ) ---
+        self.view.Topic_opt.blockSignals(True)
+        self.view.Topic_opt.clear()
+        self.view.Topic_opt.addItem("--- Choose a topic ---", None)
+        self.view.Topic_opt.addItem("-- Add New Topic --", -1)
+        if topics:
+            self.view.Topic_opt.insertSeparator(2)
+        for topic in topics:
+            self.view.Topic_opt.addItem(topic['topic_name'], topic['topic_id'])
+        self.view.Topic_opt.blockSignals(False)
+
+        # Điền dữ liệu cho chế độ edit (nếu có)
         self.populate_form_if_editing()
+
+        self.view.ready_to_show.emit()
 
     def populate_form_if_editing(self):
         """Điền dữ liệu có sẵn vào form nếu đang ở chế độ edit."""
