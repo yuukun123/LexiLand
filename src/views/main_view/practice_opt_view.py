@@ -4,6 +4,7 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QDialog, QGraphicsDropShadowEffect, QWidget, QFrame
 from src.controllers.main_controller.practice_otp_controller import PracticeOtpController
 from src.controllers.buttonController import buttonController
+from src.controllers.main_controller.practice_otp_controller import PracticeOtpController
 from src.views.moveable_window import MoveableWindow
 
 class topic_practice(QDialog, MoveableWindow):
@@ -26,7 +27,7 @@ class topic_practice(QDialog, MoveableWindow):
         self.buttonController = buttonController(self)
         # Gán nút
         self.Cancel_Btn.clicked.connect(self.buttonController.handle_cancel)
-
+        self.practice_btn.clicked.connect(self.controller.handle_practice)
         if parent:
             # Lấy hình chữ nhật (vị trí và kích thước) của cửa sổ cha
             parent_rect = parent.geometry()
