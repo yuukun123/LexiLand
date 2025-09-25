@@ -80,7 +80,7 @@ class PracticeOtpController:
             current_username = self._user_context.get('user_name')
             user_id = self._user_context.get('user_id')
             parent_window = self.view.parentWidget()
-            self.practice_window = PracticeWindow(username=current_username, topics = selected_topics, parent=parent_window)
+            self.practice_window = PracticeWindow(user_context = self._user_context, topics = selected_topics, parent=parent_window)
             self.practice_window.practice_controller.setup_for_user(self._user_context)
             print("DEBUG: practice_window created", self.practice_window)
             if parent_window:

@@ -718,7 +718,7 @@ border-radius:10px;</string>
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset resource="../../resource/resource.qrc">
+                        <iconset>
                          <normaloff>:/icon/UI/icons/speaker-64.ico</normaloff>:/icon/UI/icons/speaker-64.ico</iconset>
                        </property>
                        <property name="iconSize">
@@ -745,7 +745,7 @@ border-radius:10px;</string>
                       <number>0</number>
                      </property>
                      <item alignment="Qt::AlignHCenter">
-                      <widget class="QLabel" name="vocabulary">
+                      <widget class="QLabel" name="question_label">
                        <property name="font">
                         <font>
                          <pointsize>30</pointsize>
@@ -817,7 +817,145 @@ border-radius:10px;</string>
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <layout class="QGridLayout" name="gridLayout"/>
+              <layout class="QGridLayout" name="gridLayout">
+               <item row="1" column="1">
+                <widget class="QPushButton" name="answer4">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>90</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">#answer4{
+	background-color: rgb(217, 217, 217);
+	padding-left:5px;
+}
+#answer4::hover{
+	background-color: rgb(168, 168, 168);
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>PushButton</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QPushButton" name="answer3">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>90</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">#answer3{
+	background-color: rgb(217, 217, 217);
+	padding-left:5px;
+}
+#answer3::hover{
+	background-color: rgb(168, 168, 168);
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>PushButton</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QPushButton" name="answer2">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>90</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">#answer2{
+	background-color: rgb(217, 217, 217);
+	padding-left:5px;
+}
+#answer2::hover{
+	background-color: rgb(168, 168, 168);
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>PushButton</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QPushButton" name="answer1">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>90</height>
+                  </size>
+                 </property>
+                 <property name="baseSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="mouseTracking">
+                  <bool>false</bool>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">#answer1{
+	background-color: rgb(217, 217, 217);
+	padding-left:5px;
+}
+#answer1::hover{
+	background-color: rgb(168, 168, 168);
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>PushButton</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </item>
            </layout>
@@ -831,8 +969,6 @@ border-radius:10px;</string>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../../resource/resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

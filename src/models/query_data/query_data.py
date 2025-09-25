@@ -1,6 +1,8 @@
 import sqlite3
 import os
 from datetime import datetime, timedelta
+import random
+
 
 class QueryData:
     def __init__(self):
@@ -799,6 +801,111 @@ class QueryData:
         finally:
             if conn:
                 conn.close()
+
+    def get_list_words_for_practice(self,user_id, topic_ids):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            if not topic_ids:
+                return []
+            placeholders = ",".join(["?"] * len(topic_ids))
+            cursor.execute(
+            f"""
+                SELECT 
+                    w.word_id,
+                    w.word_name,
+                    uwp.correct_streak,
+                    uwp.total_incorrect_count,
+                    uwp.next_review_at,
+	                uwp.is_mastered,
+	                uwp.srs_level,
+	                d.definition_text,
+	                m.part_of_speech
+                FROM words AS w
+                JOIN meanings AS m on m.word_id = w.word_id 
+                JOIN definition AS d on d.meaning_id = m.meaning_id
+                JOIN topic_word AS tw ON tw.word_id = w.word_id
+                JOIN topics AS t ON tw.topic_id = t.topic_id
+                JOIN user_word_progress AS uwp ON uwp.word_id = w.word_id
+                WHERE uwp.user_id = ?
+                AND d.language = 'vi'
+                AND t.topic_id IN ({placeholders})
+                ORDER BY uwp.total_incorrect_count DESC,
+                uwp.correct_streak ASC, srs_level ASC;
+            """,(user_id, *topic_ids)
+            )
+            rows = cursor.fetchall()
+            return [
+                {
+                    "id": row[0],
+                    "name": row[1],
+                    "correct_streak": row[2],
+                    "total_incorrect_count": row[3],
+                    "next_review_at": row[4],
+                    "is_mastered": row[5],
+                    "srs_level": row[6],
+                    "definition_text": row[7],
+                    "part_of_speech": row[8]
+                }
+                for row in rows
+            ]
+        except Exception as e:
+            print(f"\n!!! ĐÃ XẢY RA LỖI KHI DEBUG: {e}")
+        finally:
+            if conn:
+                conn.close()
+
+    def get_wrong_definitions(self, word_id, correct_definition, num_wrong = 3):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+            """
+            SELECT d.definition_text
+            FROM meanings AS m
+            JOIN definition AS d ON d.meaning_id = m.meaning_id
+            WHERE m.word_id != ?
+              AND d.language = 'vi'
+              AND d.definition_text != ?
+            """,
+            (word_id, correct_definition)
+            )
+            rows = cursor.fetchall()
+            wrong_defs = [row[0] for row in rows]
+            if len(wrong_defs) > num_wrong:
+                wrong_defs = random.sample(wrong_defs, num_wrong)
+            return wrong_defs
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY NGHĨA SAI: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+
+    def update_word_stats(self,data: dict):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+            """
+            UPDATE user_word_progress
+            SET srs_level = :srs_level,
+                correct_streak = :correct_streak,
+                total_incorrect_count = :total_incorrect_count,
+                is_mastered = :is_mastered,
+                last_reviewed_at = :last_reviewed_at,
+                next_review_at = :next_review_at
+                WHERE user_id = :user_id AND word_id = :word_id
+            """, {**data}
+            )
+            conn.commit()
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY NGHĨA SAI: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+
 # if __name__ == "__main__":
 #     query = QueryData()
 #     query.remove_word_from_topic(self, )
