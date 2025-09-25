@@ -266,6 +266,9 @@ QLineEdit:focus {
                    <underline>true</underline>
                   </font>
                  </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true">color: #c1121f; /* Một màu xanh dương đẹp mắt */
 text-decoration: underline; /* Gạch chân */</string>
