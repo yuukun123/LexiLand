@@ -55,7 +55,11 @@ class CreateSampleData:
                         ('Topic 9', datetime('now'), 1),
                         ('Topic 9', datetime('now'), 2),
                         ('Topic 10', datetime('now'), 1),
-                        ('Topic 10', datetime('now'), 2)                      
+                        ('Topic 10', datetime('now'), 2),
+                        ('Topic 11', datetime('now'), 1),
+                        ('Topic 11', datetime('now'), 2),
+                        ('Topic 12', datetime('now'), 1),
+                        ('Topic 12', datetime('now'), 2)
                         
             """)
         self.connection.commit()

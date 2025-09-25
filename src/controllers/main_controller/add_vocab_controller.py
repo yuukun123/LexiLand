@@ -185,6 +185,7 @@ class AddWordController:
 
     def handle_save(self):
         form_data = self.view.get_form_data()
+        word_name = form_data.get('word_name', '').strip()
 
         # 1. Kiểm tra xem đã có dữ liệu từ API chưa
         if not hasattr(self.view, 'retrieved_word_data') or not self.view.retrieved_word_data:
@@ -221,6 +222,19 @@ class AddWordController:
             QMessageBox.warning(self.view, "Thiếu thông tin", "Bạn phải chọn một chủ đề.")
             return
 
+        if self.mode == "add":
+            print(f"DEBUG: Kiểm tra xem từ '{word_name}' đã có trong topic_id={target_topic_id} chưa...")
+            is_existing = self.query_data.check_word_in_topic(target_topic_id, word_name)
+
+            if is_existing:
+                QMessageBox.information(
+                    self.view,
+                    "Thông báo",
+                    f"Từ '{word_name}' đã tồn tại trong chủ đề này."
+                )
+                print(f"INFO: Người dùng cố gắng thêm từ đã có. Đã thông báo.")
+                return  # Dừng hàm, không thực hiện lưu trữ
+
         result = None
         if self.mode == "add":
             print("DEBUG: Đang ở chế độ ADD, gọi add_word_to_topic...")
@@ -229,17 +243,6 @@ class AddWordController:
                 form_data,
                 self._user_context['user_id']
             )
-        elif self.mode == "edit":
-            print("DEBUG: Đang ở chế độ EDIT, gọi update_word_details...")
-            word_id_to_edit = self.word_data_to_edit.get('word_id')
-            if not word_id_to_edit:
-                QMessageBox.critical(self.view, "Lỗi", "Không tìm thấy ID của từ cần chỉnh sửa.")
-                return
-
-            result = self.query_data.update_word_details(word_id_to_edit, form_data)
-
-            # (Nâng cao) Cập nhật lại liên kết topic_word nếu người dùng đổi topic
-            self.query_data.update_word_topic_link(word_id_to_edit, target_topic_id)
 
         # 4. Xử lý kết quả
         if result and result.get("success"):

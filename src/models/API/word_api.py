@@ -84,7 +84,7 @@ async def prompt_gemini_async(word_to_define):
     """
     if check_multi_word_phrase(word_to_define):
         prompt_header = f"""
-        Chỉ cần giải thích cụm từ hoặc thành ngữ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
+        Chỉ cần giải thích cụm từ hoặc thành ngữ và tối đa 18 từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
         Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
         Thêm phiên âm Uk
         Thêm phiên âm US
@@ -95,7 +95,7 @@ async def prompt_gemini_async(word_to_define):
 
     else:
         prompt_header = f"""
-        Chỉ cần giải thích từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
+        Chỉ cần giải thích tối đa 18 từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan 
         Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
         Thêm phiên âm Uk
         Thêm phiên âm US
@@ -113,9 +113,7 @@ async def prompt_gemini_async(word_to_define):
         Common Examples :
         -[câu ví dụ] ([câu việt dụ])
     """
-
     full_prompt = prompt_header + prompt_footer
-
     # --- Gửi yêu cầu đến Gemini và nhận kết quả ---
     try:
         response = await gemini_model.generate_content_async(full_prompt)
@@ -125,34 +123,6 @@ async def prompt_gemini_async(word_to_define):
         return None
 
 async def extract_pos_from_data(session, dict_data):
-    # if not dict_data or 'meanings' not in dict_data[0]:
-    #     return "N/A", "N/A", "(Can't find this phrase in dictionary"
-    # try:
-    #     # Tìm định nghĩa đầu tiên CÓ CẢ VÍ DỤ
-    #     phonetic = dict_data[0].get('phonetic', 'N/A')
-    #     for meaning in dict_data[0].get('meanings', []):
-    #         part_of_speech = meaning.get('partOfSpeech', 'N/A')
-    #         for definition_info in meaning.get('definitions', []):
-    #             if 'example' in definition_info and 'definition' in definition_info:
-    #                 definition_EN = definition_info['definition']
-    #                 definition_VN = translate_word(definition_info.get('definition', '(No Definition)'))
-    #                 example = definition_info['example']
-    #                 fallback_text = f"Definition: {definition_EN}\nDefinition Vietnamese: {definition_VN}\nExample: {example}"
-    #                 return phonetic, part_of_speech, fallback_text
-    #
-    #     # Nếu không có cái nào có cả 2, lấy cái đầu tiên có thể
-    #     phonetic = dict_data[0].get('phonetic', 'N/A')
-    #     first_meaning = dict_data[0]['meanings'][0]
-    #     part_of_speech = first_meaning.get('partOfSpeech', 'N/A')
-    #     first_definition_info = first_meaning['definitions'][0]
-    #     definition_EN = first_definition_info.get('definition', '(No Definition)')
-    #     definition_VN = translate_word(first_definition_info.get('definition', '(No Definition)'))
-    #     example = first_definition_info.get('example', '(No Example)')
-    #     fallback_text = f"Definition English: {definition_EN}\nDefinition Vietnamese: {definition_VN}\nExample: {example}"
-    #     return phonetic, part_of_speech, fallback_text
-    # except (KeyError, IndexError):
-    #     return "N/A", "N/A", "(Lỗi xử lý dữ liệu từ điển)"
-
     if not dict_data or not isinstance(dict_data, list) or not dict_data[0].get('meanings'):
         return [], "N/A", "(Not found in dictionary)"
 
@@ -217,27 +187,6 @@ def translate_word(text_to_translate, source_lang = 'en', target_lang = 'vi'):
         return None
 
 def parse_gemini_response(text):
-    # if not text: return "N/A", "N/A", None
-    #
-    # phonetic = "N/A"
-    # pos = "N/A"
-    # explanation = text
-    #
-    # phonetic_match = re.search(r"^Phonetic:\s*(.*)", explanation, re.IGNORECASE | re.MULTILINE)
-    # if phonetic_match:
-    #     phonetic = phonetic_match.group(1).strip()
-    #     # Xóa dòng đã trích xuất
-    #     explanation = re.sub(r"^Phonetic:.*(\r\n?|\n)", "", explanation, count=1, flags=re.IGNORECASE | re.MULTILINE).strip()
-    #
-    # pos_match = re.search(r"^Part of speech:\s*(.*)", explanation, re.IGNORECASE | re.MULTILINE)
-    # if pos_match:
-    #     pos = pos_match.group(1).strip()
-    #     # Xóa dòng đã trích xuất
-    #     explanation = re.sub(r"^Part of speech:.*(\r\n?|\n)", "", explanation, count=1, flags=re.IGNORECASE | re.MULTILINE).strip()
-    #
-    # return phonetic, pos, explanation
-
-    """Trích xuất thông tin từ Gemini. Luôn trả về một danh sách pronunciations."""
     if not text:
         return [], "N/A", None
 
@@ -279,44 +228,6 @@ def display_result(word, pronunciations, pos, explanation, fallback_info):
     else:
         print(f"{fallback_info}")
 
-# async def run_lookup(word):
-#     if word in api_cache:
-#         print(f"Best definition for '{word}':")
-#         cached_data = api_cache[word]
-#         display_result(word, cached_data['pos'], cached_data['explanation'], cached_data['fallback_info'])
-#         return
-#
-#     async with aiohttp.ClientSession() as session:
-#         gemini_task = asyncio.create_task(prompt_definition_from_gemini(word))
-#
-#         dict_data = None
-#         if not check_multi_word_phrase(word):
-#             print("input is a single word")
-#             dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
-#             dict_data, gemini_response_text = await asyncio.gather(dict_task, gemini_task)
-#         else:
-#             print("input is multi word")
-#             gemini_response_text = await gemini_task
-#
-#
-#     gemini_pos, gemini_explanation = parse_gemini_response(gemini_response_text)
-#     dict_pos, dict_fallback = await extract_pos_from_data(session, dict_data)
-#     final_pos = dict_pos if dict_pos != "N/A" else gemini_pos
-#
-#     api_cache[word] = {
-#         "pos": final_pos,
-#         "explanation": gemini_explanation,
-#         "fallback_info": dict_fallback
-#     }
-#     query_data = QueryData()
-#     query_data.add_word_to_topic(9, api_cache[word], 2)
-#
-#
-#     display_result(word, final_pos, gemini_explanation, dict_fallback)
-#
-# async def main():
-#     await run_lookup("food")
-
 def generate_audio_from_text(text, save_dir_name="audio"):
     try:
         # Giả định thư mục gốc là thư mục cha của 'src'
@@ -338,209 +249,6 @@ def generate_audio_from_text(text, save_dir_name="audio"):
     except Exception as e:
         print(f"Lỗi khi tạo file âm thanh cho '{text}': {e}")
         return None
-
-
-# def convert_cache_to_db_format(word, cached_data, dict_data_raw):
-#     word_data = {
-#         'word_name': word,
-#         'pronunciations': [],
-#         'meanings': []
-#     }
-#
-#     explanation = cached_data.get('explanation')
-#     phonetic_us_from_gemini = ""
-#     phonetic_uk_from_gemini = ""
-#
-#     if explanation:
-#         us_match = re.search(r"Phonetic US:\s*(.*)", explanation, re.I)
-#         uk_match = re.search(r"Phonetic UK:\s*(.*)", explanation, re.I)
-#         phonetic_us_from_gemini = us_match.group(1).strip() if us_match else ""
-#         phonetic_uk_from_gemini = uk_match.group(1).strip() if uk_match else ""
-#
-#         def_en_match = re.search(r"Simple Definition English\s*:\s*(.*)", explanation, re.I)
-#         def_vi_match = re.search(r"Simple Definition Vietnamese\s*:\s*(.*)", explanation, re.I)
-#         example_match = re.search(r"-\s*\[?(.*?)\]?\s*\(\[?(.*?)\]?\)", explanation, re.I)
-#
-#         meaning_info = {
-#             'part_of_speech': cached_data.get('pos', 'N/A'),
-#             'definition_en': def_en_match.group(1).strip() if def_en_match else "",
-#             'definition_vi': def_vi_match.group(1).strip() if def_vi_match else "",
-#             'example_en': example_match.group(1).strip() if example_match else "",
-#             'example_vi': example_match.group(2).strip() if example_match else ""
-#         }
-#         word_data['meanings'].append(meaning_info)
-#
-#     # Xử lý phần phát âm (pronunciations)
-#     pronunciations_list = []
-#
-#     # Ưu tiên lấy URL âm thanh từ dữ liệu từ điển
-#     if dict_data_raw and isinstance(dict_data_raw, list) and dict_data_raw[0].get('phonetics'):
-#         for phonetic_item in dict_data_raw[0].get('phonetics', []):
-#             audio = phonetic_item.get('audio', '')
-#             region = ""
-#             if "us.mp3" in audio:
-#                 region = "US"
-#             elif "uk.mp3" in audio:
-#                 region = "UK"
-#
-#             if region:  # Chỉ thêm nếu là US hoặc UK
-#                 pronunciations_list.append({
-#                     "phonetic_text": phonetic_item.get('text', ''),
-#                     "audio_url": audio,
-#                     "region": region
-#                 })
-#
-#         # Kiểm tra xem đã có đủ US và UK chưa
-#         has_us = any(p['region'] == 'US' for p in pronunciations_list)
-#         has_uk = any(p['region'] == 'UK' for p in pronunciations_list)
-#
-#         # Nếu thiếu US, hãy tạo nó từ Gemini và TTS
-#         if not has_us:
-#             audio_path = generate_audio_from_text(word)  # gTTS mặc định giọng Mỹ
-#             pronunciations_list.append({
-#                 "phonetic_text": phonetic_us_from_gemini,
-#                 "audio_url": audio_path,
-#                 "region": "US"
-#             })
-#
-#         # Nếu thiếu UK, hãy tạo nó từ Gemini (không có audio)
-#         if not has_uk and phonetic_uk_from_gemini:
-#             pronunciations_list.append({
-#                 "phonetic_text": phonetic_uk_from_gemini,
-#                 "audio_url": "",  # Không có audio cho giọng UK từ TTS
-#                 "region": "UK"
-#             })
-#
-#     word_data['pronunciations'] = pronunciations_list
-#     return word_data
-
-# def convert_cache_to_db_format(word, cached_data, dict_data_raw):
-#     """
-#     Chuyển đổi dữ liệu, ưu tiên từ điển.
-#     Nếu thiếu giọng US, sẽ tạo ra nó bằng TTS và Gemini.
-#     Bỏ qua giọng UK nếu từ điển không cung cấp.
-#     """
-#     word_data = {
-#         'word_name': word,
-#         'pronunciations': [],
-#         'meanings': []
-#     }
-#
-#     # --- BƯỚC 1: TRÍCH XUẤT DỮ LIỆU TỪ GEMINI (ĐỂ DỰ PHÒNG) ---
-#     explanation = cached_data.get('explanation')
-#     phonetic_us_from_gemini = ""
-#
-#     if explanation:
-#         us_match = re.search(r"Phonetic US:\s*(.*)", explanation, re.I)
-#         phonetic_us_from_gemini = us_match.group(1).strip() if us_match else ""
-#
-#         # ... (code trích xuất meanings của bạn giữ nguyên) ...
-#         def_en_match = re.search(r"Simple Definition English\s*:\s*(.*)", explanation, re.I)
-#         def_vi_match = re.search(r"Simple Definition Vietnamese\s*:\s*(.*)", explanation, re.I)
-#         example_match = re.search(r"-\s*\[?(.*?)\]?\s*\(\[?(.*?)\]?\)", explanation, re.I)
-#
-#         meaning_info = {
-#             'part_of_speech': cached_data.get('pos', 'N/A'),
-#             'definition_en': def_en_match.group(1).strip() if def_en_match else "",
-#             'definition_vi': def_vi_match.group(1).strip() if def_vi_match else "",
-#             'example_en': example_match.group(1).strip() if example_match else "",
-#             'example_vi': example_match.group(2).strip() if example_match else ""
-#         }
-#         word_data['meanings'].append(meaning_info)
-#
-#     # --- BƯỚC 2: ƯU TIÊN LẤY US/UK TỪ API TỪ ĐIỂN ---
-#     final_pronunciations = []
-#     has_us_from_dict = False
-#
-#     if dict_data_raw and isinstance(dict_data_raw, list) and dict_data_raw[0].get('phonetics'):
-#         for item in dict_data_raw[0]['phonetics']:
-#             if item.get('audio'):
-#                 region = ""
-#                 if "us.mp3" in item['audio']:
-#                     region = "US"
-#                 elif "uk.mp3" in item['audio']:
-#                     region = "UK"
-#
-#                 if region:  # Chỉ lấy US hoặc UK
-#                     final_pronunciations.append({
-#                         "region": region,
-#                         "phonetic_text": item.get('text', ''),
-#                         "audio_url": item['audio']
-#                     })
-#                     if region == "US":
-#                         has_us_from_dict = True
-#
-#     # --- BƯỚC 3: FALLBACK CHỈ CHO GIỌNG US ---
-#     # Nếu sau khi duyệt từ điển mà vẫn không có giọng US, hãy tạo nó
-#     if not has_us_from_dict:
-#         audio_path_us = generate_audio_from_text(word)
-#         final_pronunciations.insert(0, {  # Dùng insert(0,...) để US luôn ở đầu
-#             "region": "US",
-#             "phonetic_text": phonetic_us_from_gemini,
-#             "audio_url": audio_path_us
-#         })
-#
-#     word_data['pronunciations'] = final_pronunciations
-#     return word_data
-
-# async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
-#     word = word.strip().lower()
-#
-#     # --- BƯỚC 1: KIỂM TRA CACHE VÀ LẤY DỮ LIỆU TỪ API NẾU CẦN ---
-#     if word not in api_cache:
-#         print(f"\n--- Cache miss. Bắt đầu tra cứu API cho '{word}' ---")
-#
-#         gemini_task = asyncio.create_task(prompt_definition_from_gemini(word))
-#         dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
-#         gemini_response_text, dict_data = await asyncio.gather(gemini_task, dict_task)
-#
-#         gemini_pos, gemini_explanation = parse_gemini_response(gemini_response_text)
-#         # SỬA LỖI 3: Dùng phiên bản async của hàm dịch
-#         dict_pos, dict_fallback = await extract_pos_from_data(session, dict_data)
-#         final_pos = dict_pos if dict_pos != "N/A" else gemini_pos
-#
-#         api_cache[word] = {
-#             "pos": final_pos,
-#             "explanation": gemini_explanation,
-#             "fallback_info": dict_fallback,
-#             "dict_data_raw": dict_data
-#         }
-#     else:
-#         print(f"\n--- Cache hit for '{word}' ---")
-
-# async def lookup_and_build_data(session, word):
-#     """
-#     Hàm này CHỈ tra cứu và trả về một dictionary word_data đã được chuẩn hóa.
-#     Nó KHÔNG lưu vào CSDL.
-#     """
-#     word = word.strip().lower()
-#
-#     # Logic tra cứu API và cache
-#     if word not in api_cache:
-#         gemini_task = asyncio.create_task(prompt_definition_from_gemini(word))
-#         dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
-#         gemini_response_text, dict_data = await asyncio.gather(gemini_task, dict_task)
-#
-#         gemini_pron, gemini_pos, gemini_explanation = parse_gemini_response(gemini_response_text)
-#         dict_pron, dict_pos, dict_fallback = await extract_pos_from_data(session, dict_data)
-#
-#         final_pron = dict_pron if dict_pron else gemini_pron
-#         final_pos = dict_pos if dict_pos != "N/A" else gemini_pos
-#
-#         api_cache[word] = {
-#             "pronunciations": final_pron,
-#             "pos": final_pos,
-#             "explanation": gemini_explanation,
-#             "fallback_info": dict_fallback,
-#             "dict_data_raw": dict_data
-#         }
-#
-#     cached_data = api_cache[word]
-#     dict_data_raw = cached_data['dict_data_raw']
-#
-#     # Chuyển đổi sang định dạng CSDL và trả về
-#     word_data_for_db = convert_cache_to_db_format(word, cached_data, dict_data_raw)
-#     return word_data_for_db
 
 def convert_gemini_response_to_db_format(word, gemini_response_text):
     """
@@ -580,11 +288,8 @@ def convert_gemini_response_to_db_format(word, gemini_response_text):
 
     return word_data
 
-
-# --- Sửa lại lookup_and_build_data ---
 async def lookup_and_build_data(session, word):
     word = word.strip().lower()
-
     if word in api_cache:
         return api_cache[word]
 
@@ -592,36 +297,48 @@ async def lookup_and_build_data(session, word):
     dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
     gemini_response_text, dict_data = await asyncio.gather(gemini_task, dict_task)
 
-    # Ưu tiên dữ liệu từ Gemini để có cấu trúc đầy đủ
+    # BƯỚC 1: Luôn phân tích Gemini để có dữ liệu nền
     word_data = convert_gemini_response_to_db_format(word, gemini_response_text)
+    if not word_data:
+        word_data = {'word_name': word, 'pronunciations': [], 'meanings': []}
 
-    # Nếu từ điển có audio, ghi đè/bổ sung vào word_data
+    # BƯỚC 2: Cố gắng lấy audio từ từ điển và ghi đè
+    has_us_audio_from_dict = False
+    has_uk_audio_from_dict = False
+    dict_pronunciations = []
+
     if dict_data and isinstance(dict_data, list) and dict_data[0].get('phonetics'):
-        dict_pronunciations = []
         for p in dict_data[0]['phonetics']:
             if p.get('audio'):
-                region = "US" if "us.mp3" in p['audio'] else "UK" if "uk.mp3" in p['audio'] else "Other"
-                dict_pronunciations.append({
-                    "region": region,
-                    "phonetic_text": p.get('text', ''),
-                    "audio_url": p.get('audio')
-                })
+                region = "US" if "us.mp3" in p['audio'] else "UK" if "uk.mp3" in p['audio'] else None
+                if region:
+                    dict_pronunciations.append({
+                        "region": region,
+                        "phonetic_text": p.get('text', ''),
+                        "audio_url": p.get('audio')
+                    })
+                    if region == "US": has_us_audio_from_dict = True
+                    if region == "UK": has_uk_audio_from_dict = True
 
-        # Ghi đè thông tin phiên âm nếu từ điển có
-        if dict_pronunciations:
-            word_data['pronunciations'] = dict_pronunciations
+    # Nếu từ điển có audio, nó sẽ được ưu tiên
+    if dict_pronunciations:
+        word_data['pronunciations'] = dict_pronunciations
 
-    # Nếu sau tất cả vẫn không có audio, tạo bằng TTS
-    has_audio = any(p.get('audio_url') for p in word_data['pronunciations'])
-    if not has_audio:
-        audio_path = generate_audio_from_text(word)
-        # Tìm phiên âm US từ Gemini để điền vào
-        us_phonetic = next((p['phonetic_text'] for p in word_data['pronunciations'] if p['region'] == 'US'), "")
-        word_data['pronunciations'].append({
-            "region": "US",
-            "phonetic_text": us_phonetic,
-            "audio_url": audio_path
-        })
+    # BƯỚC 3: Tạo TTS cho US nếu vẫn còn thiếu
+    if not has_us_audio_from_dict:
+        audio_path_us = generate_audio_from_text(word)
+        us_pron_from_gemini = next((p for p in convert_gemini_response_to_db_format(word, gemini_response_text).get('pronunciations', []) if p['region'] == 'US'), None)
+
+        # Tìm và cập nhật bản ghi US (nếu có), hoặc thêm mới
+        existing_us_pron = next((p for p in word_data['pronunciations'] if p.get('region') == 'US'), None)
+        if existing_us_pron:
+            existing_us_pron['audio_url'] = audio_path_us
+        else:
+            word_data['pronunciations'].append({
+                "region": "US",
+                "phonetic_text": us_pron_from_gemini['phonetic_text'] if us_pron_from_gemini else "",
+                "audio_url": audio_path_us
+            })
 
     api_cache[word] = word_data
     return word_data

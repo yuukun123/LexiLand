@@ -1,3 +1,5 @@
+import os
+
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QWidget, QDialog, QGridLayout, QMessageBox, QApplication
@@ -140,17 +142,16 @@ class VocabController(BaseController):
         return self.query_data.get_words_in_topic(self.topic_id)
 
     def _update_stats_ui(self, stats):
+        if not self._user_context or 'user_id' not in self._user_context:
+            print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
+            return
 
-        # if not self._user_context or 'user_id' not in self._user_context:
-        #     print("LỖI: user_context không hợp lệ hoặc thiếu user_id.")
-        #     return
-        #
-        # user_id = self._user_context['user_id']
-        # stats = self.query_data.get_stats_for_topic(user_id, self.topic_id)
-        # print(f"DEBUG: Cập nhật thông tin user_id: {user_id}, topic_id: {self.topic_id}")
-        #
-        # topic_name = self.query_data.get_topic_name_from_topic_id(user_id, self.topic_id)
-        # self.topic_label.setText(f"Topic: {topic_name}")
+        user_id = self._user_context['user_id']
+        stats = self.query_data.get_stats_for_topic(user_id, self.topic_id)
+        print(f"DEBUG: Cập nhật thông tin user_id: {user_id}, topic_id: {self.topic_id}")
+
+        topic_name = self.query_data.get_topic_name_from_topic_id(user_id, self.topic_id)
+        self.topic_label.setText(f"Topic: {topic_name}")
 
         if hasattr(self.parent, 'learned'):
             self.parent.learned.setText(str(stats["learned"]))
@@ -421,10 +422,42 @@ class VocabController(BaseController):
                 self.refresh_data()
 
                 self.parent.data_changed.emit()
+
+        # if reply == QMessageBox.Yes:
+        #     # Gọi hàm CSDL để xóa
+        #     result = self.query_data.remove_word_from_topic(self.topic_id, word_id)
+        #
+        #     if result.get("success"):
+        #         QMessageBox.information(self.parent, "Thành công", f"Đã xóa từ '{word_name}'.")
+        #
+        #         # --- BƯỚC MỚI: XỬ LÝ XÓA FILE ---
+        #         files_to_delete = result.get("deleted_audio_files", [])
+        #         if files_to_delete:
+        #             self.cleanup_audio_files(files_to_delete)
+        #
+        #         # Làm mới giao diện
+        #         self.refresh_data()
+        #         self.parent.data_changed.emit()
+
             else:
                 QMessageBox.critical(self.parent, "Lỗi", f"Không thể xóa từ: {result.get('error')}")
         else:
             print("DEBUG: Người dùng đã hủy việc xóa.")
+
+    # def cleanup_audio_files(self, file_paths):
+    #     """
+    #     Xóa các file âm thanh không còn cần thiết khỏi hệ thống file.
+    #     """
+    #     print(f"DEBUG: Bắt đầu dọn dẹp các file audio: {file_paths}")
+    #     for path in file_paths:
+    #         if path and os.path.exists(path):
+    #             try:
+    #                 os.remove(path)
+    #                 print(f"INFO: Đã xóa file: {path}")
+    #             except OSError as e:
+    #                 print(f"LỖI: Không thể xóa file {path}: {e}")
+    #         else:
+    #             print(f"CẢNH BÁO: Đường dẫn file không hợp lệ hoặc không tồn tại: {path}")
 
     def handle_open_practice_click(self):
         print("DEBUG: start open_practice_window")
