@@ -8,7 +8,6 @@ import aiohttp
 from gtts import gTTS
 from requests import session
 
-from src.models.query_data.query_data import QueryData
 
 api_cache = {}
 
@@ -363,21 +362,21 @@ async def lookup_and_build_data(session, word):
     if dict_pronunciations:
         word_data['pronunciations'] = dict_pronunciations
 
-    # BƯỚC 3: Tạo TTS cho US nếu vẫn còn thiếu
-    if not has_us_audio_from_dict:
-        audio_path_us = generate_audio_from_text(word)
-        us_pron_from_gemini = next((p for p in convert_gemini_response_to_db_format(word, gemini_response_text).get('pronunciations', []) if p['region'] == 'US'), None)
-
-        # Tìm và cập nhật bản ghi US (nếu có), hoặc thêm mới
-        existing_us_pron = next((p for p in word_data['pronunciations'] if p.get('region') == 'US'), None)
-        if existing_us_pron:
-            existing_us_pron['audio_url'] = audio_path_us
-        else:
-            word_data['pronunciations'].append({
-                "region": "US",
-                "phonetic_text": us_pron_from_gemini['phonetic_text'] if us_pron_from_gemini else "",
-                "audio_url": audio_path_us
-            })
+    # # BƯỚC 3: Tạo TTS cho US nếu vẫn còn thiếu
+    # if not has_us_audio_from_dict:
+    #     audio_path_us = generate_audio_from_text(word)
+    #     us_pron_from_gemini = next((p for p in convert_gemini_response_to_db_format(word, gemini_response_text).get('pronunciations', []) if p['region'] == 'US'), None)
+    #
+    #     # Tìm và cập nhật bản ghi US (nếu có), hoặc thêm mới
+    #     existing_us_pron = next((p for p in word_data['pronunciations'] if p.get('region') == 'US'), None)
+    #     if existing_us_pron:
+    #         existing_us_pron['audio_url'] = audio_path_us
+    #     else:
+    #         word_data['pronunciations'].append({
+    #             "region": "US",
+    #             "phonetic_text": us_pron_from_gemini['phonetic_text'] if us_pron_from_gemini else "",
+    #             "audio_url": audio_path_us
+    #         })
 
     api_cache[word] = word_data
     return word_data
@@ -401,6 +400,7 @@ async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
     word_data_for_db = convert_gemini_response_to_db_format(word, cached_data, dict_data_raw)
     print(f"\nDEBUG: Dữ liệu đã chuẩn hóa để lưu vào CSDL cho user {user_id_to_save}:\n{word_data_for_db}\n")
 
+    from src.models.query_data.query_data import QueryData
     print(f"Bắt đầu lưu vào CSDL cho user_id={user_id_to_save}...")
     query_data = QueryData()
     try:

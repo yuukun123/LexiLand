@@ -2,6 +2,9 @@ import sqlite3
 import os
 from datetime import datetime, timedelta
 
+from src.models.API.word_api import generate_audio_from_text
+
+
 class QueryData:
     def __init__(self):
         # lấy đường dẫn đến thư mục chứ file hiện tại
@@ -85,6 +88,25 @@ class QueryData:
         try:
             cursor = conn.cursor()
             cursor.execute("BEGIN TRANSACTION")
+
+            has_audio = any(p.get('audio_url') for p in word_data.get('pronunciations', []))
+
+            if not has_audio:
+                print(f"DEBUG [DB]: Không có audio cho '{word_data['word_name']}'. Đang tạo TTS...")
+                # Tạo file audio
+                audio_path = generate_audio_from_text(word_data['word_name'])
+
+                # Tìm và cập nhật bản ghi phiên âm US (nếu có)
+                us_pron = next((p for p in word_data['pronunciations'] if p.get('region') == 'US'), None)
+                if us_pron:
+                    us_pron['audio_url'] = audio_path
+                else:
+                    # Nếu không có, tạo một bản ghi mới
+                    word_data['pronunciations'].append({
+                        'region': 'US',
+                        'phonetic_text': '',  # Không có text, chỉ có audio
+                        'audio_url': audio_path
+                    })
 
             # BƯỚC 1: TÌM HOẶC TẠO TỪ
             word_id = self._find_or_create_word(cursor, word_data)
