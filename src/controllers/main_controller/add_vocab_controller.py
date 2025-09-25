@@ -267,11 +267,15 @@ class AddWordController:
 
     def update_suggestion_ui(self, result):
         """Hiển thị hoặc ẩn gợi ý trên UI."""
+        if not self.view or sip.isdeleted(self.view):
+            print("DEBUG: Dialog đã bị đóng, hủy cập nhật UI gợi ý.")
+            return  # Dừng hàm ngay lập tức
+
+            # Nếu code chạy đến đây, có nghĩa là self.view vẫn còn tồn tại
         if not result.get('is_correct') and result.get('suggestion'):
             suggestion = result['suggestion']
             self.view.suggestionLabel.setText(f"<i>Did you mean:</i> <b>{suggestion}</b>?")
             self.view.suggestionLabel.show()
-            # Lưu lại gợi ý để dùng khi click
             self.view.current_suggestion = suggestion
         else:
             self.view.suggestionLabel.hide()
