@@ -142,3 +142,4 @@ class PracticeWindow(BaseWindow, MoveableWindow):
             if self.parent:
                 self.parent.show()
             self.close()
+            # test

@@ -1,5 +1,6 @@
 import asyncio
 import aiohttp
+from PyQt5 import sip
 from PyQt5.QtCore import QThread, QObject, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox, QApplication
 
