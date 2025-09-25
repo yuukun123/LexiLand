@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>460</width>
-    <height>690</height>
+    <height>724</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,7 +34,7 @@
      <property name="minimumSize">
       <size>
        <width>455</width>
-       <height>655</height>
+       <height>670</height>
       </size>
      </property>
      <property name="maximumSize">
@@ -210,7 +210,7 @@ border-bottom-left-radius:10px;</string>
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>50</height>
+                <height>60</height>
                </size>
               </property>
               <property name="frameShape">
@@ -219,7 +219,10 @@ border-bottom-left-radius:10px;</string>
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <property name="spacing">
+                <number>10</number>
+               </property>
                <property name="leftMargin">
                 <number>0</number>
                </property>
@@ -253,6 +256,22 @@ QLineEdit:focus {
     border: 1px solid #888;        
     background: #ffffff;           
 }</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="suggestionLabel">
+                 <property name="font">
+                  <font>
+                   <underline>true</underline>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">color: #c1121f; /* Một màu xanh dương đẹp mắt */
+text-decoration: underline; /* Gạch chân */</string>
+                 </property>
+                 <property name="text">
+                  <string/>
                  </property>
                 </widget>
                </item>

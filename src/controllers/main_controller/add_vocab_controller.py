@@ -4,7 +4,7 @@ from PyQt5.QtCore import QThread, QObject, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox, QApplication
 
 from src.models.query_data.query_data import QueryData
-from src.models.API.word_api import run_lookup, lookup_and_build_data # Giả sử bạn có hàm này
+from src.models.API.word_api import run_lookup, lookup_and_build_data, check_spelling_with_gemini  # Giả sử bạn có hàm này
 
 class TopicLoaderWorker(QObject):
     finished = pyqtSignal(list) # Tín hiệu mang theo danh sách topics
@@ -250,3 +250,38 @@ class AddWordController:
         else:
             error_msg = result.get('error') if result else "Unknown error"
             QMessageBox.critical(self.view, "Lỗi CSDL", f"Không thể lưu: {error_msg}")
+
+    def handle_spelling_check_trigger(self):
+        """Được kích hoạt khi người dùng gõ xong từ."""
+        word = self.view.vocab.text().strip()
+        if word:
+            # Chạy tác vụ kiểm tra ở nền
+            asyncio.create_task(self.check_spelling_async(word))
+
+    async def check_spelling_async(self, word):
+        """Gọi API Gemini để kiểm tra chính tả."""
+        result = await check_spelling_with_gemini(word)
+
+        # Cập nhật UI từ kết quả
+        self.update_suggestion_ui(result)
+
+    def update_suggestion_ui(self, result):
+        """Hiển thị hoặc ẩn gợi ý trên UI."""
+        if not result.get('is_correct') and result.get('suggestion'):
+            suggestion = result['suggestion']
+            self.view.suggestionLabel.setText(f"<i>Did you mean:</i> <b>{suggestion}</b>?")
+            self.view.suggestionLabel.show()
+            # Lưu lại gợi ý để dùng khi click
+            self.view.current_suggestion = suggestion
+        else:
+            self.view.suggestionLabel.hide()
+            self.view.current_suggestion = ""
+
+    def handle_suggestion_click(self, event):
+        """Được gọi khi người dùng click vào QLabel gợi ý."""
+        if hasattr(self.view, 'current_suggestion') and self.view.current_suggestion:
+            print(f"DEBUG: Người dùng đã chấp nhận gợi ý: '{self.view.current_suggestion}'")
+            # Cập nhật lại QLineEdit với từ đúng
+            self.view.vocab.setText(self.view.current_suggestion)
+            # Ẩn gợi ý đi
+            self.view.suggestionLabel.hide()

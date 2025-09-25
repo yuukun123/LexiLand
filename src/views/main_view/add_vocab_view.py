@@ -19,10 +19,18 @@ class AddWordDialog(QDialog, MoveableWindow):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
+        self.suggestionLabel.hide()
+
         self.buttonController = buttonController(self)
         self.Cancel_Btn.clicked.connect(self.buttonController.handle_cancel)
         self.retrieved_word_data = word_data_to_edit
         self.controller = AddWordController(self, user_context, mode, word_data_to_edit)
+
+        # Kết nối sự kiện chỉnh sửa kết thúc của QLineEdit
+        self.vocab.editingFinished.connect(self.controller.handle_spelling_check_trigger)
+
+        # Làm cho label có thể click được
+        self.suggestionLabel.mousePressEvent = self.controller.handle_suggestion_click
 
         # Tùy chỉnh giao diện theo mode
         if mode == FormMode.ADD:

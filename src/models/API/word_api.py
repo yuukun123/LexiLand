@@ -122,6 +122,45 @@ async def prompt_gemini_async(word_to_define):
         print(f"Đã xảy ra lỗi khi gọi API: {e}")
         return None
 
+
+# trong src/models/API/word_api.py
+import json
+
+
+async def check_spelling_with_gemini(word_to_check):
+    """
+    Sử dụng Gemini để kiểm tra chính tả và đưa ra gợi ý.
+    Trả về một dictionary JSON.
+    """
+    print(f"DEBUG: Bắt đầu kiểm tra chính tả cho '{word_to_check}'...")
+
+    prompt = f"""
+    Analyze the English word "{word_to_check}". 
+    Check if it is spelled correctly. 
+    If it is spelled incorrectly, provide the correct spelling.
+    Respond ONLY with a valid JSON object in the following format, with no other text or markdown:
+    {{
+      "is_correct": boolean,
+      "suggestion": "string"
+    }}
+    If the word is correct, "suggestion" should be an empty string.
+    """
+
+    try:
+        response = await gemini_model.generate_content_async(prompt)
+
+        # Làm sạch và phân tích JSON
+        clean_json_str = response.text.strip().replace("```json", "").replace("```", "").strip()
+        result = json.loads(clean_json_str)
+
+        print(f"DEBUG: Kết quả kiểm tra chính tả: {result}")
+        return result
+
+    except (json.JSONDecodeError, Exception) as e:
+        print(f"Lỗi khi kiểm tra chính tả với Gemini: {e}")
+        # Mặc định là đúng nếu có lỗi API
+        return {"is_correct": True, "suggestion": ""}
+
 async def extract_pos_from_data(session, dict_data):
     if not dict_data or not isinstance(dict_data, list) or not dict_data[0].get('meanings'):
         return [], "N/A", "(Not found in dictionary)"
