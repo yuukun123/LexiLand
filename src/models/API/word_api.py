@@ -82,7 +82,7 @@ async def prompt_gemini_async(word_to_define):
     """
     if check_multi_word_phrase(word_to_define):
         prompt_header = f"""
-        Chỉ cần giải thích cụm từ hoặc thành ngữ và tối đa 18 từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
+        Chỉ cần giải thích cụm từ hoặc thành ngữ và tối đa 11 từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
         Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
         Thêm phiên âm Uk
         Thêm phiên âm US
@@ -93,12 +93,9 @@ async def prompt_gemini_async(word_to_define):
 
     else:
         prompt_header = f"""
-        Chỉ cần giải thích tối đa 18 từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan 
-        Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
-        Thêm phiên âm Uk
-        Thêm phiên âm US
-        Thêm phần dịch nghĩa tiếng việt cho ví dụ
-        Sau đó, cung cấp 1 câu ví dụ rất phổ biến và tự nhiên trong giao tiếp hàng ngày.
+        cho tôi nghĩa tiếng việt của từ {word_to_define}, Thêm phiên âm UK và US.
+        cho tôi 2 câu ví dụ cả tiếng anh và tiếng việt của từ {word_to_define}
+        chỉ cho nghĩa không cần giải thích cụ thể nó là gì
         """
 
     prompt_footer = f"""

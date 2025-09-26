@@ -30,8 +30,8 @@ class AddWordController:
         self.query_data = QueryData()
 
         # Kết nối các nút của dialog
-        self.view.CreateVocabBtn.setDefault(False)
-        self.view.CreateVocabBtn.setAutoDefault(False)
+        # self.view.CreateVocabBtn.setDefault(False)
+        # self.view.CreateVocabBtn.setAutoDefault(False)
         self.view.SaveVocabBtn.setDefault(False)
         self.view.SaveVocabBtn.setAutoDefault(False)
         self.view.Cancel_Btn.setDefault(False)
