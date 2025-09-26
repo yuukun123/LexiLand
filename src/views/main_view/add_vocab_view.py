@@ -18,6 +18,7 @@ class AddWordDialog(QDialog, MoveableWindow):
         # self.invisible()
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
         self.setAttribute(Qt.WA_TranslucentBackground)
+        self.suggestionLabel.hide()
 
         self.buttonController = buttonController(self)
         self.Cancel_Btn.clicked.connect(self.buttonController.handle_cancel)
