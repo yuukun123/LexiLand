@@ -326,8 +326,14 @@ def convert_gemini_response_to_db_format(word, gemini_response_text):
 
     return word_data
 
+
 async def lookup_and_build_data(session, word):
+    """
+    Hàm này CHỈ tra cứu, phân tích và kết hợp dữ liệu từ các API.
+    Nó KHÔNG tạo ra file TTS.
+    """
     word = word.strip().lower()
+
     if word in api_cache:
         return api_cache[word]
 
@@ -335,48 +341,43 @@ async def lookup_and_build_data(session, word):
     dict_task = asyncio.create_task(get_dictionary_data_async(session, word))
     gemini_response_text, dict_data = await asyncio.gather(gemini_task, dict_task)
 
-    # BƯỚC 1: Luôn phân tích Gemini để có dữ liệu nền
+    # --- BƯỚC 1: LUÔN LẤY DỮ LIỆU CƠ BẢN TỪ GEMINI ---
     word_data = convert_gemini_response_to_db_format(word, gemini_response_text)
     if not word_data:
         word_data = {'word_name': word, 'pronunciations': [], 'meanings': []}
 
-    # BƯỚC 2: Cố gắng lấy audio từ từ điển và ghi đè
-    has_us_audio_from_dict = False
-    has_uk_audio_from_dict = False
-    dict_pronunciations = []
-
+    # --- BƯỚC 2: TRÍCH XUẤT CÁC PHIÊN ÂM CÓ AUDIO TỪ TỪ ĐIỂN ---
+    dict_pron_with_audio = []
     if dict_data and isinstance(dict_data, list) and dict_data[0].get('phonetics'):
         for p in dict_data[0]['phonetics']:
             if p.get('audio'):
                 region = "US" if "us.mp3" in p['audio'] else "UK" if "uk.mp3" in p['audio'] else None
                 if region:
-                    dict_pronunciations.append({
+                    dict_pron_with_audio.append({
                         "region": region,
                         "phonetic_text": p.get('text', ''),
                         "audio_url": p.get('audio')
                     })
-                    if region == "US": has_us_audio_from_dict = True
-                    if region == "UK": has_uk_audio_from_dict = True
 
-    # Nếu từ điển có audio, nó sẽ được ưu tiên
-    if dict_pronunciations:
-        word_data['pronunciations'] = dict_pronunciations
+    # --- BƯỚC 3: KẾT HỢP DỮ LIỆU MỘT CÁCH THÔNG MINH ---
+    final_pronunciations = word_data.get('pronunciations', [])
 
-    # # BƯỚC 3: Tạo TTS cho US nếu vẫn còn thiếu
-    # if not has_us_audio_from_dict:
-    #     audio_path_us = generate_audio_from_text(word)
-    #     us_pron_from_gemini = next((p for p in convert_gemini_response_to_db_format(word, gemini_response_text).get('pronunciations', []) if p['region'] == 'US'), None)
-    #
-    #     # Tìm và cập nhật bản ghi US (nếu có), hoặc thêm mới
-    #     existing_us_pron = next((p for p in word_data['pronunciations'] if p.get('region') == 'US'), None)
-    #     if existing_us_pron:
-    #         existing_us_pron['audio_url'] = audio_path_us
-    #     else:
-    #         word_data['pronunciations'].append({
-    #             "region": "US",
-    #             "phonetic_text": us_pron_from_gemini['phonetic_text'] if us_pron_from_gemini else "",
-    #             "audio_url": audio_path_us
-    #         })
+    for dict_pron in dict_pron_with_audio:
+        region_to_match = dict_pron['region']
+        gemini_pron_match = next((p for p in final_pronunciations if p.get('region') == region_to_match), None)
+
+        if gemini_pron_match:
+            # Nâng cấp phiên âm từ Gemini với audio_url từ từ điển
+            gemini_pron_match['audio_url'] = dict_pron['audio_url']
+            if dict_pron['phonetic_text']:
+                gemini_pron_match['phonetic_text'] = dict_pron['phonetic_text']
+        else:
+            # Thêm phiên âm mới từ từ điển nếu Gemini không có
+            final_pronunciations.append(dict_pron)
+
+    word_data['pronunciations'] = final_pronunciations
+
+    # BƯỚC 4: XÓA BỎ LOGIC TẠO TTS KHỎI ĐÂY
 
     api_cache[word] = word_data
     return word_data
