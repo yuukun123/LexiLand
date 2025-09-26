@@ -6,8 +6,7 @@ import google.generativeai as genai
 import os
 import aiohttp
 from gtts import gTTS
-from requests import session
-
+import json
 
 api_cache = {}
 
@@ -120,11 +119,6 @@ async def prompt_gemini_async(word_to_define):
     except Exception as e:
         print(f"Đã xảy ra lỗi khi gọi API: {e}")
         return None
-
-
-# trong src/models/API/word_api.py
-import json
-
 
 async def check_spelling_with_gemini(word_to_check):
     """
