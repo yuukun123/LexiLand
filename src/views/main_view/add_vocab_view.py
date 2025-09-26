@@ -25,8 +25,7 @@ class AddWordDialog(QDialog, MoveableWindow):
         self.controller = AddWordController(self, user_context, mode, word_data_to_edit)
 
         # Kết nối sự kiện chỉnh sửa kết thúc của QLineEdit
-        self.vocab.editingFinished.connect(self.controller.handle_spelling_check_trigger)
-
+        self.vocab.returnPressed.connect(self.controller.handle_spelling_check_trigger)
         # Làm cho label có thể click được
         self.suggestionLabel.mousePressEvent = self.controller.handle_suggestion_click
 

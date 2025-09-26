@@ -30,6 +30,12 @@ class AddWordController:
         self.query_data = QueryData()
 
         # Kết nối các nút của dialog
+        self.view.CreateVocabBtn.setDefault(False)
+        self.view.CreateVocabBtn.setAutoDefault(False)
+        self.view.SaveVocabBtn.setDefault(False)
+        self.view.SaveVocabBtn.setAutoDefault(False)
+        self.view.Cancel_Btn.setDefault(False)
+        self.view.Cancel_Btn.setAutoDefault(False)
         self.view.CreateVocabBtn.clicked.connect(self.handle_create_definition_wrapper)
         # --- THAY ĐỔI 1: Kết nối tín hiệu của ComboBox ---
         self.view.Topic_opt.currentIndexChanged.connect(self.on_topic_selection_changed)
