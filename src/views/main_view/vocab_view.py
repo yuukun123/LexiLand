@@ -1,7 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, pyqtSignal
-
-from src.controllers.main_controller.topic_controller import TopicController
+from src.models.query_data.query_data import QueryData
 from src.controllers.main_controller.vocab_controller import VocabController
 from src.utils.username_ui import set_user_info
 from src.views.moveable_window import MoveableWindow
@@ -18,6 +17,7 @@ class VocabWindow(BaseWindow, MoveableWindow):
         MoveableWindow.__init__(self)
         self.username = username
         self.topic_id = topic_id
+        self.querydata = QueryData()
 
         self.pre_window = pre_window
 

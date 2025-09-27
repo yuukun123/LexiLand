@@ -471,7 +471,7 @@ class VocabController(BaseController):
             current_username = self._user_context.get('user_name')
             user_id = self._user_context.get('user_id')
             topics = self.query_data.get_name_topic_by_id(user_id, self.topic_id_list)
-            self.practice_window = PracticeWindow(username=current_username, topics = topics, parent=self.parent)
+            self.practice_window = PracticeWindow(user_context = self._user_context, topics = topics, parent=self.parent)
             self.practice_window.practice_controller.setup_for_user(self._user_context)
             print("DEBUG: practice_window created", self.practice_window)
             self.practice_window.show()

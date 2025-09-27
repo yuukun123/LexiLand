@@ -822,8 +822,14 @@ border-radius:10px;</string>
                 <widget class="QPushButton" name="answer4">
                  <property name="minimumSize">
                   <size>
-                   <width>0</width>
+                   <width>526</width>
                    <height>90</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>526</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="font">
@@ -854,8 +860,14 @@ border-radius:10px;</string>
                 <widget class="QPushButton" name="answer3">
                  <property name="minimumSize">
                   <size>
-                   <width>0</width>
+                   <width>526</width>
                    <height>90</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>526</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="font">
@@ -886,8 +898,14 @@ border-radius:10px;</string>
                 <widget class="QPushButton" name="answer2">
                  <property name="minimumSize">
                   <size>
-                   <width>0</width>
+                   <width>526</width>
                    <height>90</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>526</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="font">
@@ -918,8 +936,14 @@ border-radius:10px;</string>
                 <widget class="QPushButton" name="answer1">
                  <property name="minimumSize">
                   <size>
-                   <width>0</width>
+                   <width>526</width>
                    <height>90</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>526</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="baseSize">
