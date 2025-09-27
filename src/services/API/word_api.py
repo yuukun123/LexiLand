@@ -17,7 +17,7 @@ try:
     if not GOOGLE_API_KEY:
         # Nếu không có biến môi trường, dùng key bạn hardcode (chỉ để test)
         print("Khoông tìm thấy biến môi trường. Dùng key hardcode.")
-        GOOGLE_API_KEY = "AIzaSyCwRytRMxm222OaWu4NXO7J6bEnN9S8_Zs" # <--- THAY BẰNG KEY THẬT CỦA BẠN
+        GOOGLE_API_KEY = "AIzaSyBTlhhYZkFdzwmUBSsN98dpUC9X6pSO8Wg" # <--- THAY BẰNG KEY THẬT CỦA BẠN
     genai.configure(api_key=GOOGLE_API_KEY)
     gemini_model = genai.GenerativeModel('gemini-2.0-flash')
     print(">>> Cáu hình Gemini API Key thanh cong!")
@@ -411,21 +411,21 @@ async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
 
     display_result(word, cached_data['pos'], cached_data['explanation'], cached_data['fallback_info'])
 
-async def main():
-    async with aiohttp.ClientSession() as session:
-        tasks = [
-            run_lookup(session, "hello", 1, 1),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "take a rain check", 1, 1),
-            run_lookup(session, "hello", 2, 2),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "take a rain check", 2, 2),
-            run_lookup(session, "food", 2, 2),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "so far so good", 2, 2),
-            run_lookup(session, "hi", 2, 2),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "rain", 2, 2),
-            run_lookup(session, "tomato", 2, 2),  # Ví dụ: topic_id=1, user_id=1
-            run_lookup(session, "potato", 2, 2),
-        ]
-        await asyncio.gather(*tasks)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+# async def main():
+#     async with aiohttp.ClientSession() as session:
+#         tasks = [
+#             run_lookup(session, "hello", 1, 1),  # Ví dụ: topic_id=1, user_id=1
+#             run_lookup(session, "take a rain check", 1, 1),
+#             run_lookup(session, "hello", 2, 2),  # Ví dụ: topic_id=1, user_id=1
+#             run_lookup(session, "take a rain check", 2, 2),
+#             run_lookup(session, "food", 2, 2),  # Ví dụ: topic_id=1, user_id=1
+#             run_lookup(session, "so far so good", 2, 2),
+#             run_lookup(session, "hi", 2, 2),  # Ví dụ: topic_id=1, user_id=1
+#             run_lookup(session, "rain", 2, 2),
+#             run_lookup(session, "tomato", 2, 2),  # Ví dụ: topic_id=1, user_id=1
+#             run_lookup(session, "potato", 2, 2),
+#         ]
+#         await asyncio.gather(*tasks)
+#
+# if __name__ == "__main__":
+#     asyncio.run(main())
