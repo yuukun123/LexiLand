@@ -2,7 +2,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
 
-from src.models.query_data.query_data import QueryData
+from src.services.query_data.query_data import QueryData
 from src.views.main_view.practice_view import PracticeWindow
 from src.views.main_view.topic_view import TopicWindow
 from src.views.moveable_window import MoveableWindow

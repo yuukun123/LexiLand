@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QWidget, QDialog, QGridLayout, QMessageBox, QApplication
 
 from src.controllers.base_controller import BaseController
-from src.models.query_data.query_data import QueryData
+from src.services.query_data.query_data import QueryData
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent # <-- Import các thành phần media
 from PyQt5.QtCore import QUrl
 from src.views.main_view.practice_view  import PracticeWindow

@@ -4,7 +4,7 @@ import os
 def create_table():
     # lấy đường dẫn đến thư mục chứ file hiện tại
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    # lùi 1 bước về thư muc models
+    # lùi 1 bước về thư muc services
     models_dir = os.path.dirname(script_dir)
     # chốt lại thư mục gốc để chứa folder database
     project_root = os.path.dirname(models_dir)

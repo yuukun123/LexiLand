@@ -4,8 +4,8 @@ from PyQt5 import sip
 from PyQt5.QtCore import QThread, QObject, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox, QApplication
 
-from src.models.query_data.query_data import QueryData
-from src.models.API.word_api import run_lookup, lookup_and_build_data, check_spelling_with_gemini  # Giả sử bạn có hàm này
+from src.services.query_data.query_data import QueryData
+from src.services.API.word_api import run_lookup, lookup_and_build_data, check_spelling_with_gemini  # Giả sử bạn có hàm này
 
 class TopicLoaderWorker(QObject):
     finished = pyqtSignal(list) # Tín hiệu mang theo danh sách topics

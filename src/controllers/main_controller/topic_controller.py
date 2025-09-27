@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QGridLayout, QWidget, QDialog, QApplication
 
 from src.controllers.base_controller import BaseController
-from src.models.query_data.query_data import QueryData
+from src.services.query_data.query_data import QueryData
 
 
 class TopicCardWidget(QWidget):

@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox, QApplication
-from src.models.login_register.login_register_models import Login_Register_Model
+from src.services.login_register.login_register import Login_Register_Model
 from src.utils.check_correct_email_password import check_password, check_email
 
 class RegisterController:
@@ -10,6 +10,7 @@ class RegisterController:
 
     def handle_register(self, username_register, email_register, password_register, confirm_password_register):
         print(f"DEBUG: Trying login with {username_register}/{password_register}/{confirm_password_register}/{email_register}")
+        email_register = email_register.lower()
         if username_register == "" or password_register == "" or confirm_password_register == "" or email_register == "":
             self.on_register_null()
         elif confirm_password_register != password_register:

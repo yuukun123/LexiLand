@@ -392,7 +392,7 @@ async def run_lookup(session, word, topic_id_to_save, user_id_to_save):
     word_data_for_db = convert_gemini_response_to_db_format(word, cached_data, dict_data_raw)
     print(f"\nDEBUG: Dữ liệu đã chuẩn hóa để lưu vào CSDL cho user {user_id_to_save}:\n{word_data_for_db}\n")
 
-    from src.models.query_data.query_data import QueryData
+    from src.services.query_data.query_data import QueryData
     print(f"Bắt đầu lưu vào CSDL cho user_id={user_id_to_save}...")
     query_data = QueryData()
     try:

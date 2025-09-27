@@ -1,6 +1,6 @@
 import random
 
-from src.models.query_data.query_data import QueryData
+from src.services.query_data.query_data import QueryData
 
 
 class PracticeController:

@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 from PyQt5.QtCore import pyqtSignal, QObject, QThread
 from PyQt5.QtWidgets import QApplication
-from src.models.query_data.query_data import QueryData
+from src.services.query_data.query_data import QueryData
 from src.views.widgets.loading_overlay import LoadingOverlay
 
 import time

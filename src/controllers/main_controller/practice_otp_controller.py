@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QGridLayout, QCheckBox, QMessageBox
 )
 import sys
-from src.models.query_data.query_data import QueryData
+from src.services.query_data.query_data import QueryData
 from src.views.main_view.practice_view import PracticeWindow
 
 

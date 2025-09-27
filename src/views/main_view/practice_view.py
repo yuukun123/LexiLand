@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 
 from src.controllers.main_controller.practice_controller import PracticeController
-from src.models.query_data.query_data import QueryData
+from src.services.query_data.query_data import QueryData
 from src.utils.username_ui import set_user_info
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
