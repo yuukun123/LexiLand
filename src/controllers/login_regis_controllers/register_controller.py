@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox, QApplication
-from src.services.login_register.login_register import Login_Register_Model
+from src.services.login_register.login_register import Login_Register
 from src.utils.check_correct_email_password import check_password, check_email
 
 class RegisterController:
@@ -23,7 +23,7 @@ class RegisterController:
             self.on_register_email_incorrect()
             self.clear_register_fields()
         else:
-            model = Login_Register_Model()
+            model = Login_Register()
             result = model.add_users(username_register, password_register, email_register)
             if result.get("success"):
                 print("DEBUG: Register success")

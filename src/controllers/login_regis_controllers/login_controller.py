@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox
-from src.services.login_register.login_register import Login_Register_Model
+from src.services.login_register.login_register import Login_Register
 from src.services.query_data.query_data import QueryData
 
 class LoginController:
@@ -12,7 +12,7 @@ class LoginController:
         if username_login == "" or password_login == "":
             self.on_login_null()
             return
-        model = Login_Register_Model()
+        model = Login_Register()
         print(f"DEBUG: Trying login with {username_login}/{password_login}")
         user = model.check_login(username_login, password_login)
         if user["success"]:
