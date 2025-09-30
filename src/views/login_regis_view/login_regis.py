@@ -191,7 +191,4 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
         else:
             self.enter_cf_password.setEchoMode(QLineEdit.Password)
             path = "../UI/icons/eye-off.svg"
-            self.hide_pass_2.setIcon(QIcon(path))
-
-
-
+            self.hide_pass.setIcon(QIcon(path))

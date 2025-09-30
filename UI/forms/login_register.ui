@@ -26,7 +26,7 @@
       <property name="maximumSize">
        <size>
         <width>370</width>
-        <height>655</height>
+        <height>670</height>
        </size>
       </property>
       <property name="cursor">
@@ -363,7 +363,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>4</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -819,7 +819,7 @@ QPushButton::hover{
                <widget class="QWidget" name="widget_20" native="true">
                 <layout class="QVBoxLayout" name="verticalLayout_9">
                  <property name="spacing">
-                  <number>22</number>
+                  <number>15</number>
                  </property>
                  <property name="leftMargin">
                   <number>10</number>
@@ -831,7 +831,7 @@ QPushButton::hover{
                   <number>10</number>
                  </property>
                  <property name="bottomMargin">
-                  <number>11</number>
+                  <number>36</number>
                  </property>
                  <item>
                   <widget class="QWidget" name="widget_21" native="true">
@@ -1394,7 +1394,7 @@ QPushButton::hover{
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_16">
                  <property name="spacing">
-                  <number>20</number>
+                  <number>0</number>
                  </property>
                  <property name="topMargin">
                   <number>0</number>
@@ -1428,6 +1428,17 @@ QPushButton::hover{
                  </item>
                  <item>
                   <widget class="QLabel" name="errors_7">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>35</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>9</pointsize>
+                    </font>
+                   </property>
                    <property name="styleSheet">
                     <string notr="true">color: rgb(255, 0, 0);</string>
                    </property>
@@ -1558,12 +1569,12 @@ QPushButton::hover{
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
-                  <height>332</height>
+                  <height>300</height>
                  </size>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_18">
                  <property name="spacing">
-                  <number>20</number>
+                  <number>0</number>
                  </property>
                  <item>
                   <widget class="QLineEdit" name="enter_code">
@@ -1619,6 +1630,12 @@ QPushButton::hover{
                  </item>
                  <item>
                   <widget class="QLabel" name="error_8">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>35</height>
+                    </size>
+                   </property>
                    <property name="font">
                     <font>
                      <pointsize>10</pointsize>
@@ -1634,7 +1651,25 @@ QPushButton::hover{
                  </item>
                  <item>
                   <widget class="QWidget" name="widget_6" native="true">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>50</height>
+                    </size>
+                   </property>
                    <layout class="QHBoxLayout" name="horizontalLayout">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
                     <item>
                      <widget class="QLabel" name="countdown_label">
                       <property name="maximumSize">
@@ -1965,6 +2000,12 @@ border:none;
                  </item>
                  <item>
                   <widget class="QLabel" name="errors_9">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>35</height>
+                    </size>
+                   </property>
                    <property name="styleSheet">
                     <string notr="true">color: rgb(255, 0, 0);</string>
                    </property>

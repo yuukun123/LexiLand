@@ -69,9 +69,9 @@ class VocabCardWidget(QWidget):
                 self.region_UK.setText("UK")
                 self.phonetic_UK.setText(phonetic_text)
                 self.audio_urls['UK'] = audio_url
-                self.region_UK.show()
-                self.phonetic_UK.show()
-                self.frame_5.show()
+                # self.region_UK.show()
+                # self.phonetic_UK.show()
+                # self.frame_5.show()
 
         # --- KẾT NỐI TÍN HIỆU ---
         # if hasattr(self, 'editBtn'):
