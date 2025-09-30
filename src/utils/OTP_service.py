@@ -2,7 +2,7 @@ import random
 import time
 
 class OTPService:
-    def __init__(self, expiry_time_seconds=60, max_attempts=3, lock_time_seconds=300, resend_limit = 3, resend_window = 600):
+    def __init__(self, expiry_time_seconds=300, max_attempts=3, lock_time_seconds=300, resend_limit = 3, resend_window = 600):
         self.pending_otps = {}
         self.EXPIRY_TIME_SECONDS = expiry_time_seconds
         self.MAX_ATTEMPTS = max_attempts

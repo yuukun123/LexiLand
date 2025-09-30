@@ -21,7 +21,7 @@ def send_otp_email(receiver_email, otp_code):
 
         {otp_code}
         
-        This code is valid for 1 minutes. Please do not share this code with anyone.
+        This code is valid for 5 minutes. Please do not share this code with anyone.
         
         Best regards,
         The Development Team.

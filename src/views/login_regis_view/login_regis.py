@@ -184,14 +184,14 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
             self.hide_pass.setIcon(QIcon(path))
 
     def toggle_new_cf_password(self):
-        if self.enter_cf_pasword.echoMode() == QLineEdit.Password:
-            self.enter_cf_pasword.setEchoMode(QLineEdit.Normal)
+        if self.enter_cf_password.echoMode() == QLineEdit.Password:
+            self.enter_cf_password.setEchoMode(QLineEdit.Normal)
             path = "../UI/icons/eye.svg"
             self.hide_pass.setIcon(QIcon(path))
         else:
-            self.enter_cf_pasword.setEchoMode(QLineEdit.Password)
+            self.enter_cf_password.setEchoMode(QLineEdit.Password)
             path = "../UI/icons/eye-off.svg"
-            self.hide_pass.setIcon(QIcon(path))
+            self.hide_pass_2.setIcon(QIcon(path))
 
 
 

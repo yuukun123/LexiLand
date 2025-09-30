@@ -867,7 +867,21 @@ class QueryData:
             if conn:
                 conn.close()
         return True
-
+    def check_old_password(self, email):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT password FROM users WHERE email = ?", (email,)
+            )
+            password = cursor.fetchone()
+            return password is not None
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY PASS SAI: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
 # if __name__ == "__main__":
 #     query = QueryData()
 #     query.remove_word_from_topic(self, )

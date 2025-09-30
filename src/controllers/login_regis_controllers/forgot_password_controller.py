@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from src.services.query_data.query_data import QueryData
 import re
 from src.utils.OTP_service import OTPService
@@ -64,6 +64,10 @@ class forgotPasswordController:
             self.view.errors_9.show()
             return
         hashed_pw = generate_password_hash(new_password, method="scrypt")
+        old_password = self.query_data.check_old_password(self.current_email)
+        if check_password_hash(old_password, new_password):
+            self.view.errors_9.setText("Old and new passwords cannot match.")
+            self.view.errors_9.show()
         result = self.query_data.update_new_password(hashed_pw,self.current_email)
         if result:
             QMessageBox.information(self.view,"Successfully", "Updated password successfully!")
