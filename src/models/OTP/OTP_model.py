@@ -28,7 +28,6 @@ class OTP_model:
 
     def start_countdown(self):
         self.countdown_seconds = 30
-        self.view.resend_code.hide()
         self.view.resend_code.setDisabled(True)
         self.view.countdown_label.show()
         self.countdown_timer.start(1000)
