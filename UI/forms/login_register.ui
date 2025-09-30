@@ -363,7 +363,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>4</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1412,7 +1412,7 @@ QPushButton::hover{
                    </property>
                    <property name="font">
                     <font>
-                     <pointsize>10</pointsize>
+                     <pointsize>11</pointsize>
                     </font>
                    </property>
                    <property name="styleSheet">
@@ -1589,7 +1589,7 @@ QPushButton::hover{
                    </property>
                    <property name="font">
                     <font>
-                     <pointsize>10</pointsize>
+                     <pointsize>11</pointsize>
                     </font>
                    </property>
                    <property name="styleSheet">
@@ -1873,7 +1873,7 @@ QPushButton::hover{
                       </property>
                       <property name="font">
                        <font>
-                        <pointsize>9</pointsize>
+                        <pointsize>10</pointsize>
                        </font>
                       </property>
                       <property name="styleSheet">
@@ -1956,7 +1956,7 @@ border:none;
                       </property>
                       <property name="font">
                        <font>
-                        <pointsize>9</pointsize>
+                        <pointsize>10</pointsize>
                        </font>
                       </property>
                       <property name="styleSheet">
