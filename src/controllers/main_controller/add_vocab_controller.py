@@ -5,7 +5,7 @@ from PyQt5.QtCore import QThread, QObject, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox, QApplication
 
 from src.services.query_data.query_data import QueryData
-from src.services.API.word_api import run_lookup, lookup_and_build_data, check_spelling_with_gemini  # Giả sử bạn có hàm này
+from src.services.API.word_api import get_word_data_from_gemini, check_spelling_with_gemini  # Giả sử bạn có hàm này
 
 class TopicLoaderWorker(QObject):
     finished = pyqtSignal(list) # Tín hiệu mang theo danh sách topics
@@ -30,8 +30,8 @@ class AddWordController:
         self.query_data = QueryData()
 
         # Kết nối các nút của dialog
-        # self.view.CreateVocabBtn.setDefault(False)
-        # self.view.CreateVocabBtn.setAutoDefault(False)
+        self.view.CreateVocabBtn.setDefault(False)
+        self.view.CreateVocabBtn.setAutoDefault(False)
         self.view.SaveVocabBtn.setDefault(False)
         self.view.SaveVocabBtn.setAutoDefault(False)
         self.view.Cancel_Btn.setDefault(False)
@@ -162,9 +162,8 @@ class AddWordController:
 
     async def lookup_word_async(self, word):
         try:
-            async with aiohttp.ClientSession() as session:
-                word_info = await lookup_and_build_data(session, word)
-                return word_info
+            word_info = await get_word_data_from_gemini(word)
+            return word_info
         except Exception as e:
             print(f"Lỗi khi gọi API: {e}")
             return None

@@ -27,8 +27,8 @@ class DataWorker(QObject):
             print("[WorkerThread] Bắt đầu tải items...")
             items = self.controller._query_items()  # Gọi hàm truy vấn items
 
-            print("[WorkerThread] Đang giả lập tác vụ dài... (ngủ 3 giây)")
-            time.sleep(2)
+            # print("[WorkerThread] Đang giả lập tác vụ dài... (ngủ 2 giây)")
+            # time.sleep(2)
 
             self.items_ready.emit(items)  # Gửi kết quả về
 

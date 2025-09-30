@@ -127,6 +127,16 @@ def create_table():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS user_lock (
+            user_id INTEGER PRIMARY KEY,
+            locked_until TIMESTAMP,
+            resend_attempts INTEGER,
+            last_resend TIMESTAMP,
+            FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
+        );
+    """)
+
     conn.commit()
     conn.close()
 

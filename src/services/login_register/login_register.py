@@ -3,7 +3,7 @@ import sqlite3
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-class Login_Register_Model:
+class Login_Register:
     def __init__(self):
         # lấy đường dẫn đến thư mục chứ file hiện tại
         script_dir = os.path.dirname(os.path.abspath(__file__))
