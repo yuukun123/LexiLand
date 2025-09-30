@@ -166,7 +166,7 @@ class VocabController(BaseController):
 
         # SỬA LỖI 1: Gọi hàm truy vấn với đúng tham số
         # user_id = self._user_context['user_id']
-        # words = self.query_data.get_words_in_topic(self.topic_id)
+        # words = self.OTP.get_words_in_topic(self.topic_id)
         # print(f"DEBUG: Các TỪ tìm thấy của user_id: {user_id} trong topic {self.topic_id}: {words}")
         # --- THÊM LẠI LOGIC XÓA VÀO ĐÂY ---
 
@@ -221,10 +221,10 @@ class VocabController(BaseController):
     #         return
     #
     #     user_id = self._user_context['user_id']
-    #     stats = self.query_data.get_stats_for_topic(user_id, self.topic_id)
+    #     stats = self.OTP.get_stats_for_topic(user_id, self.topic_id)
     #     print(f"DEBUG: Cập nhật thông tin user_id: {user_id}, topic_id: {self.topic_id}")
     #
-    #     topic_name = self.query_data.get_topic_name_from_topic_id(user_id, self.topic_id)
+    #     topic_name = self.OTP.get_topic_name_from_topic_id(user_id, self.topic_id)
     #     self.topic_label.setText(f"Topic: {topic_name}")
     #
     #     if hasattr(self.parent, 'learned'):
@@ -240,7 +240,7 @@ class VocabController(BaseController):
     #
     #     # SỬA LỖI 1: Gọi hàm truy vấn với đúng tham số
     #     user_id = self._user_context['user_id']
-    #     words = self.query_data.get_words_in_topic(self.topic_id)
+    #     words = self.OTP.get_words_in_topic(self.topic_id)
     #     print(f"DEBUG: Các TỪ tìm thấy của user_id: {user_id} trong topic {self.topic_id}: {words}")
     #
     #     if not words:
@@ -425,7 +425,7 @@ class VocabController(BaseController):
 
         # if reply == QMessageBox.Yes:
         #     # Gọi hàm CSDL để xóa
-        #     result = self.query_data.remove_word_from_topic(self.topic_id, word_id)
+        #     result = self.OTP.remove_word_from_topic(self.topic_id, word_id)
         #
         #     if result.get("success"):
         #         QMessageBox.information(self.parent, "Thành công", f"Đã xóa từ '{word_name}'.")

@@ -832,6 +832,41 @@ class QueryData:
         finally:
             if conn:
                 conn.close()
+    def check_email_exist(self,email):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT user_id FROM users WHERE email = ?", (email,)
+            )
+            user = cursor.fetchone()
+            return user is not None
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY NGHĨA SAI: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+    def update_new_password(self, password_hash, email):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE users
+                SET password = :password_hash
+                WHERE email = :email
+                """,
+                {"password_hash": password_hash, "email": email}
+            )
+            conn.commit()
+        except Exception as e:
+            print(f"\n!!! LỖI KHI UPDATE PASSWORD: {e}")
+            return False
+        finally:
+            if conn:
+                conn.close()
+        return True
 
 # if __name__ == "__main__":
 #     query = QueryData()

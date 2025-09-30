@@ -359,8 +359,11 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
           </item>
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1386,7 +1389,7 @@ QPushButton::hover{
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
-                  <height>160</height>
+                  <height>254</height>
                  </size>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1424,7 +1427,17 @@ QPushButton::hover{
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="conform_btn">
+                  <widget class="QLabel" name="errors_7">
+                   <property name="styleSheet">
+                    <string notr="true">color: rgb(255, 0, 0);</string>
+                   </property>
+                   <property name="text">
+                    <string>Email is not invalid</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="confirm_btn">
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
@@ -1436,13 +1449,16 @@ QPushButton::hover{
                      <pointsize>12</pointsize>
                     </font>
                    </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
                    <property name="styleSheet">
-                    <string notr="true">#conform_btn{
+                    <string notr="true">#confirm_btn{
 	color: rgb(255, 255, 255);
 	
 	background-color: #023e8a;
 }
-#conform_btn:hover{
+#confirm_btn:hover{
 	background-color: #03045e;
 }</string>
                    </property>
@@ -1451,7 +1467,7 @@ QPushButton::hover{
                    </property>
                   </widget>
                  </item>
-                 <item alignment="Qt::AlignVCenter">
+                 <item>
                   <widget class="QPushButton" name="cancel_btn">
                    <property name="minimumSize">
                     <size>
@@ -1469,6 +1485,9 @@ QPushButton::hover{
                     <font>
                      <pointsize>11</pointsize>
                     </font>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">#cancel_btn{
@@ -1506,7 +1525,7 @@ QPushButton::hover{
                <number>0</number>
               </property>
               <property name="bottomMargin">
-               <number>115</number>
+               <number>96</number>
               </property>
               <item>
                <widget class="QLabel" name="label_3">
@@ -1519,6 +1538,8 @@ QPushButton::hover{
                 <property name="font">
                  <font>
                   <pointsize>17</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -1537,7 +1558,7 @@ QPushButton::hover{
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
-                  <height>240</height>
+                  <height>332</height>
                  </size>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1597,25 +1618,28 @@ QPushButton::hover{
                   </widget>
                  </item>
                  <item>
+                  <widget class="QLabel" name="error_8">
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color: rgb(255, 0, 0);</string>
+                   </property>
+                   <property name="text">
+                    <string>fff</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QWidget" name="widget_6" native="true">
                    <layout class="QHBoxLayout" name="horizontalLayout">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
                     <item>
-                     <widget class="QLabel" name="label_6">
+                     <widget class="QLabel" name="countdown_label">
                       <property name="maximumSize">
                        <size>
-                        <width>95</width>
+                        <width>200</width>
                         <height>40</height>
                        </size>
                       </property>
@@ -1628,11 +1652,11 @@ QPushButton::hover{
                        <string notr="true">color: rgb(255, 255, 255)</string>
                       </property>
                       <property name="text">
-                       <string>Time 00:50</string>
+                       <string/>
                       </property>
                      </widget>
                     </item>
-                    <item alignment="Qt::AlignRight">
+                    <item>
                      <widget class="QPushButton" name="resend_code">
                       <property name="maximumSize">
                        <size>
@@ -1649,13 +1673,20 @@ QPushButton::hover{
                        <cursorShape>PointingHandCursor</cursorShape>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">#resend_code{
-	color: #023e8a;
+                       <string notr="true">#resend_code {
+    color: #023e8a;
 }
 
-#resend_code:hover{
-	color: rgb(255, 255, 255);
-}</string>
+#resend_code:hover {
+    color: white;
+}
+
+/* khi disable */
+#resend_code:disabled {
+    color: gray;         /* đổi màu khi disable */
+    opacity: 0.5;        /* Qt hỗ trợ từ Qt 5.12+ */
+}
+</string>
                       </property>
                       <property name="text">
                        <string>Resend code</string>
@@ -1693,6 +1724,9 @@ QPushButton::hover{
                     <font>
                      <pointsize>11</pointsize>
                     </font>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">#back_btn{
@@ -1734,6 +1768,8 @@ QPushButton::hover{
                 <property name="font">
                  <font>
                   <pointsize>17</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -1752,7 +1788,7 @@ QPushButton::hover{
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
-                  <height>245</height>
+                  <height>286</height>
                  </size>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1802,37 +1838,11 @@ QPushButton::hover{
                       <property name="styleSheet">
                        <string notr="true"/>
                       </property>
+                      <property name="echoMode">
+                       <enum>QLineEdit::Password</enum>
+                      </property>
                       <property name="placeholderText">
                        <string>New pasword</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="show_pass">
-                      <property name="maximumSize">
-                       <size>
-                        <width>16777215</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="cursor">
-                       <cursorShape>PointingHandCursor</cursorShape>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">border:none;</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>../icons/eye.svg</normaloff>../icons/eye.svg</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>23</width>
-                        <height>23</height>
-                       </size>
                       </property>
                      </widget>
                     </item>
@@ -1896,7 +1906,7 @@ border:none;
                      <number>1</number>
                     </property>
                     <item>
-                     <widget class="QLineEdit" name="enter_cf_pasword">
+                     <widget class="QLineEdit" name="enter_cf_password">
                       <property name="maximumSize">
                        <size>
                         <width>16777215</width>
@@ -1911,39 +1921,11 @@ border:none;
                       <property name="styleSheet">
                        <string notr="true">border:none;</string>
                       </property>
+                      <property name="echoMode">
+                       <enum>QLineEdit::Password</enum>
+                      </property>
                       <property name="placeholderText">
                        <string>Conform new password</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="show_pass_2">
-                      <property name="maximumSize">
-                       <size>
-                        <width>16777215</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="cursor">
-                       <cursorShape>PointingHandCursor</cursorShape>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">#show_pass_2{
-border:none;
-}</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>../icons/eye.svg</normaloff>../icons/eye.svg</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>23</width>
-                        <height>23</height>
-                       </size>
                       </property>
                      </widget>
                     </item>
@@ -1979,6 +1961,16 @@ border:none;
                      </widget>
                     </item>
                    </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="errors_9">
+                   <property name="styleSheet">
+                    <string notr="true">color: rgb(255, 0, 0);</string>
+                   </property>
+                   <property name="text">
+                    <string>TextLabel</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -2027,6 +2019,9 @@ border:none;
                     <font>
                      <pointsize>11</pointsize>
                     </font>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">#back_btn{

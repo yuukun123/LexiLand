@@ -39,7 +39,7 @@ class TopicController(BaseController):
         super().__init__(parent_view)
         print("DEBUG: TopicController.__init__ Bắt đầu.")
         # self.parent = parent_view
-        # self.query_data = QueryData()
+        # self.OTP = QueryData()
         # self._user_context = None
         self.main_window_ref = main_window
 
@@ -81,9 +81,9 @@ class TopicController(BaseController):
     #     self.clear_layout(self.topic_layout)
     #
     #     user_id = self._user_context['user_id']
-    #     # self.query_data.debug_user_data(user_id)
+    #     # self.OTP.debug_user_data(user_id)
     #     print(f"DEBUG: Đang tải topics cho user_id: {user_id}")
-    #     topics = self.query_data.get_all_topics_with_word_count(user_id)
+    #     topics = self.OTP.get_all_topics_with_word_count(user_id)
     #     print(f"DEBUG: Các topics tìm thấy từ CSDL: {topics}")
     #
     #     if not topics:
