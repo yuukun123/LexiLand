@@ -65,7 +65,8 @@ class forgotPasswordController:
             self.view.errors_9.show()
             return
         hashed_pw = generate_password_hash(new_password, method="scrypt")
-        old_password = self.query_data.check_old_password(self.current_email)
+        old_password = self.query_data.get_hashed_password(self.current_email)
+        print(f"DEBUG: OLD PASSWORD: {old_password}")
         if check_password_hash(old_password, new_password):
             self.view.errors_9.setText("Old and new passwords cannot match.")
             self.view.errors_9.show()
