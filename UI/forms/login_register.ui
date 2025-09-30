@@ -363,7 +363,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="currentIndex">
-             <number>4</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1576,6 +1576,9 @@ QPushButton::hover{
                  <property name="spacing">
                   <number>0</number>
                  </property>
+                 <property name="leftMargin">
+                  <number>11</number>
+                 </property>
                  <item>
                   <widget class="QLineEdit" name="enter_code">
                    <property name="maximumSize">
@@ -1646,6 +1649,9 @@ QPushButton::hover{
                    </property>
                    <property name="text">
                     <string>fff</string>
+                   </property>
+                   <property name="margin">
+                    <number>10</number>
                    </property>
                   </widget>
                  </item>
@@ -1742,7 +1748,7 @@ QPushButton::hover{
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="back_btn">
+                  <widget class="QPushButton" name="cancel_btn_3">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -1764,18 +1770,18 @@ QPushButton::hover{
                     <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">#back_btn{
+                    <string notr="true">#cancel_btn_3{
 	color: #03045e
 	
 	
 }
 
-#back_btn:hover{
+#cancel_btn_3:hover{
 	color: rgb(255, 255, 255);
 }</string>
                    </property>
                    <property name="text">
-                    <string>Back</string>
+                    <string>Cancel</string>
                    </property>
                   </widget>
                  </item>
