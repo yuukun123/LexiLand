@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QMessageBox
 from werkzeug.security import generate_password_hash, check_password_hash
 from src.services.query_data.query_data import QueryData
 import re
+import threading
 from src.utils.OTP_service import OTPService
 from src.utils.email_sender import send_otp_email
 from src.models.OTP.OTP_model import OTP_model
@@ -34,12 +35,12 @@ class forgotPasswordController:
         self.current_email = email_input
         print("DEBUG: Generating OTP code.....")
         otp_code = self.otp_service.generate_and_store_otp(email_input, {'email': email_input})
+        threading.Thread(target=send_otp_email, args=(email_input, otp_code)).start()
         print(f"DEBUG: OTP CODE HAS BEEN GENERATED: {otp_code}")
-        if send_otp_email(email_input,otp_code):
-            print(f"DEBUG: OTP CODE HAS BEEN SEND TO {email_input}")
-            self.otp_model.set_email(self.current_email)
-            self.view.open_send_code()
-            self.otp_model.start_countdown()
+        print(f"DEBUG: OTP CODE HAS BEEN SEND TO {email_input}")
+        self.otp_model.set_email(self.current_email)
+        self.view.open_send_code()
+        self.otp_model.start_countdown()
 
     def check_new_password(self):
         new_password = self.view.enter_password.text()
@@ -68,6 +69,7 @@ class forgotPasswordController:
         if check_password_hash(old_password, new_password):
             self.view.errors_9.setText("Old and new passwords cannot match.")
             self.view.errors_9.show()
+            return
         result = self.query_data.update_new_password(hashed_pw,self.current_email)
         if result:
             QMessageBox.information(self.view,"Successfully", "Updated password successfully!")
