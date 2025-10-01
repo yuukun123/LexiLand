@@ -1,53 +1,56 @@
-# 🌍✨ LexiLand  
+# LexiLand
 
-**LexiLand** is an English vocabulary learning application that helps users **add, manage, and practice vocabulary** effectively.  
-The app supports learning by **topics**, repeated practice, and prioritizes difficult words to help users **remember longer**.  
+<p align="center">
+  <img src="UI/icons/lexiland_logo.png" alt="LexiLand Logo" width="300"/>
+</p>
 
----
-
-## 🚀 Key Features  
-
-### 🔤 1. Add Vocabulary  
-- ➕ Add new English words easily.  
-- 🤖 App automatically **renders the Vietnamese meaning** for each word.  
-- 🗂 Vocabulary can be **organized by topic** for easier management and practice.  
-
-### 📂 2. Topic Management  
-- 📝 Each word is added under a specific topic.  
-- 🌐 Create multiple topics for different groups of words (*Food, Travel, Business…*).  
-- ✏️ Supports **viewing, editing, and deleting words** within each topic.  
-
-### 🧠 3. Vocabulary Practice  
-- ✅ Practice with **one or multiple topics**.  
-- ⏳ Uses **spaced repetition** to improve long-term memory.  
-- 🎯 Words that users **frequently get wrong are prioritized** and appear more often.  
-- 🖥️ User-friendly and intuitive practice interface.  
-
-### 📊 4. Progress Tracking  
-- 📈 Track learning progress by topic.  
-- 🔍 Shows words that are:  
-  - ✅ **Already remembered**  
-  - 💡 **Mastered**  
-  - ⚠️ **Need more practice**  
-- Helps learners focus on what they need next.  
+**LexiLand** is an English vocabulary learning application that helps users **add, manage, and practice vocabulary** effectively. The app supports learning by **topics**, repeated practice, and prioritizes difficult words to help users **remember longer**.
 
 ---
 
-## 🛠️ Technologies Used  
-- 🐍 **Python 3.10**  
-- 🖼️ **PyQt5** → GUI development  
-- 💾 **SQLite** → Local database for vocab & progress  
-- 🔑 **Werkzeug** → Hashing passwords / OTP functionality  
-- 🧩 Internal modules: `src.utils`, `src.services` for app logic & data  
+## ✨ Key Features
+
+### 1. 📌 Add Vocabulary
+- Add new English words easily.
+- Automatic **Vietnamese translation** for each word.
+- Organize vocabulary by **topics** for better learning.
+
+### 2. 🗂️ Topic Management
+- Add words under specific topics.
+- Create multiple topics (e.g., Food, Travel, Business…).
+- View, edit, and delete words within topics.
+
+### 3. 🎯 Vocabulary Practice
+- Practice by **one or multiple topics**.
+- Uses **spaced repetition** for long-term memory.
+- Prioritizes words users often get wrong.
+- User-friendly practice interface.
+
+### 4. 📊 Progress Tracking
+- Track progress by topic.
+- Shows words that are:
+  - ✅ Remembered
+  - ⭐ Mastered
+  - 🔄 Need more practice
 
 ---
 
-## 📦 Installation  
+## 🛠️ Technologies Used
+- **Python 3.10**
+- **PyQt5** (GUI development)
+- **SQLite / Local Database** (store vocabulary & progress)
+- **Werkzeug** (password hashing / OTP)
+- Internal modules: `src.utils`, `src.services`
 
-1️⃣ Clone the repository:  
+---
+
+## 🚀 Installation
+
+1. Clone the repository:
 ```bash
 git clone https://github.com/yuukun123/LexiLand.git
 cd LexiLand
+
 ```
 
 2. Write this code in terminal:
