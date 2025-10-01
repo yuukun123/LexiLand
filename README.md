@@ -1,7 +1,7 @@
 # LexiLand
 
 <p align="center">
-  <img src="UI/icons/lexiland_logo.png" alt="LexiLand Logo" width="300"/>
+  <img src="UI/icons/logo.png" alt="LexiLand Logo" width="300"/>
 </p>
 
 **LexiLand** is an English vocabulary learning application that helps users **add, manage, and practice vocabulary** effectively. The app supports learning by **topics**, repeated practice, and prioritizes difficult words to help users **remember longer**.
