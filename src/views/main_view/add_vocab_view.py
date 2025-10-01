@@ -13,7 +13,7 @@ class AddWordDialog(QDialog, MoveableWindow):
     ready_to_show = pyqtSignal()
     def __init__(self, user_context, parent=None, mode="add", word_data_to_edit=None):
         super().__init__(parent)
-        uic.loadUi("../UI/forms/add_vocabulary.ui", self)
+        uic.loadUi("UI/forms/add_vocabulary.ui", self)
         MoveableWindow.__init__(self)
         # self.invisible()
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)

@@ -10,7 +10,7 @@ from src.utils.go_back import BaseWindow
 class TopicWindow(BaseWindow, MoveableWindow):
     def __init__(self, username, main_window ,parent=None):
         super().__init__(parent)
-        uic.loadUi("../UI/forms/topic.ui", self)
+        uic.loadUi("UI/forms/topic.ui", self)
         MoveableWindow.__init__(self)
         self.username = username
 

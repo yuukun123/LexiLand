@@ -10,7 +10,7 @@ from src.views.moveable_window import MoveableWindow
 class topic_practice(QDialog, MoveableWindow):
     def __init__(self, user_context, parent=None):
         super().__init__(parent)
-        uic.loadUi("../UI/forms/Topic_for_practice.ui", self)
+        uic.loadUi("UI/forms/Topic_for_practice.ui", self)
         MoveableWindow.__init__(self)
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)

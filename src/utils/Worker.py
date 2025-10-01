@@ -9,7 +9,6 @@ class EmailWorker(QObject):
         self.email = email
         self.otp_code = otp_code
 
-
     def run(self):
         print(f"Worker: Bắt đầu gửi email tới {self.email} trong một thread riêng...")
         success = send_otp_email(self.email, self.otp_code)

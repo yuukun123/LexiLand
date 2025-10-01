@@ -14,7 +14,7 @@ try:
     if not GOOGLE_API_KEY:
         # Nếu không có biến môi trường, dùng key bạn hardcode (chỉ để test)
         print("Khoông tìm thấy biến môi trường. Dùng key hardcode.")
-        GOOGLE_API_KEY = "AIzaSyBTlhhYZkFdzwmUBSsN98dpUC9X6pSO8Wg" # <--- THAY BẰNG KEY THẬT CỦA BẠN
+        GOOGLE_API_KEY = "AIzaSyAJ9cEKfhCwMvi_u8CwqyPHFUbSjYlrT5E" # <--- THAY BẰNG KEY THẬT CỦA BẠN
     genai.configure(api_key=GOOGLE_API_KEY)
     gemini_model = genai.GenerativeModel('gemini-2.0-flash')
     print(">>> Cáu hình Gemini API Key thanh cong!")
@@ -22,89 +22,21 @@ except Exception as e:
     print(f"Lỗi cấu hình Gemini API Key: {e}. Hãy chắc chắn bạn đã đặt biến môi trường hoặc điền key vào code.")
     exit()
 
-def check_multi_word_phrase(text):
-    return ' ' in text.strip()
-
-# async def prompt_gemini_async(word_to_define):
-#     """
-#     Gọi API của Gemini và chuyển đổi kết quả về định dạng giống
-#     như DictionaryAPI.dev để xử lý nhất quán.
-#     """
-#     if check_multi_word_phrase(word_to_define):
-#         prompt_header = f"""
-#         Chỉ cần giải thích cụm từ hoặc thành ngữ và tối đa 11 từ không cần ghi thêm bất cứ từ gì hay câu gì không liên quan
-#         Giải thích từ "{word_to_define}" bằng tiếng Anh và tiếng việt một cách thật đơn giản cho người mới học một cách dễ hiểu, tính liên quan, ngữ cảnh thực tế và khả năng ghi nhớ và không dùng định nghĩa trong từ điển
-#         Thêm phiên âm Uk
-#         Thêm phiên âm US
-#         Thêm loại từ cho cụm từ hoặc thành ngữ không cần tiếng việt
-#         Thêm phần dịch nghĩa tiếng việt cho ví dụ
-#         Sau đó, cung cấp 1 câu ví dụ rất phổ biến và tự nhiên trong giao tiếp hàng ngày.
-#         """
-#
-#     else:
-#         prompt_header = f"""
-#         cho tôi nghĩa tiếng việt của từ {word_to_define}, Thêm phiên âm UK và US.
-#         cho tôi 2 câu ví dụ cả tiếng anh và tiếng việt của từ {word_to_define}
-#         chỉ cho nghĩa không cần giải thích cụ thể nó là gì
-#         """
-#
-#     prompt_footer = f"""
-#         Định dạng đầu ra phải như sau:
-#         Phonetic UK: [phiên âm UK]
-#         Phonetic US: [phiên âm US]
-#         Part of speech: [loại từ]
-#         Simple Definition English : [định nghĩa tiếng anh của bạn ở đây]
-#         Simple Definition Vietnamese : [định nghĩa tiếng việt của bạn ở đây]
-#         Common Examples :
-#         -[câu ví dụ] ([câu việt dụ])
-#     """
-#     full_prompt = prompt_header + prompt_footer
-#     # --- Gửi yêu cầu đến Gemini và nhận kết quả ---
-#     try:
-#         # GIẢI PHÁP 3: GIỚI HẠN KẾT QUẢ ĐẦU RA
-#         generation_config = genai.types.GenerationConfig(
-#             max_output_tokens=512,
-#             temperature=0.7
-#         )
-#         response = await gemini_model.generate_content_async(
-#             full_prompt,
-#             generation_config=generation_config
-#         )
-#         return response.text.strip()
-#     except Exception as e:
-#         print(f"Đã xảy ra lỗi khi gọi API cho '{word_to_define}': {e}")
-#         return None
 async def prompt_gemini_async(word_to_define):
     """
     Hàm tạo prompt đã được tối ưu hoàn toàn bằng tiếng Anh để tăng tốc độ.
     """
-    # <<< TỐI ƯU 1: PROMPT TIẾNG ANH ĐỂ TĂNG TỐC ĐỘ >>>
-    if check_multi_word_phrase(word_to_define):
-        # Prompt cho Cụm từ / Thành ngữ
-        prompt_header = f"""
-            Analyze the idiom or phrase: "{word_to_define}".
+    # # <<< TỐI ƯU 1: PROMPT TIẾNG ANH ĐỂ TĂNG TỐC ĐỘ >>>
+    prompt_header = f"""
+        Analyze the word: "{word_to_define}".
 
-            Your main goal is to explain it for a beginner learning English. The explanation must be simple, easy to understand, relevant, provide real-world context, and be memorable. **Do not use standard dictionary definitions.**
-
-            Provide the following specific pieces of information:
-            1. A very concise English explanation (maximum 11 words). Do not add any extra, unrelated sentences.
-            2. A simple Vietnamese explanation.
-            3. The UK and US phonetic transcriptions.
-            4. The part of speech for the phrase (in English only).
-            5. One very common and natural example sentence used in daily conversation, along with its Vietnamese translation.
-            """
-    else:
-        # Prompt cho Từ đơn
-        prompt_header = f"""
-            Analyze the word: "{word_to_define}".
-
-            Provide ONLY the following specific pieces of information. **Do not provide any detailed explanations of what the word is.**
-            1. A simple Vietnamese meaning.
-            2. The UK and US phonetic transcriptions.
-            3. Two common example sentences, each provided in both English and Vietnamese.
-            4. The part of speech.
-            5. A simple English meaning.
-            """
+        Provide ONLY the following specific pieces of information. **Do not provide any detailed explanations of what the word is.**
+        1. A simple Vietnamese meaning.
+        2. The UK and US phonetic transcriptions.
+        3. Two common example sentences, each provided in both English and Vietnamese.
+        4. The part of speech.
+        5. A simple English meaning.
+        """
 
     prompt_format = """
         Your response MUST strictly follow this format, with no additional text or explanations:

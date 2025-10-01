@@ -10,7 +10,7 @@ from resources import resources_rc
 class LoadingOverlay(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        uic.loadUi("../UI/forms/loading_overlay.ui", self)
+        uic.loadUi("UI/forms/loading_overlay.ui", self)
 
         # Đảm bảo widget này sẽ che phủ toàn bộ widget cha
         # if parent:

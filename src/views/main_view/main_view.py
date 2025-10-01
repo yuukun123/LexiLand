@@ -14,7 +14,7 @@ class MainWindow(QMainWindow, MoveableWindow):
     def __init__(self, username):
         # self.username = username
         super().__init__()
-        uic.loadUi("../UI/forms/main_screen.ui", self)
+        uic.loadUi("UI/forms/main_screen.ui", self)
         MoveableWindow.__init__(self)
 
         self.go_back.hide()

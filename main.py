@@ -34,7 +34,7 @@ async def main():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    stylesheet = load_stylesheet("../UI/css/style_scroll.css")  # Đảm bảo đường dẫn đúng
+    stylesheet = load_stylesheet("UI/css/style_scroll.css")  # Đảm bảo đường dẫn đúng
 
     # 2. Áp dụng stylesheet cho toàn bộ ứng dụng
     if stylesheet:

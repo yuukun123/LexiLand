@@ -16,7 +16,7 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi("../UI/forms/login_register.ui", self)
+        uic.loadUi("UI/forms/login_register.ui", self)
         print("DEBUG:", self.enter_email_page)
         MoveableWindow.__init__(self)
 
@@ -117,6 +117,11 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
         self.enter_password.returnPressed.connect(self.forgot_password_controller.check_new_password)
         self.enter_cf_password.returnPressed.connect(self.forgot_password_controller.check_new_password)
 
+        # return to login page button
+        self.cancel_btn.clicked.connect(self.return_login_page)
+        self.cancel_btn_2.clicked.connect(self.return_login_page)
+        self.cancel_btn_3.clicked.connect(self.return_login_page)
+
         #debug
         self.sign_up_link.clicked.connect(lambda: print("Sign up clicked"))
         self.login_link.clicked.connect(lambda: print("Login clicked"))
@@ -169,6 +174,9 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
     def open_send_code(self):
         print("DEBUG: START OPEN SEND CODE")
         self.stackedWidget.setCurrentIndex(self.stackedWidget.indexOf(self.send_code_page))
+    def return_login_page(self):
+        print("DEBUG: START OPEN SEND CODE")
+        self.stackedWidget.setCurrentIndex(self.stackedWidget.indexOf(self.login_page))
     def hide_error(self):
         self.errors_7.hide()
         self.error_8.hide()
@@ -176,19 +184,19 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
     def toggle_new_password(self):
         if self.enter_password.echoMode() == QLineEdit.Password:
             self.enter_password.setEchoMode(QLineEdit.Normal)
-            path = "../UI/icons/eye.svg"
+            path = "UI/icons/eye.svg"
             self.hide_pass.setIcon(QIcon(path))
         else:
             self.enter_password.setEchoMode(QLineEdit.Password)
-            path = "../UI/icons/eye-off.svg"
+            path = "UI/icons/eye-off.svg"
             self.hide_pass.setIcon(QIcon(path))
 
     def toggle_new_cf_password(self):
         if self.enter_cf_password.echoMode() == QLineEdit.Password:
             self.enter_cf_password.setEchoMode(QLineEdit.Normal)
-            path = "../UI/icons/eye.svg"
+            path = "UI/icons/eye.svg"
             self.hide_pass.setIcon(QIcon(path))
         else:
             self.enter_cf_password.setEchoMode(QLineEdit.Password)
-            path = "../UI/icons/eye-off.svg"
+            path = "UI/icons/eye-off.svg"
             self.hide_pass.setIcon(QIcon(path))

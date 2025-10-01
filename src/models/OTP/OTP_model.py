@@ -70,6 +70,7 @@ class OTP_model:
         self.view.error_8.hide()
         self.view.resend_code.setDisabled(True)
         self.view.vertify_btn.setDisabled(True)
+        self.start_countdown()
         new_otp_code = self.otp_service.generate_and_store_otp(self.current_email, {'email': self.current_email})
         if not new_otp_code:
             self.view.countdown_label.setText("Too many resend attempts. Please try again later.")

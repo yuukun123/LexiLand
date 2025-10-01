@@ -13,7 +13,7 @@ class VocabWindow(BaseWindow, MoveableWindow):
 
     def __init__(self, username, topic_id, pre_window, parent=None):
         super().__init__(parent)
-        uic.loadUi("../UI/forms/topic_word.ui", self)
+        uic.loadUi("UI/forms/topic_word.ui", self)
         MoveableWindow.__init__(self)
         self.username = username
         self.topic_id = topic_id

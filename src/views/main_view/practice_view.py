@@ -15,7 +15,7 @@ from src.utils.go_back import BaseWindow
 class PracticeWindow(BaseWindow, MoveableWindow):
     def __init__(self, user_context, topics, parent=None):
         super().__init__(parent)
-        uic.loadUi("../UI/forms/practice.ui", self)
+        uic.loadUi("UI/forms/practice.ui", self)
         MoveableWindow.__init__(self)
         self._user_context = user_context
         self.username = self._user_context["user_name"]
