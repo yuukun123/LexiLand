@@ -23,8 +23,20 @@ class OTP_model:
         print(f"[OTP_model] Created with otp_service id: {id(otp_service)}")
 
 
-    def set_email(self, email):
+    def set_email(self, email, is_resend=False):
         self.current_email = email.strip().lower()
+        user_id = self.query_data.get_user_id_by_email(self.current_email)
+        self.countdown_timer.stop()
+
+        can_resend, msg = self.otp_service.can_resend(user_id)
+        print(f"DEBUG: RESEND: {can_resend}")
+        if not can_resend:
+            # User đang bị lock -> hiển thị luôn thông báo lock
+            self.view.countdown_label.setText("Too many resend attempts. Please try again later.")
+            self.view.resend_code.setDisabled(True)
+            return
+        self.start_countdown()
+
 
     def start_countdown(self):
         self.countdown_seconds = 30
@@ -56,7 +68,8 @@ class OTP_model:
             self.view.error_8.setText("OTP must be a 6-digit number.")
             self.view.error_8.show()
             return
-        success, message, user_data = self.otp_service.verify_otp(self.current_email, entered_otp)
+        user_id = self.query_data.get_user_id_by_email(self.current_email)
+        success, message, user_data = self.otp_service.verify_otp(self.current_email, entered_otp, user_id)
         if not success:
             self.view.error_8.setText(message)
             self.view.error_8.show()
@@ -67,15 +80,18 @@ class OTP_model:
         self.view.stackedWidget.setCurrentWidget(self.view.reset_pass_page)
         return True
     def handle_resend_request(self):
+        self.countdown_timer.stop()
         self.view.error_8.hide()
         self.view.resend_code.setDisabled(True)
         self.view.vertify_btn.setDisabled(True)
-        self.start_countdown()
-        new_otp_code = self.otp_service.generate_and_store_otp(self.current_email, {'email': self.current_email})
+        user_id = self.query_data.get_user_id_by_email(self.current_email)
+        new_otp_code = self.otp_service.generate_and_store_otp(self.current_email, user_id, {'email': self.current_email, 'user_id': user_id}, is_resend=True)
         if not new_otp_code:
+            self.countdown_timer.stop()
             self.view.countdown_label.setText("Too many resend attempts. Please try again later.")
             self.view.resend_code.setDisabled(True)
             return
+        self.start_countdown()
         # Bắt đầu gửi email trong một thread riêng
         self.resend_thread = QThread()
         self.resend_worker = EmailWorker(self.current_email, new_otp_code)
@@ -95,7 +111,6 @@ class OTP_model:
         """Hàm này được gọi khi thread gửi email hoàn thành."""
         if success:
             print("A new OTP has been sent to your email.")
-            self.start_countdown()
         else:
             print("Error", "Failed to send new OTP. Please try again.")
             # Kích hoạt lại nút gửi lại nếu thất bại

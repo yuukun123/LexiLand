@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtWidgets import QMessageBox
 from werkzeug.security import generate_password_hash, check_password_hash
 from src.services.query_data.query_data import QueryData
@@ -12,7 +14,7 @@ class forgotPasswordController:
         self.view = view
         self.main_window_instance = None
         self.query_data = QueryData()
-        self.otp_service = OTPService()
+        self.otp_service = OTPService(self.view)
         self.otp_model = OTP_model(self.view, self.otp_service)
         self.current_email = None
         self.view.errors_7.hide()
@@ -20,6 +22,7 @@ class forgotPasswordController:
     def check_email(self, email):
         print("DEBUG: START CHECK")
         email_input = email.strip().lower()
+        user_id = self.query_data.get_user_id_by_email(email_input)
         if not email_input:
             self.view.errors_7.setText("Please fill in all information")
             self.view.errors_7.show()
@@ -32,15 +35,21 @@ class forgotPasswordController:
             self.view.errors_7.setText("Email not found")
             self.view.errors_7.show()
             return
+        locked_until = self.query_data.get_locked_until(user_id)
+        if locked_until and time.time() < locked_until:
+            QMessageBox.information(self.view,"Lock User", "User has been locked. PLease try again later!")
+            self.view.stackedWidget.setCurrentWidget(self.view.login_page)
+            return
+
         self.current_email = email_input
         print("DEBUG: Generating OTP code.....")
-        otp_code = self.otp_service.generate_and_store_otp(email_input, {'email': email_input})
+        otp_code = self.otp_service.generate_and_store_otp(email_input, user_id, {'email': email_input, 'user_id': user_id}, is_resend=False)
         threading.Thread(target=send_otp_email, args=(email_input, otp_code)).start()
         print(f"DEBUG: OTP CODE HAS BEEN GENERATED: {otp_code}")
         print(f"DEBUG: OTP CODE HAS BEEN SEND TO {email_input}")
-        self.otp_model.set_email(self.current_email)
+        self.otp_model.set_email(self.current_email, is_resend=False)
         self.view.open_send_code()
-        self.otp_model.start_countdown()
+
 
     def check_new_password(self):
         new_password = self.view.enter_password.text()

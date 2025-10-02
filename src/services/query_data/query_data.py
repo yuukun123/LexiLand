@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import time
 from datetime import datetime, timedelta
 import random
 
@@ -35,6 +36,17 @@ class QueryData:
             cursor.execute("SELECT user_id, user_name FROM users WHERE LOWER(user_name) = LOWER(?)", (username,))
             row = cursor.fetchone()
             return dict(row) if row else None
+        except sqlite3.Error as e:
+            print(f"Database error in get_user_by_username: {e}")
+            return None
+
+    def get_user_id_by_email(self, email):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT user_id FROM users WHERE LOWER(email) = LOWER(?)", (email,))
+            row = cursor.fetchone()
+            return row[0] if row else None
         except sqlite3.Error as e:
             print(f"Database error in get_user_by_username: {e}")
             return None
@@ -880,6 +892,95 @@ class QueryData:
             return None
         except Exception as e:
             print(f"\n!!! LỖI KHI LẤY PASS SAI: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+    # --- LOCK ---
+    def get_locked_until(self, user_id):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT locked_until FROM user_lock WHERE user_id = ?", (user_id,)
+            )
+            rows = cursor.fetchone()
+            if rows:
+                return rows[0]
+            return None
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY lock_user SAI: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+
+    def lock_user(self,user_id, lock_time_second):
+        locked_until = int(time.time()) + lock_time_second
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO user_lock (user_id, locked_until, resend_attempts, last_resend)
+                VALUES (?, ?, 0, NULL)
+                ON CONFLICT(user_id) DO UPDATE SET locked_until=excluded.locked_until
+                """, (user_id, locked_until)
+            )
+            conn.commit()
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY lock_user SAI: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+    def get_resend_info(self, user_id):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT resend_attempts, last_resend FROM user_lock WHERE user_id = ?", (user_id,)
+            )
+            rows = cursor.fetchone()
+            if rows:
+                return rows[0], rows[1]
+            return 0, None
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY resend SAI: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+    # --- RESEND ---
+    def update_resend(self, user_id, attempts, now):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE user_lock SET resend_attempts=?, last_resend=? WHERE user_id=?", (attempts, now, user_id)
+            )
+            conn.commit()
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY lock_user SAI: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+
+    def insert_resend(self, user_id, now):
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO user_lock (user_id, resend_attempts, last_resend, locked_until)
+                VALUES (?, ?, ?, NULL)
+                ON CONFLICT(user_id) DO UPDATE SET locked_until=excluded.locked_until
+                """, (user_id, 1, now)
+            )
+            conn.commit()
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY lock_user SAI: {e}")
             return []
         finally:
             if conn:
