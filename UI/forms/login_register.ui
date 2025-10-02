@@ -363,7 +363,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
              <cursorShape>ArrowCursor</cursorShape>
             </property>
             <property name="currentIndex">
-             <number>4</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1189,7 +1189,7 @@ font-size: 15px;</string>
                      <number>0</number>
                     </property>
                     <property name="topMargin">
-                     <number>0</number>
+                     <number>8</number>
                     </property>
                     <property name="rightMargin">
                      <number>0</number>

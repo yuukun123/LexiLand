@@ -67,28 +67,67 @@ class OTPService:
             print(f"DEBUG: ATTEMPTS USER CLICKED INCORRECT: {otp_info['attempts']}")
             return False, "Invalid OTP.", None
 
+    # def can_resend(self, user_id, is_resend=False):
+    #     now = time.time()
+    #     result = self.query_data.get_resend_info(user_id)
+    #     if not result:
+    #         if is_resend:
+    #             self.query_data.insert_resend(user_id, now, 1)   # lần resend đầu tiên
+    #         else:
+    #             self.query_data.insert_resend(user_id, now, 0)   # lần generate OTP đầu
+    #         return True, None
+    #     attempts, last_resend = result
+    #     if last_resend and now - last_resend < self.RESEND_WINDOW:
+    #         if is_resend:
+    #             if attempts >= self.RESEND_LIMIT:
+    #                 return False, "Too many resend attempts. Please try again later."
+    #             self.query_data.update_resend(user_id,attempts + 1,now)
+    #         else:
+    #             # Không phải resend (chỉ generate OTP ban đầu) thì giữ nguyên attempts, không reset
+    #             return attempts < self.RESEND_LIMIT, None
+    #     else:
+    #         if is_resend:
+    #             self.query_data.update_resend(user_id, 1, now)
+    #         else:
+    #             self.query_data.update_resend(user_id, 0, now)
+    #     return True, None
+
     def can_resend(self, user_id, is_resend=False):
         now = time.time()
-        result = self.query_data.get_resend_info(user_id)
-        if not result:
-            if is_resend:
-                self.query_data.insert_resend(user_id, now, 1)   # lần resend đầu tiên
-            else:
-                self.query_data.insert_resend(user_id, now, 0)   # lần generate OTP đầu
-            return True, None
-        attempts, last_resend = result
-        if last_resend and now - last_resend < self.RESEND_WINDOW:
-            if is_resend:
-                if attempts >= self.RESEND_LIMIT:
-                    return False, "Too many resend attempts. Please try again later."
-                self.query_data.update_resend(user_id,attempts + 1,now)
-            else:
-                # Không phải resend (chỉ generate OTP ban đầu) thì giữ nguyên attempts, không reset
-                return attempts < self.RESEND_LIMIT, None
-        else:
-            if is_resend:
-                self.query_data.update_resend(user_id, 1, now)
-            else:
-                self.query_data.update_resend(user_id, 0, now)
-        return True, None
 
+        # Bước 1: Lấy tất cả trạng thái của user (bao gồm cả thông tin khóa)
+        attempts, last_resend, locked_until = self.query_data.get_user_status(user_id)
+
+        # Bước 2: KIỂM TRA LOCK ĐẦU TIÊN VÀ QUAN TRỌNG NHẤT
+        if locked_until and now < locked_until:
+            remaining_time = int(locked_until - now)
+            return False, f"Account is locked. Please try again in {remaining_time} seconds."
+
+        # Bước 3: Xử lý user chưa có trong DB (lần đầu tương tác)
+        if last_resend is None:
+            # Gọi hàm insert_resend đã sửa (chỉ nhận 2 tham số)
+            # Logic ở đây là: lần đầu tiên generate OTP sẽ có attempts=0
+            # Lần đầu tiên resend sẽ có attempts=1.
+            # Hàm insert_resend mới có thể cần sửa lại để nhận attempts.
+            # Hoặc đơn giản hơn:
+            initial_attempts = 1 if is_resend else 0
+            self.query_data.upsert_resend_info(user_id, initial_attempts, now)  # Nên có 1 hàm gộp
+            return True, None
+
+        # Bước 4: Xử lý logic Rate Limit
+        if now - last_resend < self.RESEND_WINDOW:
+            if is_resend:
+                # Nếu đạt giới hạn -> KÍCH HOẠT LOCK
+                if attempts >= self.RESEND_LIMIT:
+                    self.query_data.lock_user(user_id, self.LOCK_TIME_SECONDS)
+                    return False, f"Too many resend attempts. Account locked for {self.LOCK_TIME_SECONDS // 60} minutes."
+
+                # Nếu chưa đạt giới hạn -> tăng attempts
+                self.query_data.update_resend(user_id, attempts + 1, now)
+            # else: không phải resend thì không cần làm gì, cứ cho qua
+        else:
+            # Hết RESEND_WINDOW, reset lại bộ đếm
+            new_attempts = 1 if is_resend else 0
+            self.query_data.update_resend(user_id, new_attempts, now)
+
+        return True, None

@@ -920,11 +920,19 @@ class QueryData:
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
+            # cursor.execute(
+            #     """
+            #     INSERT INTO user_lock (user_id, locked_until, resend_attempts, last_resend)
+            #     VALUES (?, ?, 0, NULL)
+            #     ON CONFLICT(user_id) DO UPDATE SET locked_until=excluded.locked_until
+            #     """, (user_id, locked_until)
+            # )
             cursor.execute(
                 """
-                INSERT INTO user_lock (user_id, locked_until, resend_attempts, last_resend)
-                VALUES (?, ?, 0, NULL)
-                ON CONFLICT(user_id) DO UPDATE SET locked_until=excluded.locked_until
+                INSERT INTO user_lock (user_id, locked_until)
+                VALUES (?, ?)
+                ON CONFLICT(user_id) DO UPDATE SET
+                    locked_until=excluded.locked_until
                 """, (user_id, locked_until)
             )
             conn.commit()
@@ -967,21 +975,94 @@ class QueryData:
             if conn:
                 conn.close()
 
+    # def insert_resend(self, user_id, now):
+    #     conn = self._get_connection()
+    #     try:
+    #         cursor = conn.cursor()
+    #         cursor.execute(
+    #             """
+    #             INSERT INTO user_lock (user_id, resend_attempts, last_resend, locked_until)
+    #             VALUES (?, ?, ?, NULL)
+    #             ON CONFLICT(user_id) DO UPDATE SET locked_until=excluded.locked_until
+    #             """, (user_id, 1, now)
+    #         )
+    #         conn.commit()
+    #     except Exception as e:
+    #         print(f"\n!!! LỖI KHI LẤY lock_user SAI: {e}")
+    #         return []
+    #     finally:
+    #         if conn:
+    #             conn.close()
+
     def insert_resend(self, user_id, now):
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO user_lock (user_id, resend_attempts, last_resend, locked_until)
-                VALUES (?, ?, ?, NULL)
-                ON CONFLICT(user_id) DO UPDATE SET locked_until=excluded.locked_until
-                """, (user_id, 1, now)
+                INSERT INTO user_lock (user_id, resend_attempts, last_resend)
+                VALUES (?, 1, ?)  -- Giả sử lần đầu luôn là 1 attempt
+                ON CONFLICT(user_id) DO UPDATE SET
+                    resend_attempts=1,          -- Reset lại attempts
+                    last_resend=excluded.last_resend  -- Cập nhật thời gian
+                """, (user_id, now)
             )
             conn.commit()
         except Exception as e:
             print(f"\n!!! LỖI KHI LẤY lock_user SAI: {e}")
             return []
+        finally:
+            if conn:
+                conn.close()
+
+    def get_user_status(self, user_id):
+        """
+        Lấy tất cả thông tin trạng thái của người dùng: attempts, last_resend, locked_until.
+        Đây là hàm thay thế cho get_resend_info.
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT resend_attempts, last_resend, locked_until FROM user_lock WHERE user_id = ?",
+                (user_id,)
+            )
+            row = cursor.fetchone()
+            if row:
+                return row[0], row[1], row[2]  # attempts, last_resend, locked_until
+
+            # Nếu người dùng chưa tồn tại trong bảng, trả về trạng thái mặc định ban đầu
+            return None, None, None  # Sử dụng None để dễ dàng kiểm tra user mới
+
+        except Exception as e:
+            print(f"\n!!! LỖI KHI LẤY get_user_status: {e}")
+            # Trong trường hợp lỗi, trả về trạng thái an toàn (coi như user mới)
+            return None, None, None
+        finally:
+            if conn:
+                conn.close()
+
+    def upsert_resend_info(self, user_id, attempts, now):
+        """
+        Hàm gộp: Vừa có thể insert người dùng mới, vừa có thể update người dùng cũ.
+        Hàm này an toàn hơn vì nó không ảnh hưởng đến cột locked_until.
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO user_lock (user_id, resend_attempts, last_resend)
+                VALUES (?, ?, ?)
+                ON CONFLICT(user_id) DO UPDATE SET
+                    resend_attempts = excluded.resend_attempts,
+                    last_resend = excluded.last_resend
+                """,
+                (user_id, attempts, now)
+            )
+            conn.commit()
+        except Exception as e:
+            print(f"\n!!! LỖI KHI upsert_resend_info: {e}")
         finally:
             if conn:
                 conn.close()
