@@ -105,7 +105,7 @@ class Login_and_Register_Window(QMainWindow , MoveableWindow):
 
         self.resend_code.clicked.connect(self.forgot_password_controller.otp_model.handle_resend_request)
 
-        self.closeBtn.clicked.connect(self.buttonController.handle_close)
+        self.closeBtn.clicked.connect(buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
 
         # show and hide password

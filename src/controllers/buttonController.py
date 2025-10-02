@@ -1,4 +1,5 @@
 from PyQt5.QtCore import QPropertyAnimation
+from PyQt5.QtWidgets import QApplication
 
 class buttonController:
     def __init__(self, view):
@@ -11,8 +12,9 @@ class buttonController:
     def handle_ok(self):
         self.view.close()
 
-    def handle_close(self):
-        self.view.close()
+    @staticmethod
+    def handle_close():
+        QApplication.instance().quit()
 
     def handle_hidden(self):
         self.fade_animation = QPropertyAnimation(self.view, b"windowOpacity")
