@@ -24,6 +24,9 @@ class TopicController(BaseController):
         else:
             self.topic_layout = self.topic_container.layout()
 
+        self.topic_layout.setColumnStretch(99, 1)
+        self.topic_layout.setRowStretch(99, 1)
+
         self.topic_layout.setHorizontalSpacing(15)
         self.topic_layout.setVerticalSpacing(15)
         self.topic_layout.setAlignment(Qt.AlignTop)
