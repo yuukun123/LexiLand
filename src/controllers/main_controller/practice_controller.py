@@ -24,11 +24,12 @@ class PracticeController:
         questions = []
         list_word = self.query_data.get_list_words_for_practice(self.user_id, self.topic_ids)
         for word in list_word:
-            wrong_defs = self.query_data.get_wrong_definitions(word["id"], word["name"])
-            if len(wrong_defs) < 3:
-                continue  # bỏ qua nếu chưa đủ dữ liệu
-            # lấy 3 nghĩa sai ngẫu nhiên
-            wrong_answers = random.sample(wrong_defs, 3)
+            wrong_defs = self.query_data.get_wrong_definitions(word["id"], word["definition_text"])
+            wrong_answers = random.sample(wrong_defs, min(3, len(wrong_defs)))
+
+            while len(wrong_answers) < 3:
+                wrong_answers.append("Ghen tị")
+
             questions.append({
                 "word_id": word["id"],
                 "question": word["name"],
