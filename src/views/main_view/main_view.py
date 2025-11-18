@@ -35,7 +35,7 @@ class MainWindow(QMainWindow, MoveableWindow):
         set_user_info(self.username_label, username)
 
         self.buttonController = buttonController(self)
-        self.closeBtn.clicked.connect(self.buttonController.handle_close)
+        self.closeBtn.clicked.connect(buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
 

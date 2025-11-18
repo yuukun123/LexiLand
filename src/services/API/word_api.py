@@ -16,7 +16,7 @@ try:
         print("Khoông tìm thấy biến môi trường. Dùng key hardcode.")
         GOOGLE_API_KEY = "AIzaSyAJ9cEKfhCwMvi_u8CwqyPHFUbSjYlrT5E" # <--- THAY BẰNG KEY THẬT CỦA BẠN
     genai.configure(api_key=GOOGLE_API_KEY)
-    gemini_model = genai.GenerativeModel('gemini-2.0-flash')
+    gemini_model = genai.GenerativeModel('gemini-2.5-flash')
     print(">>> Cáu hình Gemini API Key thanh cong!")
 except Exception as e:
     print(f"Lỗi cấu hình Gemini API Key: {e}. Hãy chắc chắn bạn đã đặt biến môi trường hoặc điền key vào code.")
