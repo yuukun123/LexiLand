@@ -1,3 +1,11 @@
+import os
+
+# DÒNG 2: Import và gọi load_dotenv() NGAY LẬP TỨC
+from dotenv import load_dotenv
+load_dotenv()
+
+print(f"Giá trị GOOGLE_API_KEY từ môi trường: {os.getenv('GOOGLE_API_KEY')}")
+
 import sys
 import asyncio
 import qasync  # <-- Import thư viện mới

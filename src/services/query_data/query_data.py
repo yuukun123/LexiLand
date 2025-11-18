@@ -94,6 +94,69 @@ class QueryData:
 
             return word_id
 
+    def get_word_details_by_name(self, word_name, user_id):
+        """
+        Tìm một từ bằng tên và trả về dữ liệu chi tiết của nó cho một người dùng cụ thể.
+        Trả về một dictionary có cấu trúc giống như khi gọi API, hoặc None nếu không tìm thấy.
+        """
+        conn = None
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+
+            # Bước 1: Tìm word_id từ tên từ
+            cursor.execute("SELECT word_id FROM words WHERE word_name = ?", (word_name,))
+            word_result = cursor.fetchone()
+
+            if not word_result:
+                return None # Không tìm thấy từ
+
+            word_id = word_result[0]
+
+            # Bước 2: Kiểm tra xem từ này có thuộc về người dùng không (tùy chọn nhưng nên có)
+            # Bằng cách kiểm tra xem có bản ghi nào trong word_topic_user cho word_id và user_id này không
+            cursor.execute("""
+                SELECT 1 FROM word_topic_user wtu
+                JOIN topics t ON wtu.topic_id = t.topic_id
+                WHERE wtu.word_id = ? AND t.user_id = ?
+            """, (word_id, user_id))
+
+            if not cursor.fetchone():
+                return None # Từ này tồn tại nhưng không thuộc về người dùng này
+
+            # Bước 3: Lấy dữ liệu chi tiết
+            cursor.execute("SELECT part_of_speech, definition_en, definition_vi, example_en, example_vi FROM meanings WHERE word_id = ?", (word_id,))
+            meaning_result = cursor.fetchone()
+
+            cursor.execute("SELECT region, phonetic_text FROM pronunciations WHERE word_id = ?", (word_id,))
+            pronunciations_results = cursor.fetchall()
+
+            if not meaning_result:
+                return None # Lỗi dữ liệu
+
+            # Bước 4: Xây dựng lại cấu trúc dữ liệu giống như từ API
+            word_data = {
+                'word_name': word_name,
+                'pronunciations': [
+                    {'region': p[0], 'phonetic_text': p[1]} for p in pronunciations_results
+                ],
+                'meanings': [{
+                    'part_of_speech': meaning_result[0],
+                    'definition_en': meaning_result[1],
+                    'definition_vi': meaning_result[2],
+                    'example_en': meaning_result[3],
+                    'example_vi': meaning_result[4]
+                }]
+            }
+            return word_data
+
+        except sqlite3.Error as e:
+            print(f"Lỗi CSDL khi lấy chi tiết từ: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
     def add_word_to_topic(self, target_topic_id, word_data, user_id):
         """
         Hàm chính: Điều phối việc tìm/tạo từ và sau đó tạo các liên kết.

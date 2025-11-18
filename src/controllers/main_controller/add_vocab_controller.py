@@ -161,24 +161,51 @@ class AddWordController:
         task.add_done_callback(self.on_lookup_finished)
 
     async def lookup_word_async(self, word):
+        """
+        Hàm tra cứu mới: Ưu tiên CSDL, sau đó mới đến API.
+        """
         try:
-            word_info = await get_word_data_from_gemini(word)
-            return word_info
+            # 1. Kiểm tra trong CSDL trước
+            print(f"Đang kiểm tra từ '{word}' trong CSDL...")
+            # Chạy tác vụ CSDL trong một thread riêng để không chặn UI
+            word_from_db = await asyncio.to_thread(
+                self.query_data.get_word_details_by_name,
+                word,
+                self._user_context['user_id']
+            )
+
+            if word_from_db:
+                print(f"Tìm thấy từ '{word}' trong CSDL. Không cần gọi API.")
+                return word_from_db
+
+            # 2. Nếu không có trong CSDL, mới gọi API Gemini
+            print(f"Không tìm thấy '{word}' trong CSDL. Đang gọi API Gemini...")
+            word_from_api = await get_word_data_from_gemini(word)
+            return word_from_api
+
         except Exception as e:
-            print(f"Lỗi khi gọi API: {e}")
+            print(f"Lỗi trong quá trình tra cứu từ '{word}': {e}")
             return None
 
     def on_lookup_finished(self, task):
         try:
             word_info = task.result()
-
             self.view.retrieved_word_data = word_info
 
             if word_info and word_info.get('meanings'):
                 meaning = word_info['meanings'][0]
 
                 definition_text = meaning.get('definition_vi', 'Could not find definition.')
-                example_text = meaning.get('example_en', 'Could not find example.')
+
+                # Xử lý trường hợp ví dụ có cấu trúc khác nhau
+                # Ví dụ: {'en': '...', 'vi': '...'}
+                if 'examples' in meaning and meaning['examples']:
+                    example_text = meaning['examples'][0].get('en', 'Could not find example.')
+                # Ví dụ: 'example_en': '...'
+                elif 'example_en' in meaning:
+                    example_text = meaning.get('example_en', 'Could not find example.')
+                else:
+                    example_text = 'Could not find example.'
 
                 self.view.definition.setText(definition_text)
                 self.view.example.setText(example_text)
@@ -186,7 +213,7 @@ class AddWordController:
                 self.view.definition.setText("Could not find definition.")
                 self.view.example.setText("Could not find example.")
         except Exception as e:
-            print(f"Lỗi khi gọi API: {e}")
+            print(f"Lỗi khi xử lý kết quả tra cứu: {e}")
             self.view.definition.setText(f"Error: {e}")
 
     def handle_save(self):

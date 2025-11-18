@@ -4,29 +4,59 @@ import os
 import aiohttp
 from gtts import gTTS
 import json
+from dotenv import load_dotenv
+
+# <<< THAY ĐỔI QUAN TRỌNG: THÊM DÒNG NÀY VÀO ĐÂY >>>
+# Dòng này đảm bảo rằng BẤT CỨ KHI NÀO module này được import,
+# các biến môi trường sẽ được tải ngay lập tức.
+load_dotenv()
 
 api_cache = {}
 
-# CÁCH ĐÚNG ĐỂ LẤY VÀ CẤU HÌNH API KEY
-try:
-    # Cách tốt nhất: Lấy key từ biến môi trường
-    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-    if not GOOGLE_API_KEY:
-        # Nếu không có biến môi trường, dùng key bạn hardcode (chỉ để test)
-        print("Khoông tìm thấy biến môi trường. Dùng key hardcode.")
-        GOOGLE_API_KEY = "AIzaSyAJ9cEKfhCwMvi_u8CwqyPHFUbSjYlrT5E" # <--- THAY BẰNG KEY THẬT CỦA BẠN
-    genai.configure(api_key=GOOGLE_API_KEY)
-    gemini_model = genai.GenerativeModel('gemini-2.5-flash')
-    print(">>> Cáu hình Gemini API Key thanh cong!")
-except Exception as e:
-    print(f"Lỗi cấu hình Gemini API Key: {e}. Hãy chắc chắn bạn đã đặt biến môi trường hoặc điền key vào code.")
-    exit()
+# Biến global để lưu model
+gemini_model = None
+
+def get_gemini_model():
+    """
+    Khởi tạo model Gemini một lần duy nhất và trả về nó.
+    """
+    global gemini_model
+    if gemini_model is not None:
+        return gemini_model if gemini_model else None
+
+    print("--- Lần đầu khởi tạo Gemini API ---")
+    try:
+        # Bây giờ, khi dòng này chạy, load_dotenv() ở trên đã đảm bảo os.getenv có thể tìm thấy key.
+        GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+        if not GOOGLE_API_KEY:
+            print("LỖI: (word_api.py) Không tìm thấy GOOGLE_API_KEY. Vui lòng kiểm tra file .env.")
+            gemini_model = False
+            return None
+
+        print(f"DEBUG: (word_api.py) Sử dụng API Key: {GOOGLE_API_KEY[:5]}...{GOOGLE_API_KEY[-5:]}")
+        genai.configure(api_key=GOOGLE_API_KEY)
+
+        model_instance = genai.GenerativeModel('gemini-2.0-flash')
+        gemini_model = model_instance
+
+        print(">>> Cấu hình Gemini API Key thành công!")
+        return gemini_model
+
+    except Exception as e:
+        print(f"Lỗi cấu hình Gemini API Key: {e}. Các chức năng AI sẽ không hoạt động.")
+        gemini_model = False
+        return None
 
 async def prompt_gemini_async(word_to_define):
     """
     Hàm tạo prompt đã được tối ưu hoàn toàn bằng tiếng Anh để tăng tốc độ.
     """
     # # <<< TỐI ƯU 1: PROMPT TIẾNG ANH ĐỂ TĂNG TỐC ĐỘ >>>
+    model = get_gemini_model()
+    if not model:
+        print(f"LỖI: Model Gemini không khả dụng, không thể tra cứu '{word_to_define}'.")
+        return None # Thoát khỏi hàm ngay lập tức
+
     prompt_header = f"""
         Analyze the word: "{word_to_define}".
 
